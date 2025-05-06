@@ -1,0 +1,84 @@
+namespace: Global
+version: 1.0.0
+status: registered
+liveat: https://github.com/taophp/markscribe/namespaces/global.yml
+application:
+  name: MarkScribe
+  url: https://github.com/taophp/markscribe
+publisher:
+  name: PixyBlue
+  url: https://pixyblue.com
+maintainer:
+  name: Stéphane Mourey
+  contact: mail@stephanemourey.fr
+documentation: https://github.com/taophp/markscribe#244-standard-modifiers
+modifiers:
+  - name: Type
+    description: Defines the fundamental nature of an entity
+    scope: global
+    parameters:
+      - name: type
+        type: string
+        required: true
+        description: Entity type identifier
+        values: [character, place, time, event, object, organization]
+    examples:
+      - code: "@@Jules.Type(character)"
+        description: "Defines Jules as a character entity"
+    notes: |
+      Core type definition affects how tools process and analyze the entity.
+      Sugar syntax available for common types (.Character, .Place, etc.)
+
+  - name: Character
+    description: Sugar syntax for Type(character)
+    scope: global
+    examples:
+      - code: "@@Jules.Character"
+        description: "Equivalent to @@Jules.Type(character)"
+
+  - name: Place
+    description: Sugar syntax for Place(place)
+    scope: global
+    examples:
+      - code: "@@Paris.Place"
+        description: "Equivalent to @@Paris.Type(Place)"
+
+  - name: Event
+    description: Sugar syntax for Event(event)
+    scope: global
+    examples:
+      - code: "@@Christmas.Event"
+        description: "Equivalent to @@Christmas.Type(Event)"
+
+  - name: Pov
+    description: Indicates point-of-view narrative sections
+    scope: local
+    examples:
+      - code: "@@Jules.Pov[looked around the room]"
+        description: "Marks text as being from Jules' perspective"
+    notes: |
+      Affects narrative analysis and style checking.
+      Can be made global with ! modifier.
+
+  - name: Status
+    description: Marks status content of section or a file
+    scope: local
+    examples:
+      - code: "@@.Status(draft)"
+        description: "Marks following content as draft"
+    notes: |
+      Commonly used with null entity (@@.) for section marking
+
+  - name: Draft
+    description: Sugar syntax for Status(draft)
+    scope: local
+    examples:
+      - code: "@@.Draft"
+        description: "Equivlent to @@.Status(draft)"
+
+  - name: Final
+    description: Sugar syntax for Status(final)
+    scope: local
+    examples:
+      - code: "@@.Final"
+        description: "Equivlent to @@.Status(final)"
