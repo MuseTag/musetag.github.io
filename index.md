@@ -3,17 +3,16 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
-title: MarkScribe
+title: MarkPlot
 nav_order: 1
 ---
-# MarkScribe
 > A lightweight annotation language for writers
 
-## What is MarkScribe?
+## What is MarkPlot?
 
-MarkScribe is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points.
+MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points.
 
-```markscribe
+```markplot
 @@Jules[smiled at] @@Marie[who was reading a book].
 ```
 
@@ -27,14 +26,14 @@ MarkScribe is a simple yet powerful annotation language that helps writers organ
 
 ## Getting Started
 
-- [Quick Start Guide](quickstart.md) - Start using MarkScribe in 5 minutes
-- [Examples](examples/) - See MarkScribe in action
+- [Quick Start Guide](QuickStart.html) - Start using MarkPlot in 5 minutes
+- [Examples](examples/) - See MarkPlot in action
 - [Documentation](docs/) - Full language specification
 - [Tools](tools/) - Available tools and plugins
 
 ## For Developers
 
-Building tools for MarkScribe? Check out:
+Building tools for MarkPlot? Check out:
 - [Technical Documentation](specification/)
 - [Implementation Guidelines](implementation/)
 - [Contributing Guide](contributing/)

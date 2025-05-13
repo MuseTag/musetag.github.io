@@ -1,4 +1,4 @@
-# MarkPlot Quick Start Guide
+# Quick Start Guide
 
 ## Welcome to MarkPlot!
 
