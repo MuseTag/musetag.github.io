@@ -21,7 +21,7 @@
 title: MarkPlot
 email: mail@stephanemourey.fr
 description: >- # this means to ignore newlines until "baseurl:"
-  MarkPlot is a lightweight annotation language that helps writers
+  A lightweight annotation language that helps writers
   organize their notes directly within their text, without breaking
   their writing flow.
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -29,46 +29,4 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
 #github_username: jekyll
 
-#remote_theme: pages-themes/slate@v0.2.0
 theme: minima
-plugins:
-#  - jekyll-remote-theme
-  - jekyll-feed
-
-# Navigation configuration
-aux_links:
-  "MarkPlot on GitHub":
-    - "//github.com/taophp/markscribe"
-
-# Theme configuration
-search_enabled: true
-heading_anchors: true
-nav_sort: case_sensitive
-
-# Search configuration
-search:
-  heading_level: 1
-  previews: 3
-  preview_words_before: 5
-  preview_words_after: 10
-  tokenizer_separator: /[\s/]+/
-
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
