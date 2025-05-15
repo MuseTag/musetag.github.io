@@ -13,8 +13,10 @@ nav_order: 1
 MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points.
 
 ```markplot
-@@Jules[smiled at] @@Marie[who was reading a book].
+@@Jules smiled at @@Marie[who was reading a book].
 ```
+
+---
 
 ## Key Features
 
@@ -23,6 +25,8 @@ MarkPlot is a simple yet powerful annotation language that helps writers organiz
 - **Stay focused**: All your notes right where you need them
 - **Keep control**: Your text remains plain text, readable anywhere
 - **Build tools**: Structured annotations enable powerful analysis tools
+
+---
 
 ## Getting Started
 
