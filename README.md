@@ -12,13 +12,13 @@ For a comprehensive introduction, documentation and guides, please visit the **[
 
 ## Quick Example
 
-```markdown
-@@Jules smiled at @@(Marie).STATUS[reading].
+```markplot
+@@Jules smiled at @@(Marie).age(25)her while she was reading.
 ```
 
-In this example, "Jules" is a visible entity and "Marie" is an invisible entity with a visible parameter, while readers simply see:
+In this example, "Jules" is a visible entity and "Marie" is an hidden on entity with a modfier (`age`) with a hidden parameter (`25`), while readers simply see:
 
-> Jules smiled at reading.
+> Jules smiled at her while she was reading.
 
 ## Key Features
 
