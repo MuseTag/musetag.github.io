@@ -31,9 +31,11 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 
 ## The 5-Minute MarkPlot Basics
 
-### Mark Entities
+### Mark an Entity—Just Once!
 
-The simpliest way to start using MarkPlot is to use our special marker `@@` before a character name :
+In MarkPlot, you only need to mark an entity with `@@` the **first time** it appears. This is the **entity declaration**.
+
+The simpliest way to start using MarkPlot is to use our special marker `@@` before a character name, the first time its appears:
 ```markplot
 @@Character
 ```
@@ -48,10 +50,10 @@ For example:
 
 > Holmes looks tired.
 
-This is enough for MarkPlot to collect data about Holmes. When this character appears again, continue to use the `@@` marker:
+This is enough for MarkPlot to collect data about Holmes. When this character appears again, you do not need to use the `@@` marker again, as long as you use _exactly the same way_, which is called the _canonical name_:
 
 ```marplot
-@@Holmes asked @@Watson to tell the truth.
+Holmes asked @@Watson to tell the truth.
 ```
 
 **Result for reader:**

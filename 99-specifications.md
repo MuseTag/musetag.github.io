@@ -7,7 +7,7 @@ This document presents the complete technical specifications of the MarkPlot lan
 
 ## Core Syntax
 ### Entities
-At the heart of MarkPlot, there are **entities**. Entities are created and referenced using two _at_ signs `@@` followed by the entity name.
+At the heart of MarkPlot, there are **entities**. Entities are created and referenced using two _at_ signs `@@` followed by the canonical entity name.
 
 MarkPlot supports two types of entity annotations:
 
@@ -19,13 +19,13 @@ MarkPlot supports two types of entity annotations:
 
 The entity names appear in the final text output (hereinafter called _final text_) and provide semantic tracking.
 
-**hidden entities** wrap the entity name with parentheses `@@(EntityName)`:
+**Hidden entities** wrap the entity name with parentheses `@@(EntityName)`:
 ```markplot
-@@(Gandalf) The wizard raised his hands.
+@@(Gandalf)The wizard raised his hands.
 ```
 > The wizard raised his hands.
 
-hidden entities are tracked for semantic analysis but do not appear in the final text. This is useful for referencing an entity when it appears in a way other than its name, or when you want to track entities without cluttering the narrative text.
+Hidden entities are tracked for semantic analysis but do not appear in the final text. This is useful for referencing an entity when it appears in a way other than its name, or when you want to track entities without cluttering the narrative text.
 
 An entity can be any narrative element that you want to track, analyze, or reference throughout your text - characters, locations, objects, events... By marking these elements as entities, you create a rich semantic layer that tools can use for many purposes, for example:
 - Build character profiles and relationship networks
@@ -41,6 +41,16 @@ Entity names:
 @@HMS_Macon references a rigid airship build and operated by the United States Navy.
 ```
 > HMS Macon references a rigid airship build and operated by the United States Navy.
+
+Once a canonical entity name is defined, it can be used in the whole text (before and after) _without_ the entity mark, as long as it is identitical, except for the underscore:
+
+```markplot
+@@Sherlock_Holmes looked at @@Watson.
+[...]
+Watson talked to Sherklock Holmes.
+```
+
+It this example, the first sentence define two entities: `Sherlock_Holmes` and `Watson`. Those entities are automatically referenced in the second sentence.
 
 ### Entity and Content Capture
 Content capture is a core mechanism in MarkPlot that associates entities with the context where they appear. **Entities always capture the complete sentence in which they appear.**
