@@ -98,41 +98,12 @@ Entity names:
 
 ### 2.2 Entity and Content Capture
 
-Content capture is a core mechanism in MarkPlot that associates that associates the entity and the context where it appears. By default, it captures the whole sentence.
+Content capture is a core mechanism in MarkPlot that associates the entity and the context where it appears. It captures the whole sentence.
 
 ```markplot
 @@Jules was walking down the street. @@Mary was sitting on the terrace of a cafe. @@(Jules)@@(Mary)Then they saw each other.
 ```
 The first sentence is associated with Jules, the second with Mary and the third with both.
-
----
-
-Sometimes you need precise control over what content is associated with an entity, to capture parts smaller or wider than the sentence, or even multi-lines content. This is where explicit content capture using square brackets `[...]` comes in:
-
-```markplot
-@@Jules[only these words] are captured, not the whole sentence.
-@@Jules[picked up the letter and read:
-  "Dear Mary,
-  I hope this finds you well..."
-].
-```
-Note: Brackets MUST immediately follow the entity name (no space allowed).
-
----
-
-To ensure natural text flow while maintaining proper punctuation rules, when an entity is followed by bracketed content, the space between the entity name and the content is handled according to these rules:
-
-1. If the content begins with a punctuation mark (`,.;:!?`), no space is added:
-```markplot
-@@Mary[, smiling,] continued her way.
-```
-> Mary, smiling, continued her way.
-
-2. In all other cases, a space is automatically added:
-```markplot
-@@Jules[took his car].
-```
-> Jules took his car.
 
 ---
 
@@ -178,16 +149,21 @@ MarkPlot supports three distinct categories of modifiers:
 
 #### 2.3.2 Modifier Parameters
 
-Modifiers use parentheses `()` to accept parameters. Unlike content captured with brackets (which appears in the final text), parameters are used for meta-information and configuration that should not appear in the narrative:
+Modifiers can accept parameters in two different ways:
+1. Using parentheses `()` for hidden parameters (meta-information)
+2. Using square brackets `[]` for visible parameters (text that appears in the narrative)
 
 ```markplot
-# Parameters are meta-information
-@@Jules.age(42)             # The number 42 won't appear in the text
-@@.status(draft)            # Configuration that stays hidden
-@@Jules is @@Marie.Rel(friend)['s best friend].  # Relationship info with visible text
+# Hidden parameters (meta-information)
+@@Jules.age(42)                # The number 42 won't appear in the text
+@@.status(draft)               # Configuration that stays hidden
+
+# Visible parameters (appear in text)
+@@Jules.title[Doctor]          # Will show "Doctor" in the text
+@@Jules.title[Doctor].lastname[Jekyll] # Will show "Doctor Jekyll"
 ```
 
-The parameter content is passed as-is to the modifier implementation, which can parse it according to its own needs.
+The parameter content is passed as-is to the modifier implementation, which can parse it according to its own needs. When using visible parameters with square brackets, consecutive parameters are separated by a space in the final text.
 
 ---
 
@@ -199,16 +175,24 @@ Modifiers can be combined freely (order does not affect semantic meaning):
 ```
 and in any order:
 ```markplot
-@@Jules.Character.happy.NAME(Durant)  # Semantically equivalent to
-@@Jules.happy.NAME(Durant).Character  # Semantically equivalent to
+@@Jules.Character.happy.NAME(Durant)     # Semantically equivalent to
+@@Jules.happy.NAME(Durant).Character     # Semantically equivalent to
 @@Jules.NAME(Durant).Character.happy
 ```
 
+Visible parameters can be combined with hidden ones:
+```markplot
+@@Jules.title[Doctor].age(42).lastname[Jekyll]  # Shows "Doctor Jekyll" in text
+```
+
+Note: A modifier cannot have both visible and hidden parameters simultaneously.
+
 ---
 
-A parameter can be repeated if you like:
-```
-@@Jules.mood(sad).mood(embarassed) said something.
+Parameters can be repeated:
+```markplot
+@@Jules.mood(sad).mood(embarrassed)       # Hidden parameters
+@@Jules.title[Sir].title[Doctor]         # Visible parameters
 ```
 
 ---
@@ -230,7 +214,7 @@ Parameters can span multiple lines for better readability and organization:
 ```
 
 Key points:
-- Opening parenthesis must immediatly follow the modifier
+- Opening parenthesis or brackets immediatly follow the modifier
 - Content can span multiple lines
 
 ---
@@ -467,7 +451,6 @@ Temporal entities follow specific scope rules:
 
 1. A temporal entity's scope extends until another temporal entity of the same or higher precision is encountered
 2. Lower precision entities inherit context from higher precision entities in scope
-3. Explicit scope using brackets overrides these rules
 
 ---
 
@@ -489,16 +472,15 @@ Temporal entities can be combined with other MarkPlot features for rich narrativ
 
 ```markplot
 # Combining with characters and events
-@@(1815-06-18).Type(Date)[On that fateful day,] @@Napoleon[faced his destiny at] @@Waterloo.Place.
+@@date(1815-06-18) On that fateful day, @@Napoleon faced his destiny at @@Waterloo.Place.
 
-# Using with nested annotations and modifiers
-@@(1789-07-14)[The @@(Bastille).Type(Place)[fortress] fell as @@Paris.excited[erupted in revolution].
+# Using with entities and modifiers
+@@date(1789-07-14) The @@Bastille.type(place) fortress fell as @@Paris.mood[excited] erupted in revolution.
 
 # Timeline organization with multiple entities
-@@(@Y1)[In the first year,
-  @@(@M3)[During the third month,] @@Jules.tired[struggled with] @@Writer_Block,
-  but by @@(@M6)[summer] @@(Jules)[he] had @@.happy[finished the first draft].
-]
+@@time(Y1) In the first year,
+@@time(M3) During the third month, @@Jules.mood[tired] struggled with @@Writer_Block,
+but by @@time(M6) summer @@Jules had @@.mood[happy] finished the first draft.
 ```
 
 These examples show how temporal entities work seamlessly with:
@@ -766,21 +748,6 @@ This paragraph discusses the theme.
 This paragraph is not affected by the previous annotation.
 ```
 
-#### 2.6.4 Custom Scope
-
-Using brackets to explicitly define annotation scope:
-```markplot
-@@.flashback(@@2012-28-02)[
-This content is a flashback,
-spanning multiple paragraphs,
-regardless of the document structure.
-]
-
-Normal narrative continues here.
-```
-
-Tools processing these annotations should respect these scope rules when analyzing or transforming the text.
-
 ### 2.7 Hidden Markdown Structures
 
 MarkPlot allows embedding Markdown syntax that will be processed for analysis but won't appear in the final text. This is achieved through a special syntax using the null entity:
@@ -891,9 +858,9 @@ MarkPlot follows a permissive approach to error handling:
 @Jules (missing @) remains "@Jules"
 ```
 
-2. **Partial Annotations**: Incomplete annotations (unclosed bracket or parenthesis)  preserved as-is:
+2. **Partial Annotations**: Incomplete annotations (unclosed parenthesis)  preserved as-is:
 ```markplot
-@@Jules[unclosed bracket becomes "Jules[unclosed bracket"
+@@Jules.title(unclosed becomes "Jules.title(unclosed"
 ```
 3. **Unknown Modifiers**: While there are no "invalid" modifiers syntactically, modifiers that are neither standard nor from a registered application namespace are simply removed during cleanup:
 ```markplot
@@ -1037,7 +1004,7 @@ This would provide:
 
 - **Null Entity**: Special entity (`@@.`) used to apply modifiers or annotations without creating an actual entity reference.
 
-- **Content**: Text associated with an entity using square brackets (`@@Jules[text]`).
+- **Content**: Text associated with an entity, typically extending to the end of the current sentence.
 
 - **Hidden Markdown**: Markdown syntax enclosed in parentheses after a null entity that won't appear in the final text (`@@.(# Title)`).
 
