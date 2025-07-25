@@ -35,6 +35,7 @@ Join our community on [GitHub Discussions](https://github.com/MarkPlot/markplot.
 - [What's Next?](#whats-next)
   - [For Writers](#for-writers)
   - [For Developers](#for-developers)
+- [Join the Community](#join-the-community)
 
 ---
 
