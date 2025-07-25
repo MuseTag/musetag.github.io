@@ -33,48 +33,50 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 ```
 
 **Result for readers:**
-> examined the crime scene at Baker Street.
+> Sherlock examined the crime scene at Baker Street.
 
 **Behind the scenes:**
 MarkPlot-enabled tools can automatically generate entity cards:
 
 ```markplot
-# @@(Sherlock).Entity
+# Sherlock
+- Type: Character
 - Appearances: Chapter 1, Chapter 3
 - Related to: Watson, Lestrade
 ```
 
-### 2. Make Entities Visible in Text
+### 2. Make Entities invisible in Text
 
-Want the entity name to appear in your text? Remove the parentheses:
+Want to hide the entity name in your text but mark its presence? Add parentheses:
 
 ```markplot
-@@Sherlock examined the crime scene at @@Baker_Street.
+@@(Sherlock)He examined the crime scene at @@Baker_Street.
 ```
 
 **Result for readers:**
-> Sherlock examined the crime scene at Baker Street.
+> He examined the crime scene at Baker Street.
 
 **Behind the scenes:**
-The entities are still tracked, but now they're part of the narrative text.
+The entity is still tracked, but its name is now hidden in the narrative text.
 
 ### 3. Add Visible Details with Modifier Parameters
 
 Want to show additional information about a character in the text? Use square brackets:
 
 ```markplot
-@@(Watson).PROFESSION[doctor] assisted with the investigation.
+The @@(Watson).PROFESSION[Doctor] assisted with the investigation.
 ```
 
 **Result for readers:**
-> doctor assisted with the investigation.
+> The Doctor assisted with the investigation.
 
 **Behind the scenes:**
 The information is stored in Watson's entity card:
 
 ```markplot
-# @@(Watson).Entity
-- Profession: doctor
+# Watson
+- Type: Character
+- Profession: Doctor
 - Appearances: Chapter 1
 ```
 
@@ -83,15 +85,16 @@ The information is stored in Watson's entity card:
 Use parentheses to store information that doesn't appear in the text:
 
 ```markplot
-@@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
+The @@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
 ```
 
 **Result for readers:**
-> military doctor served in Afghanistan.
+> The military doctor served in Afghanistan.
 
 **Behind the scenes:**
 ```markplot
-# @@(Watson).Entity
+# Watson
+- Type: Character
 - Age: 35
 - Profession: military doctor
 - Appearances: Chapter 1
@@ -140,25 +143,6 @@ MarkPlot-enabled tools track narrative structure:
 - Chapter 1: Watson's POV
 ```
 
-### 7. Create Relationships
-
-Nested annotations show relationships between entities:
-
-```markplot
-@@(Holmes) observed that @@(Irene).STATUS[nervous] was clearly distressed.
-```
-
-**Result for readers:**
-> observed that nervous was clearly distressed.
-
-**Behind the scenes:**
-This builds a relationship graph:
-
-```markplot
-# @@(Holmes).entity
-- Relationships:
-  - Observes: Irene Adler
-```
 
 ## A Complete Example
 
@@ -169,9 +153,9 @@ This builds a relationship graph:
 
 @@(London) @@(1881-03-04)
 
-I had just returned from @@Afghanistan when I met @@(Holmes).PROFESSION[consulting detective] through a mutual acquaintance. He was looking for someone to share his lodgings at @@(221B_Baker_Street).TYPE[comfortable apartment].
+I had just returned from @@Afghanistan when I met a @@(Holmes).PROFESSION[consulting detective] through a mutual acquaintance. He was looking for someone to share his lodgings at a @@(221B_Baker_Street).Place[comfortable apartment].
 
-"You have been in Afghanistan, I perceive," were his first words to me, leaving me quite astonished at his insight.
+"You have been in @@Afghanistan.Place, I perceive," were his first words to me, leaving me quite astonished at his insight.
 ```
 
 **Result for readers:**
@@ -179,7 +163,7 @@ I had just returned from @@Afghanistan when I met @@(Holmes).PROFESSION[consulti
 >
 > ## Chapter 1
 >
-> I had just returned from Afghanistan when I met consulting detective through a mutual acquaintance. He was looking for someone to share his lodgings at comfortable apartment.
+> I had just returned from Afghanistan when I met a consulting detective through a mutual acquaintance. He was looking for someone to share his lodgings at a comfortable apartment.
 >
 > "You have been in Afghanistan, I perceive," were his first words to me, leaving me quite astonished at his insight.
 
@@ -193,7 +177,7 @@ MarkPlot-enabled tools would generate:
 ## What's Next?
 
 - **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations
-- **Explore Modifiers**: Try `.mood()`, `.STATUS[]`, or create your own
+- **Explore Modifiers**: Try `.mood()`, `.Status()`, or create your own
 - **Build Your World**: Create a consistent set of characters, places, and events
 - **Structure Your Narrative**: Use annotations to track plot arcs and themes
 - **Use Tools**: Check out compatible editors and visualization tools
