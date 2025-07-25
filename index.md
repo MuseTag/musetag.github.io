@@ -13,8 +13,12 @@ MarkPlot is a lightweight semantic annotation language that allows writers to or
 
 If you are a writer, you might want to read the [Quick Start Guide](#quick-start-guide) first.
 
----
+**MarkPlot is in early development.**
+While dedicated tools are coming soon, you can already use MarkPlot in any text or Markdown editor.
+Want to help shape the project or ask questions?
+Join our community on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions)!
 
+---
 ## Table of Contents
 
 - [Why MarkPlot?](#why-markplot)
@@ -29,8 +33,8 @@ If you are a writer, you might want to read the [Quick Start Guide](#quick-start
   - [Parameters for Modifiers](#parameters-for-modifiers)
 - [Modifier Summary Table](#modifier-summary-table)
 - [What's Next?](#whats-next)
-- [For Writers](#for-writers)
-- [For Developers](#for-developers)
+  - [For Writers](#for-writers)
+  - [For Developers](#for-developers)
 
 ---
 
@@ -41,18 +45,26 @@ The story below, in MarkPlot!
 ```markplot
 ## Why @@MarkPlot? @@(me).Pov
 
-As a @@(me).HOBBY[writer], I found myself drowning in character sheets, timeline
+As a @@(me).HOBBY[writer], I found myself drowning in character sheets, timeline,
 documents, and location descriptions scattered across multiple files and tools.
 
-Every time I needed to check a detail about a character, a specific place, or an event, I had to break my writing flow to search through my notes.
+Every time I needed to check a detail about a character, a specific place, or
+an event, I had to break my writing flow to search through my notes.
 When and where did @@Jules and @@Isabelle meet for the first time?
 
-I needed a way to keep track of all these elements right within my manuscript, something that wouldn't force me to leave my text editor or interrupt my creative process.
+I needed a way to keep track of all these elements right within my manuscript,
+something that wouldn't force me to leave my text editor or interrupt my
+creative process.
 
-That's how @@(MarkPlot).CONCEPT[the idea of a simple, inline annotation system] was born - not as another writing tool, but as a natural extension of the writing process itself.
+That's how @@(MarkPlot).CONCEPT[the idea of a simple, inline annotation system]
+was born - not as another writing tool, but as a natural extension of the
+writing process itself.
 
-As a @@(me).JOB[coder], I would now be able to write tools that could understand my narrative elements, analyze my story structure, and help me visualize my characters' relationships.
-I could even generate character sheets, timelines, and location maps automatically from my text.
+As a @@(me).JOB[coder], I would now be able to write tools that could understand
+my narrative elements, analyze my story structure, and help me visualize my
+characters' relationships.
+I could even generate character sheets, timelines, and world documentation
+automatically from my text.
 
 The possibilities are endless.
 ```
@@ -201,24 +213,28 @@ He was so @@(Holmes).mood[sad].vitality(tired) that a tear rolled down his eye.
 Here, `sad` is a visible parameter of the `.mood` modifier and `tired` a hidden parameter of the `.vitality` modifier.
 
 
-## What's next?
+## What's Next?
 
-This is just a glimpse of the main features offered by MarkPlot. It's enough to get you started. To learn more, check out [the full specifications](specifications.html) or, to speed things up, the [cheat sheet](https://markplot.github.io/cheat-sheet.html).
+MarkPlot opens up new possibilities for both writers and developers. Here’s how you can take your next steps:
 
 ### For Writers
 
-- Integrate seamlessly with your existing writing workflow
-- Use any text editor that supports plain text
-- Add as many or as few annotations as you want
-- Generate character sheets and timelines automatically
-- Maintain consistency across long narratives
+- **Use your favorite editor**: MarkPlot is designed to work seamlessly with any plain text or Markdown editor—no special software required.
+- **Stay tuned for tools**: While dedicated MarkPlot tools are still in development, your annotations are future-proof and will be compatible with upcoming utilities for character sheets, timelines, and more.
+- **Experiment in your workflow**: Try annotating a scene or chapter in your current project and experience how MarkPlot helps you stay organized without breaking your writing flow.
+- **Shape the future**: Share your needs and feedback—your input will help guide the development of MarkPlot tools and features.
 
 ### For Developers
 
-Building tools for MarkPlot? Check out the [Specifications](specifications.html)!
+- **Read the specifications**: Dive into the [technical documentation](specifications.html) to understand MarkPlot’s structure and syntax.
+- **Build the first tools**: Be among the pioneers—create parsers, visualizations, or plugins to bring MarkPlot’s potential to life.
+- **Extend the language**: Propose new modifiers or entity types to address specific creative or analytical needs.
+- **Join the community**: Contribute to open-source projects, share your work, and collaborate with others interested in narrative annotation.
 
-- Implement parsers for various programming languages
-- Build visualization tools for narrative analysis
-- Create writing aids using the semantic information
-- Extend the system with custom modifiers
-- Contribute to the open-source ecosystem
+**Ready to shape the future of creative writing?**
+Start using MarkPlot today—and help build the ecosystem that will empower writers everywhere!
+
+## Join the Community
+
+Have questions, ideas, or feedback?
+Join the discussion on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions) and help shape the future of MarkPlot with us!
