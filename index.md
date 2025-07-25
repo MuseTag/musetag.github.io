@@ -66,4 +66,4 @@ MarkPlot is a simple yet powerful annotation language that helps writers organiz
 
 ## For Developers
 
-Building tools for MarkPlot? Check out [Specifications](specification.html)!
+Building tools for MarkPlot? Check out [Specifications](specifications.html)!
