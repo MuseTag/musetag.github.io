@@ -7,7 +7,47 @@ This document presents the complete technical specifications of the MarkPlot lan
 
 ## Core Syntax
 ### Entities
-At the heart of MarkPlot, there are **entities**. Entities are created and referenced using two _at_ signs `@@` followed by the canonical entity name.
+At the heart of MarkPlot, there are **entities**.
+
+To declare an entity, use the `@@` marker before its canonical name the first time it appears in the text:
+
+```markplot
+@@Alice
+```
+
+After this declaration, every occurrence of “Alice” (the canonical name) in the text—before or after the declaration—is considered a reference to the same entity.  
+You do **not** need to repeat the `@@` marker for subsequent uses.
+
+**Canonical names and underscores**
+
+The canonical name of an entity may contain underscores (`_`) to represent spaces between words. For example:
+
+```markplot
+@@Sherlock_Holmes
+```
+
+declares the entity “Sherlock Holmes”.  
+After this declaration, every occurrence of “Sherlock Holmes” (with a space) or `Sherlock_Holmes` (with an underscore) in the text is recognized as a reference to the same entity.
+
+If you refer to the entity using a different name, synonym, or pronoun, use the hidden entity marker:
+
+```markplot
+@@(Alice)She smiled.
+```
+
+#### Entity hierarchy
+
+You can specify the narrative importance of an entity by the number of `@` signs used in its declaration:
+
+- `@@Entity` — main entity (default)
+- `@@@Entity` — secondary entity
+- `@@@@Entity` — minor entity
+
+The more `@` signs, the less important the entity is considered.  
+This hierarchy is optional and only affects how tools may display or prioritize entities; it does not change the core semantics of the text.
+
+**Definition:**  
+An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.
 
 MarkPlot supports two types of entity annotations:
 
@@ -201,11 +241,14 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
   - `.Event`: Sugar for `.Type(event)`
   - `.Object`: Sugar for `.Type(object)`
 - `.Note(content)`: Attaches a local note to an entity (shortcut: `@@Entity(content)`)
-- `.Gnote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
+- `.GNote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
+- `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
+  - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.
   - `.Draft`: Sugar for `.Status(draft)`
   - `.Final`: Sugar for `.Status(final)`
 - `.Todo(What is to do)`: indicates something to do.
+- `.Version(version)`: Indicates version information for document or section.
 
 - `.Version(version)`: Specifies the version of the associated section.
 - `.Pov`: Indicates that the narrative follows the point of view of the entity.

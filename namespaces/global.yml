@@ -84,6 +84,23 @@ modifiers:
       Used for information that applies to all occurrences of an entity.
       Sugar syntax: @@Entity_(content)
 
+  - name: Geo
+    description: Associates geographic coordinates with an entity (usually a place)
+    scope: global
+    parameters:
+      - name: latitude
+        type: number
+        description: Latitude in decimal degrees (WGS84)
+      - name: longitude
+        type: number
+        description: Longitude in decimal degrees (WGS84)
+    examples:
+      - code: "@@Paris.Geo(48.8566, 2.3522)"
+        description: "Associates Paris with its GPS coordinates"
+    notes: |
+      This modifier is primarily intended for use by editors or tools, not for manual entry.
+      It enables map visualizations and spatial queries.
+
   - name: Pov
     description: Indicates point-of-view narrative sections
     scope: local

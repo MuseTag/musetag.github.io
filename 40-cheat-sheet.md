@@ -9,6 +9,8 @@ layout: cheatsheet
     <tr><td>Visible</td><td><code>@@Entity</code></td></tr>
     <tr><td>Hidden</td><td><code>@@(Entity)</code></td></tr>
     <tr><td>The <em>Null</em> one</td><td><code>@@.</code></td></tr>
+    <tr><td>Declare once, use freely</td><td><code>@@Entity</code> (declare once; all further uses of the name are tracked automatically)</td></tr>
+    <tr><td>Entity hierarchy</td><td><code>@@Entity</code> (main), <code>@@@Entity</code> (secondary), <code>@@@@Entity</code> (minor)</td></tr>
     <tr><td>Simple local note</td><td><code>@@Entity(note)</code></td></tr>
     <tr><td>Simple global note</td><td><code>@@Entity_(note)</code></td></tr>
 </table>
@@ -30,6 +32,7 @@ layout: cheatsheet
     <tr><td>Remember something to do</td><td><code>@@.Todo(What to do)</code></td></tr>
     <tr><td>Version of document or section</td><td><code>@@.Version(Number)</code></td></tr>
     <tr><td>Status of document or section</td><td><code>@@.Status(StatusName)</code></td></tr>
+    <tr><td>Geographic coordinates</td><td><code>@@Entity.Geo(latitude, longitude)</code></td></tr>
 </table>
 
 <table>

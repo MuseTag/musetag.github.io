@@ -33,44 +33,42 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 
 ### Mark an Entity—Just Once!
 
-In MarkPlot, you only need to mark an entity with `@@` the **first time** it appears. This is the **entity declaration**.
+In MarkPlot, you only need to use the `@@` marker the **first time** an entity appears in your text. This is called the **entity declaration**.
 
-The simpliest way to start using MarkPlot is to use our special marker `@@` before a character name, the first time its appears:
-```markplot
-@@Character
-```
+After that, every time you use the same name (the _canonical name_), MarkPlot will recognize it as a reference to the same entity—no need to repeat the `@@` marker.
 
 For example:
 
-```
-@@Holmes looks tired.
-```
-
-**Result for reader:**
-
-> Holmes looks tired.
-
-This is enough for MarkPlot to collect data about Holmes. When this character appears again, you do not need to use the `@@` marker again, as long as you use _exactly the same way_, which is called the _canonical name_:
-
-```marplot
-Holmes asked @@Watson to tell the truth.
-```
-
-**Result for reader:**
-
-> Holmes asked Watson to tell the truth.
-
-OK, you don't always want to use an unique name for your characters. Holmes may appears as Sherlock ou just the "he" pronoun. We have a syntax for that too:
 ```markplot
-@@(Holmes)Sherlock looked deeply at @@(Lestrade)him.
+@@Alice entered the room.
+Alice smiled at Bob.
+Bob greeted Alice.
 ```
+
+All occurrences of “Alice” are now tracked as the same entity, even if you don’t use `@@` again.
+
+If you want to refer to the entity using a different name, synonym, or pronoun, use the hidden entity marker:
+
+```markplot
+@@(Alice)She looked at @@(Bob)him.
+```
+
 **Result for reader:**
+> She looked at him.
 
-> Sherlock looked deeply at him.
+**What is an entity?**
+An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.
 
-But, what have we done ? In fact, the `@@` marker is an _entity_ marker. What is that?
+### Entity hierarchy
 
-**An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.**
+You can indicate the importance of an entity by using more `@` signs in its declaration:
+
+- `@@Holmes` — main entity (e.g. main character)
+- `@@@Lestrade` — secondary entity
+- `@@@@a_kid` — minor entity
+
+The more `@` signs you use, the less important the entity is considered.  
+This helps tools and editors highlight or de-emphasize entities according to their narrative role.
 
 ### Types of entities
 
@@ -170,7 +168,7 @@ Modifier case matters in MarkPlot:
 
 - **Lowercase modifiers** (e.g. `.mood`, `.age`) are for context-specific or temporary information.
 - **UPPERCASE modifiers** (e.g. `.BRAVE`, `.MAGICAL`) are for permanent attributes of an entity, defined by you.
-- **Capitalized modifiers** (e.g. `.Type`, `.Status`, `.Event`, `.Place`, `.Pov`, `.Object`, `.Todo`, `.Version`, `.Draft`, `.Final`) are standard modifiers defined by MarkPlot or its tools. You can also create your own modifiers, but remember that case is always significant.
+- **Capitalized modifiers** (e.g. `.Type`, `.Status`, `.Event`, `.Place`, `.Pov`, `.Object`, `.Todo`, `.Version`, `.Draft`, `.Final`, `.Geo`) are standard modifiers defined by MarkPlot or its tools. You can also create your own modifiers, but remember that case is always significant.
 
 For example:
 
@@ -179,6 +177,8 @@ For example:
 ```
 
 In this example, Arthur is always brave (`.BRAVE`, permanent) but only tired in this context (`.tired`, temporary). Excalibur is always magical (`.MAGICAL`, permanent) and is explicitly marked as an object using the standard modifier `.Object`.
+
+There are also advanced modifiers, such as `.Geo(latitude, longitude)`, which can be used by editors to associate a place with its geographic coordinates for map visualization.
 
 ### Store Hidden Metadata
 
