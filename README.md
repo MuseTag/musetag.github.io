@@ -128,36 +128,74 @@ This graph representation allows for powerful analysis, navigation, and visualiz
 - Version control for narrative elements
 - Commenting and feedback integration
 
-## 5. Implementation Guidelines
+### 5.2 Enriched Exports
 
-### 5.1 Parsing Strategy
+Tools supporting MarkScribe can generate enriched formats. While HTML examples are provided below for illustration, equivalent transformations can be implemented for any output format including LaTeX, PDF, DOCX, ePub, and others.
 
-Tools implementing MarkScribe should:
-1. Identify all entity annotations in the document
-2. Build a hierarchical graph of entities and relationships
-3. Preserve the original text while enabling structured queries
+#### 5.2.1 HTML with Hidden Annotations
+```html
+<!--@@(Jules)[-->Jules took her hand<!--]-->
+```
 
-### 5.2 Visualization
+#### 5.2.2 HTML with Semantic Classes
+```html
+<span class="entity character" data-entity="Jules">Jules</span> took her hand.
+```
 
-MarkScribe annotations can be visualized as:
-- Interactive networks of entities and relationships
-- Timelines of events
-- Maps of locations
-- Heat maps of thematic elements
+#### 5.2.3 Other Output Formats
 
-### 5.3 Editor Integration
+Equivalent transformations for other formats might include:
 
-Text editors supporting MarkScribe should provide:
-- Syntax highlighting for annotations
-- Auto-completion for previously defined entities
-- Quick navigation between related annotations
-- Collapsible annotation content
+- **LaTeX**: `\character{Jules}{Jules took her hand}`
+- **DOCX**: Using custom fields or content controls
+- **PDF**: Embedding metadata in the document structure
+- **Custom formats**: Any specialized output required by specific tools
 
-## 6. Examples
+Each implementation may leverage the format-specific features while preserving the semantic structure defined in MarkScribe.
+
+### 6.3 Visual Distinctions During Editing
+
+Editors supporting MarkScribe should consider:
+
+- Using distinct colors for different entity types
+- Applying subtle underlining or highlighting
+- Displaying icons in margins to indicate annotation presence
+- Providing hover information for annotated entities
+- Supporting folding/unfolding of annotation content
+
+## 7. Processing and Workflow
+
+### 7.1 Bidirectional Processing
+
+MarkScribe supports a bidirectional workflow where:
+
+- Annotations can be added to existing text
+- Text with annotations can be processed for reading
+- Modifications to the processed text can be reintegrated with annotations preserved
+
+### 7.2 Selective Export
+
+Tools may support selective export options:
+
+- Retain only specific types of annotations
+- Filter content based on entity relationships
+- Generate specialized exports (character sheets, location maps, timelines)
+- Create query-based exports (e.g., "all scenes with Jules")
+
+### 7.3 Annotation Layers
+
+Advanced implementations may support annotation layers:
+
+- Editorial annotations vs. structural annotations
+- Draft-specific annotations
+- Collaborative annotations from different contributors
+- Public vs. private annotations
+
+## 8. Examples
 
 See the `examples/` directory for demonstrations of MarkScribe in action.
 
-## 7. License
+## 9. License
 
 MarkScribe specifications are released under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0). This means you are free to:
 
@@ -170,6 +208,6 @@ Under the following terms:
 
 This license ensures that all versions of MarkScribe specifications remain open while maintaining proper attribution.
 
-## 8. Contributing
+## 10. Contributing
 
 Contributions are welcome! Please see CONTRIBUTING.md for guidelines.
