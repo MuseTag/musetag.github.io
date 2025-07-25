@@ -18,28 +18,20 @@ If you are a writer, you might want to read the [Quick start](quickstart.html) f
 The story below, in MarkPlot !
 
 ```markplot
-## Why @@MarkPlot? @@(me).pov
+## Why @@MarkPlot? @@(me).Pov
 
 As a @@(me).HOBBY[writer], I found myself drowning in character sheets, timeline
 documents, and location descriptions scattered across multiple files and tools.
 
-@@(MarkPlot).WHY[Every time I needed to check a detail about a character, a
-specific place, an event, I had to break my writing flow to search through my
-notes.]
-When and where @@Jules and @@Isabelle met for the first time?
+Every time I needed to check a detail about a character, a specific place, an event, I had to break my writing flow to search through my notes.
+When and where did @@Jules and @@Isabelle meet for the first time?
 
-@@(MarkPlot).HOW[I needed a way to keep track of all these elements right within
-my manuscript, something that wouldn't force me to leave my text editor or
-interrupt my creative process].
+I needed a way to keep track of all these elements right within my manuscript, something that wouldn't force me to leave my text editor or interrupt my creative process.
 
-That's how @@(MarkPlot).WHAT[the idea of a simple, inline annotation system] was
-born - not as another writing tool, but as a _natural_ extension of the writing
-process itself.]
+That's how @@(MarkPlot).CONCEPT[the idea of a simple, inline annotation system] was born - not as another writing tool, but as a natural extension of the writing process itself.
 
-As a @@(me).JOB[coder], I would now be able to write tools that could understand my narrative elements, analyze my story structure, and help me visualize my
-characters' relationships.
-I could even generate character sheets, timelines, and location maps
-automatically from my text.
+As a @@(me).JOB[coder], I would now be able to write tools that could understand my narrative elements, analyze my story structure, and help me visualize my characters' relationships.
+I could even generate character sheets, timelines, and location maps automatically from my text.
 
 The possibilities are endless.
 ```
@@ -49,7 +41,7 @@ The possibilities are endless.
 MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points. With MarkPlot, you write normally while adding semantic annotations that tools can understand.
 
 ```markplot
-@@Jules smiled at @@Marie[who was reading a book].
+@@Jules smiled at @@(Marie).STATUS[reading].
 ```
 
 ## Key Features
@@ -71,8 +63,19 @@ MarkPlot is a simple yet powerful annotation language that helps writers organiz
 
 MarkPlot uses a simple syntax based on `@@` symbols to annotate entities in your text:
 
+**Visible entities:**
 ```markplot
-@@Character.modifier[visible text]
+@@Character walked into the room.
+```
+
+**Invisible entities with visible parameters:**
+```markplot
+@@(Character).PROFESSION[detective] investigated the case.
+```
+
+**Invisible entities with invisible metadata:**
+```markplot
+@@(Character).age(35) was experienced.
 ```
 
 These annotations are processed to:

@@ -6,25 +6,30 @@ title: Specifications
 This document presents the complete technical specifications of the MarkPlot language, detailing its syntax, features, and implementation principles. These specifications are intended for developers wishing to create tools compatible with MarkPlot, as well as for writers seeking to fully understand the language's capabilities for managing characters, plots, timelines, and other narrative elements. The current status of these specifications is preliminary (draft) and subject to evolution.
 ## 1. Core Syntax
 ### 1.1 Entities
-At the heart of MarkPlot, there are **entities**. Entities are created, then referenced, using two _at_ signs `@@` followed by the entity name. Those signs will be removed from the final text output (hereinafter called _final text_), _but usefull before to provide semantic analysis during writing_.
-So this code:
-```@@Jules looked at @@Mary.```
-is rendered as follows the final text:
->Jules looked at Mary.
+At the heart of MarkPlot, there are **entities**. Entities are created and referenced using two _at_ signs `@@` followed by the entity name.
 
-An entity can be any narrative element that you want to track, analyze, or reference throughout your text - characters, locations, objects, events... By marking these elements as entities, you create a rich semantic layer that tools can use to many purposes, for examples:
+MarkPlot supports two types of entity annotations:
+
+**Visible entities** use the syntax `@@EntityName`:
+```markplot
+@@Jules looked at @@Mary.
+```
+> Jules looked at Mary.
+
+The entity names appear in the final text output (hereinafter called _final text_) and provide semantic tracking.
+
+**Invisible entities** wrap the entity name with parentheses `@@(EntityName)`:
+```markplot
+@@(Gandalf) The wizard raised his hands.
+```
+> The wizard raised his hands.
+
+Invisible entities are tracked for semantic analysis but do not appear in the final text. This is useful for referencing an entity when it appears in a way other than its name, or when you want to track entities without cluttering the narrative text.
+
+An entity can be any narrative element that you want to track, analyze, or reference throughout your text - characters, locations, objects, events... By marking these elements as entities, you create a rich semantic layer that tools can use for many purposes, for example:
 - Build character profiles and relationship networks
 - Generate timelines and event sequences
 - Maintain consistency across your story
-This semantic layer remains invisible to readers while providing powerful capabilities for writers and tools.
-
-An entity may be referenced without appearing in the final text, by wrapping its name with parenthesis `@@(Entity)`:
-```markplot
-@@(Gandalf)The wizard raised his hands.
-```
-> The wizard raised his hands.
-In this case, it is called a _hidden entity_ (as opposed to a _visible entity_).
-This is usefull for referencing an entity when it appears in a way other than its name.
 
 Entity names:
 - Can contain letters (including Unicode letters from any language), digits (0-9) and underscores
@@ -37,33 +42,18 @@ Entity names:
 > HMS Macon references a rigid airship build and operated by the United States Navy.
 
 ### 1.2 Entity and Content Capture
-Content capture is a core mechanism in MarkPlot that associates that associates the entity and the context where it appears. By default, it captures the whole sentence.
-```markplot
-@@Jules was walking down the street. @@Mary was sitting on the terrace of a cafe. @@(Jules)@@(Mary)Then they saw each other.
-```
-The first sentence is associated with Jules, the second with Mary and the third with both.
+Content capture is a core mechanism in MarkPlot that associates entities with the context where they appear. **Entities always capture the complete sentence in which they appear.**
 
-Sometimes you need precise control over what content is associated with an entity, to capture parts smaller or wider than the sentence, or even multi-lines content. This is where explicit content capture using square brackets `[...]` comes in:
 ```markplot
-@@Jules[only these words] are captured, not the whole sentence.
-@@Jules[picked up the letter and read:
-  "Dear Mary,
-  I hope this finds you well..."
-].
+@@Jules was walking down the street. @@Mary was sitting on the terrace of a cafe. @@(Jules)@@(Mary) Then they saw each other.
 ```
-Note: Brackets MUST immediately follow the entity name (no space allowed).
 
-To ensure natural text flow while maintaining proper punctuation rules, when an entity is followed by bracketed content, the space between the entity name and the content is handled according to these rules:
-1. If the content begins with a punctuation mark (`,.;:!?`), no space is added:
-```markplot
-@@Mary[, smiling,] continued her way.
-```
-> Mary, smiling, continued her way.
-2. In all other cases, a space is automatically added:
-```markplot
-@@Jules[took his car].
-```
-> Jules took his car.
+In this example:
+- The first sentence is associated with Jules
+- The second sentence is associated with Mary  
+- The third sentence is associated with both Jules and Mary
+
+This simple, consistent rule ensures predictable behavior while maintaining the semantic connections between entities and their narrative context.
 
 ### 1.3 Entity Modifiers
 Entity modifiers allow you to add attributes and metadata to entities using dot notation. These modifiers can be temporary states, permanent traits, or standard features.
@@ -94,13 +84,21 @@ MarkPlot supports three distinct categories of modifiers:
      - Examples: `Writer:plot`, `Analysis:theme`
 
 #### 1.3.2 Modifier Parameters
-Modifiers use parentheses `()` to accept parameters. Unlike content captured with brackets (which appears in the final text), parameters are used for meta-information and configuration that should not appear in the narrative:
+Modifiers can accept parameters using two different syntaxes:
+
+**Invisible parameters** use parentheses `()` for meta-information that should not appear in the final text:
 ```markplot
-# Parameters are meta-information
-@@Jules.age(42)             # The number 42 won't appear in the text
-@@.status(draft)            # Configuration that stays hidden
-@@Jules is @@Marie.Rel(friend)['s best friend].  # Relationship info with visible text
+@@Jules.age(42) walked down the street.           # age metadata stored but hidden
+@@.status(draft)                                  # document status hidden
 ```
+> Jules walked down the street.
+
+**Visible parameters** use square brackets `[]` for content that should appear in the final text:
+```markplot
+@@(Jules).PROFESSION[detective] investigated the case.
+```
+> detective investigated the case.
+
 The parameter content is passed as-is to the modifier implementation, which can parse it according to its own needs.
 
 ##### 1.3.2.1 Combining Modifiers
@@ -138,11 +136,20 @@ Key points:
 - Content can span multiple lines
 
 #### 1.3.3 Visibility Rules
-Modifiers never appear in the final text:
+Modifiers themselves never appear in the final text, but their parameters may:
+- **Modifiers**: Always invisible (`.drunk`, `.PROFESSION`, etc.)
+- **Invisible parameters** `()`: Never appear in final text
+- **Visible parameters** `[]`: Always appear in final text
+
 ```markplot
-@@Jules.drunk[stumbled forward].
+@@Jules.drunk.age(35) stumbled forward.
 ```
 > Jules stumbled forward.
+
+```markplot
+@@(Jules).PROFESSION[detective] investigated carefully.
+```
+> detective investigated carefully.
 
 #### 1.3.4 Standard Modifiers
 Standard modifiers are documented in `namespaces/global.yaml` following the same format as application-specific modifiers (see §2.3.5.4). The specification below provides an overview of core standard modifiers, but the authoritative reference is the YAML file.
@@ -301,26 +308,22 @@ Temporal entities follow specific scope rules:
 
 Example:
 ```markplot
-@@(2025)[
-  @@(04-28)[Morning events...]
-  @@(14:30)[Afternoon specific event...]
-  @@(19:00)[Evening events...]
-]
-@@(2026-01-01)[New year events...]
+@@(2025) The year started with great ambitions.
+@@(04-28) Morning events unfolded rapidly.
+@@(14:30) Afternoon brought a specific event.
+@@(19:00) Evening events concluded the day.
+@@(2026-01-01) New year events marked a fresh beginning.
 ```
 These scope rules allow for natural chronological organization while maintaining precision when needed.
 ##### 1.3.4.5.5 Integration Examples
 Temporal entities can be combined with other MarkPlot features for rich narrative control:
 ```markplot
 # Combining with characters and events
-@@(1815-06-18).Type(Date)[On that fateful day,] @@Napoleon[faced his destiny at] @@Waterloo.Place.
+@@(1815-06-18).Type(Date) @@(Napoleon).DESCRIPTION[destiny] faced his ultimate test at @@Waterloo.Place.
 # Using with nested annotations and modifiers
-@@(1789-07-14)[The @@(Bastille).Type(Place)[fortress] fell as @@Paris.excited[erupted in revolution].
+@@(1789-07-14) The @@(Bastille).Type(Place) fell as @@Paris.excited erupted in revolution.
 # Timeline organization with multiple entities
-@@(@Y1)[In the first year,
-  @@(@M3)[During the third month,] @@Jules.tired[struggled with] @@Writer_Block,
-  but by @@(@M6)[summer] @@(Jules)[he] had @@.happy[finished the first draft].
-]
+@@(@Y1) In the first year, @@(@M3) during the third month, @@Jules.tired struggled with @@Writer_Block, but by @@(@M6) summer @@(Jules) had @@.STATUS[finished the first draft].
 ```
 These examples show how temporal entities work seamlessly with:
 - Character entities and their modifiers
@@ -429,13 +432,13 @@ Contributing companies will be acknowledged (unless they prefer to remain anonym
 When using modifiers with nested annotations, there are specific rules for how they apply:
 1. **Local Scope**: Modifiers apply only to their directly associated entity, not to nested annotations:
 ```markplot
-@@Jules.happy[looked at @@Marie[who smiled]]  # Only Jules is happy
-@@Scene.dark[@@Jules[walked] past @@Marie]    # Only the Scene is dark
+@@Jules.happy looked at @@(Marie).EXPRESSION[smiling].  # Only Jules is happy
+@@(Scene).dark @@Jules walked past @@Marie.    # Only the Scene is dark
 ```
 2. **Null Entity Exception**: Modifiers on the null entity affect the entire captured content, including nested annotations:
 ```markplot
-@@.style.italic[This text and @@Jules[his words] are all italic]
-@@.pov(Jules)[@@Marie[smiled] as @@(he)[he] entered]  # All from Jules' POV
+@@.STYLE[This text] and @@(Jules).SPEECH[his words] are emphasized.
+@@.pov(Jules) @@(Marie).EXPRESSION[smiled] as @@(Jules) entered.  # All from Jules' POV
 ```
 3. **Cascading Effects**: While modifiers don't affect nested entities directly, tools can analyze the relationship between modifiers at different levels:
 ```markplot
@@ -482,11 +485,11 @@ The null entity is a special construct that:
 - Is purely used for meta-information and processing instructions
 For example:
 ```markplot
-@@.special[This text is special] but no entity is created.
+@@.HIGHLIGHT[This text is special] but no entity is created.
 @@.draft(This section needs review)
-@@.style.font[Text with custom font]
-@@.skip[Content to be ignored in certain exports]
-@@.metadata.author[John Smith]
+@@.STYLE[Text with custom font] appears in output
+@@.skip(Content to be ignored in certain exports)
+@@.metadata.author(John Smith)
 ```
 The null entity is particularly useful for:
 - Applying styling or formatting not supported by Markdown
@@ -496,12 +499,10 @@ The null entity is particularly useful for:
 - Creating hidden document structure (see §2.7)
 Because it doesn't create actual entity relationships, the null entity is perfect for adding meta-information that should influence processing but not narrative analysis:
 ```markplot
-@@.status(draft)                      # Document status
-@@.style.highlight[Important text]    # Visual formatting
-@@.editorial(Needs revision)          # Editorial notes
-@@.Type(chapter)[                     # Document structure
-  @@Jules[entered] as @@Marie[left]  # Normal entity tracking
-]
+@@.status(draft)                      # Document status (invisible)
+@@.HIGHLIGHT[Important text]          # Visual formatting (visible)
+@@.editorial(Needs revision)          # Editorial notes (invisible)
+@@.type(chapter)                      # Document structure (invisible)
 ```
 ### 1.6 Annotation Scope
 MarkPlot annotations follow specific scope rules depending on their placement and modifiers.
@@ -530,42 +531,37 @@ This paragraph discusses the theme.
 This paragraph is not affected by the previous annotation.
 ```
 #### 1.6.4 Custom Scope
-Using brackets to explicitly define annotation scope:
+Annotations apply to the sentence in which they appear:
 ```markplot
-@@.flashback(@@2012-28-02)[
-This content is a flashback,
-spanning multiple paragraphs,
-regardless of the document structure.
-]
-Normal narrative continues here.
+@@.flashback(2012-28-02) This content is a flashback to that specific date.
+Normal narrative continues here without the flashback annotation.
 ```
 Tools processing these annotations should respect these scope rules when analyzing or transforming the text.
 ### 1.7 Hidden Markdown Structures
 MarkPlot allows embedding Markdown syntax that will be processed for analysis but won't appear in the final text. This is achieved through a special syntax using the null entity:
 ```markplot
-@@.(# Hidden Title)
+@@.(# Hidden Title) This sentence has a hidden structural marker.
 Normal visible text continues here...
 ```
 #### 1.7.1 Syntax
 The syntax follows this pattern:
 - Must use the null entity (`@@.`)
-- Markdown syntax is enclosed in parentheses
+- Markdown syntax is enclosed in parentheses (invisible parameters)
 - Can be used with any valid Markdown syntax
+- Applies to the sentence containing the annotation
 Examples:
 ```markplot
-@@.(# Act One)
-@@.(## Scene 1)
-The story begins...
-@@.(* Important theme starting here)
-She took his @@.(**)[trembling] hand.
-@@.(> These words are significant)
-Words that will appear normally.
+@@.(# Act One) The story begins here with a hidden act marker.
+@@.(## Scene 1) This sentence starts a new scene invisibly.
+@@.(* Important theme starting here) She took his trembling hand.
+@@.(> These words are significant) Words that will appear normally.
 ```
 #### 1.7.2 Processing
 - These structures are processed as regular Markdown during analysis
 - They contribute to document structure and metadata
 - They are completely removed from the final text
 - Tools should treat them as equivalent to their visible Markdown counterparts for analysis purposes
+- Each annotation applies only to its containing sentence
 #### 1.7.3 Use Cases
 - Invisible document structure
 - Literary analysis markers
@@ -665,47 +661,49 @@ When creating tools that support MarkPlot, consider these key aspects:
 This section provides practical examples of MarkPlot in action, demonstrating how the annotation language can be used in real-world writing scenarios.
 ### 4.1 Basic Character Annotations
 ```markplot
-@@Jules entered the café and spotted @@Marie[who was reading] by the window.
-@@Jules.happy[smiled] as he approached her table.
+@@Jules entered the café and spotted @@(Marie).STATUS[reading] by the window.
+@@Jules.happy approached her table.
 ```
-> Jules entered the café and spotted Marie who was reading by the window. Jules smiled as he approached her table.
+> Jules entered the café and spotted reading by the window. Jules approached her table.
 In this example:
 - Two character entities (Jules and Marie) are defined
-- A temporary state modifier (.happy) is applied to Jules
-- Content is captured for Marie using square brackets
+- Jules is visible in the text, Marie is invisible
+- A visible parameter (.STATUS[reading]) provides narrative content
+- A temporary state modifier (.happy) is applied to Jules as metadata
 ### 4.2 Rich Narrative Structure
 ```markplot
-# The Meeting @@.Draft @@.Version(0.2)
+# The Meeting @@.STATUS[Draft] @@.Version(0.2)
 ## Scene 1 @@(Paris).Place @@(1923-04-15)
-@@(Jules).Pov[I waited nervously] at @@Café_Lumière.Place[, my fingers
-drumming on the @@manuscript.Object in front of me].
-@@Editor.Character[took a long look at my work], @@(Editor).mood(critical)
-@@(Editor)[his expression giving nothing away].
+@@(Jules).Pov waited nervously at @@Café_Lumière.Place, @@(Jules).ACTIVITY[drumming his fingers] on the @@manuscript.Object in front of @@(Jules).
+@@(Editor).Character.mood(critical) took a long look at @@(Jules).POSSESSIVE[his] work, @@(Editor).EXPRESSION[giving nothing away].
 ```
 This more complex example demonstrates:
-- Document-level modifiers (.Draft, .Version)
+- Document-level modifiers with visible parameters (.STATUS[Draft])
 - Header-scoped annotations (Place and Date)
 - Point of view indicators (Jules.Pov)
 - Character and object typing
-- Nested annotations
-- Hidden entity references
+- Invisible entity references with visible parameters
+- Metadata storage with invisible parameters
 ### 4.3 Timeline and Events
 ```markplot
 @@(1942-06-04) The @@Allied_Forces prepared for @@D_Day.Event.
-@@(1942-06-05) @@(Eisenhower)[The Supreme Commander] postponed the operation by 24 hours due to @@bad_weather.
-@@(1942-06-06 06:30) @@(Allied_Forces)[The first wave] landed on @@Normandy.Place.
+@@(1942-06-05) @@(Eisenhower).TITLE[The Supreme Commander] postponed the operation by 24 hours due to @@bad_weather.
+@@(1942-06-06 06:30) @@(Allied_Forces).DESCRIPTION[The first wave] landed on @@Normandy.Place.
 ```
 This historical example shows how MarkPlot can track complex timelines with:
 - Absolute dates with different precision
 - Events with temporal context
-- Hidden entity references for clearer narrative flow
+- Invisible entity references with visible descriptive parameters
+- Mixed visible and invisible entities for narrative control
 ### 4.4 Relationships and Dialog
 ```markplot
-@@Jules.Character[asked], "@@(Jules)[What do you think of my story]?"
-@@Marie.Character.mood(thoughtful)[considered her response]. "@@(Marie)[I think the protagonist needs more development]," @@(Marie)[she said finally].
-@@Jules.mood(disappointed)[nodded slowly]. @@(Jules)[He knew she was right].
+@@Jules.Character asked, "What do you think of my story?"
+@@Marie.Character.mood(thoughtful) considered her response. "I think the protagonist needs more development," @@(Marie).MANNER[she said finally].
+@@Jules.mood(disappointed) nodded slowly. @@(Jules).THOUGHT[He knew she was right].
 ```
 This dialog example demonstrates:
-- Character attribution for dialogue
-- Mood tracking across conversation
+- Character attribution with visible entities in narrative
+- Mood tracking as invisible metadata
+- Invisible entities with visible parameters for narrative elements
+- Clean dialog without cluttered annotations
 - Mixed visible and hidden entity references

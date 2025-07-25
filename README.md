@@ -13,12 +13,12 @@ For a comprehensive introduction, documentation and guides, please visit the **[
 ## Quick Example
 
 ```markdown
-@@Jules smiled at @@Marie[who was reading a book].
+@@Jules smiled at @@(Marie).STATUS[reading].
 ```
 
-In this example, "Jules" and "Marie" are annotated entities that MarkPlot-aware tools can track, while readers simply see:
+In this example, "Jules" is a visible entity and "Marie" is an invisible entity with a visible parameter, while readers simply see:
 
-> Jules smiled at Marie who was reading a book.
+> Jules smiled at reading.
 
 ## Key Features
 

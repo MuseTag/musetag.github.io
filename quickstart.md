@@ -25,11 +25,11 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 ### 1. Annotate Entities (Characters, Places, Moments or whatever)
 
 ```markplot
-@@Sherlock examined the crime scene at @@Baker_Street.
+@@(Sherlock) examined the crime scene at @@Baker_Street.
 ```
 
 **Result for readers:**
-> Sherlock examined the crime scene at Baker Street.
+> examined the crime scene at Baker Street.
 
 **Behind the scenes:**
 MarkPlot-enabled tools can automatically generate entity cards:
@@ -40,38 +40,69 @@ MarkPlot-enabled tools can automatically generate entity cards:
 - Related to: Watson, Lestrade
 ```
 
-### 2. Add Details to Your Annotations
+### 2. Make Entities Visible in Text
 
-Want to capture more information about a character? Use square brackets:
+Want the entity name to appear in your text? Remove the parentheses:
 
 ```markplot
-@@(Watson)[John H. Watson, M.D., a military doctor who served in Afghanistan],
-assisted with the investigation.
+@@Sherlock examined the crime scene at @@Baker_Street.
 ```
 
 **Result for readers:**
-> John H. Watson, M.D., a military doctor who served in Afghanistan, assisted with the investigation.
+> Sherlock examined the crime scene at Baker Street.
 
 **Behind the scenes:**
-The description is stored in Watson's entity card:
+The entities are still tracked, but now they're part of the narrative text.
+
+### 3. Add Visible Details with Modifier Parameters
+
+Want to show additional information about a character in the text? Use square brackets:
+
+```markplot
+@@(Watson).PROFESSION[doctor] assisted with the investigation.
+```
+
+**Result for readers:**
+> doctor assisted with the investigation.
+
+**Behind the scenes:**
+The information is stored in Watson's entity card:
 
 ```markplot
 # @@(Watson).Entity
-- Description: John H. Watson, M.D., a military doctor who served in Afghanistan
+- Profession: doctor
 - Appearances: Chapter 1
 ```
 
-### 3. Track Timeline and Events
+### 4. Store Hidden Metadata
+
+Use parentheses to store information that doesn't appear in the text:
+
+```markplot
+@@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
+```
+
+**Result for readers:**
+> military doctor served in Afghanistan.
+
+**Behind the scenes:**
+```markplot
+# @@(Watson).Entity
+- Age: 35
+- Profession: military doctor
+- Appearances: Chapter 1
+```
+
+### 5. Track Timeline and Events
 
 Dates are special entities that help you manage your story's timeline:
 
 ```markplot
-@@(1891-05-04)
-It was a foggy London morning when @@Lestrade arrived with news.
+@@(1891-05-04) It was a foggy London morning when @@(Lestrade) arrived with news.
 ```
 
 **Result for readers:**
-> It was a foggy London morning when Lestrade arrived with news.
+> It was a foggy London morning when arrived with news.
 
 **Behind the scenes:**
 MarkPlot-enabled tools can generate chronological timelines:
@@ -82,7 +113,7 @@ MarkPlot-enabled tools can generate chronological timelines:
 - 1891-05-05: The investigation begins (Chapter 3)
 ```
 
-### 4. Indicate Point of View
+### 6. Indicate Point of View
 
 Use modifiers to show whose perspective a scene is from:
 
@@ -105,16 +136,16 @@ MarkPlot-enabled tools track narrative structure:
 - Chapter 1: Watson's POV
 ```
 
-### 5. Create Relationships
+### 7. Create Relationships
 
 Nested annotations show relationships between entities:
 
 ```markplot
-@@(Holmes)[He observed @@(Irene)[Ms. Adler was clearly nervous]].
+@@(Holmes) observed that @@(Irene).STATUS[nervous] was clearly distressed.
 ```
 
 **Result for readers:**
-> He observed Ms. Adler was clearly nervous.
+> observed that nervous was clearly distressed.
 
 **Behind the scenes:**
 This builds a relationship graph:
@@ -128,21 +159,15 @@ This builds a relationship graph:
 ## A Complete Example
 
 ```markplot
-# A Study in Annotation @@.Genre(mystery)
+# A Study in Annotation @@.GENRE[mystery]
 
 ## Chapter 1 @@(Watson).Pov
 
-@@(London)
-@@(1881-03-04)
+@@(London) @@(1881-03-04)
 
-I had just returned from @@Afghanistan when I met @@(Holmes)[Sherlock Holmes, a
-consulting detective with remarkable deductive abilities] through a mutual
-acquaintance.
-He was looking for someone to share his lodgings at @@(221B Baker Street)[A
-comfortable apartment in central London].
+I had just returned from @@Afghanistan when I met @@(Holmes).PROFESSION[consulting detective] through a mutual acquaintance. He was looking for someone to share his lodgings at @@(221B_Baker_Street).TYPE[comfortable apartment].
 
-"@@(Holmes)[You have been in Afghanistan, I perceive],"
-were his first words to me, leaving me quite astonished at his insight.
+"You have been in Afghanistan, I perceive," were his first words to me, leaving me quite astonished at his insight.
 ```
 
 **Result for readers:**
@@ -150,7 +175,7 @@ were his first words to me, leaving me quite astonished at his insight.
 >
 > ## Chapter 1
 >
-> I had just returned from Afghanistan when I met Sherlock Holmes, a consulting detective with remarkable deductive abilities, through a mutual acquaintance. He was looking for someone to share his lodgings at a comfortable apartment in central London.
+> I had just returned from Afghanistan when I met consulting detective through a mutual acquaintance. He was looking for someone to share his lodgings at comfortable apartment.
 >
 > "You have been in Afghanistan, I perceive," were his first words to me, leaving me quite astonished at his insight.
 
@@ -164,7 +189,7 @@ MarkPlot-enabled tools would generate:
 ## What's Next?
 
 - **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations
-- **Explore Modifiers**: Try `.mood()`, `.Status()`, or create your own
+- **Explore Modifiers**: Try `.mood()`, `.STATUS[]`, or create your own
 - **Build Your World**: Create a consistent set of characters, places, and events
 - **Structure Your Narrative**: Use annotations to track plot arcs and themes
 - **Use Tools**: Check out compatible editors and visualization tools
@@ -174,6 +199,8 @@ MarkPlot-enabled tools would generate:
 - Develop a consistent annotation style for your project
 - Use annotations sparingly at first—you can always add more later
 - Consider creating a simple legend of your most-used annotations
-- Remember that MarkPlot annotations are hidden from your final reader
+- Remember that MarkPlot annotations can be completely hidden from your final reader
+- Use visible parameters `[]` when you want the information to appear in your text
+- Use invisible parameters `()` when you want to store metadata only
 
 Ready to organize your narrative world? Happy writing with MarkPlot!
