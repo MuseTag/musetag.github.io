@@ -7,9 +7,25 @@ nav_order: 0
 
 MarkPlot is a semantic annotation language that extends Markdown to help you keep track of characters, places, events, and relationships in your creative writing. Let's dive in!
 
+---
+
+**Quick Table of Contents**
+- [Where to start?](#where-to-start)
+- [What is Markdown?](#what-is-markdown)
+- [The 5-Minute MarkPlot Basics](#the-5-minute-markplot-basics)
+- [What's Next?](#whats-next)
+- [Tips](#tips)
+
+---
+
 ## Where to start?
 
-As MarkPlot is _only_ a annotation langage, it does not do much by itself. Your first step as a writer should be to choose a tool that supports it and fits your needs. As MarkPlot is still very new, curently, there is none. Sorry. Please come back later. [Drop me a email](mailto:mail@stephanemourey.fr?subject=Sign%20up%20for%2%MarkPlot%20updates) if you want to get an update. I promise I won't use it for anything else. Or, if you are also a coder, you may want to implement MarkPlot in existing tool or a new one. In this case, please have look to [the complete specifications](specifications.html).
+MarkPlot is a semantic annotation language, not a standalone tool. As the project is in early development, there are currently no dedicated tools available yet—but your annotated text will be compatible with future utilities as they are released. You can already use MarkPlot in any plain text or Markdown editor.
+
+Want to help shape the project, ask questions, or get updates?
+Join our community on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions)!
+
+If you are also a coder, you may want to implement MarkPlot in an existing tool or create a new one. In this case, please have a look at [the complete specifications](specifications.html).
 
 ## What is Markdown?
 
@@ -26,11 +42,15 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 
 ## The 5-Minute MarkPlot Basics
 
-### 1. Annotate Entities (Characters, Places, Moments or whatever)
+### 1. Annotate Entities (Characters, Places, Events, or whatever)
+
+By default, entities are considered characters. If you want to annotate a place, object, or event, use the standard modifier `.Type`:
 
 ```markplot
-@@Sherlock examined the crime scene at @@Baker_Street.
+@@Sherlock examined the crime scene at @@Baker_Street.Type(Place).
 ```
+
+If you don’t specify a type, MarkPlot assumes it’s a character.
 
 **Result for readers:**
 > Sherlock examined the crime scene at Baker Street.
@@ -42,10 +62,13 @@ MarkPlot-enabled tools can automatically generate entity cards:
 # Sherlock
 - Type: Character
 - Appearances: Chapter 1, Chapter 3
-- Related to: Watson, Lestrade
+
+# Baker_Street
+- Type: Place
+- Appearances: Chapter 1
 ```
 
-### 2. Make Entities invisible in Text
+### 2. Hide Entities in Final Text
 
 Want to hide the entity name in your text but mark its presence? Add parentheses:
 
@@ -61,7 +84,7 @@ The entity is still tracked, but its name is now hidden in the narrative text.
 
 ### 3. Add Visible Details with Modifier Parameters
 
-Want to show additional information about a character in the text? Use square brackets:
+Want to show additional information about an entity in the text? Use square brackets:
 
 ```markplot
 The @@(Watson).PROFESSION[Doctor] assisted with the investigation.
@@ -80,7 +103,23 @@ The information is stored in Watson's entity card:
 - Appearances: Chapter 1
 ```
 
-### 4. Store Hidden Metadata
+### 4. Modifier Case: Context, Permanent, and Standard Modifiers
+
+Modifier case matters in MarkPlot:
+
+- **Lowercase modifiers** (e.g. `.mood`, `.age`) are for context-specific or temporary information.
+- **UPPERCASE modifiers** (e.g. `.BRAVE`, `.MAGICAL`) are for permanent attributes of an entity, defined by you.
+- **Capitalized modifiers** (e.g. `.Type`, `.Status`, `.Event`, `.Place`, `.Pov`, `.Object`, `.Todo`, `.Version`, `.Draft`, `.Final`) are standard modifiers defined by MarkPlot or its tools. You can also create your own modifiers, but remember that case is always significant.
+
+For example:
+
+```markplot
+@@Arthur.BRAVE.tired entered the room with @@Excalibur.Type(Object).MAGICAL.
+```
+
+In this example, Arthur is always brave (`.BRAVE`, permanent) but only tired in this context (`.tired`, temporary). Excalibur is always magical (`.MAGICAL`, permanent) and is explicitly marked as an object using the standard modifier `.Type(Object)`.
+
+### 5. Store Hidden Metadata
 
 Use parentheses to store information that doesn't appear in the text:
 
@@ -100,7 +139,7 @@ The @@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
 - Appearances: Chapter 1
 ```
 
-### 5. Track Timeline and Events
+### 6. Track Timeline and Events
 
 Dates are special entities that help you manage your story's timeline:
 
@@ -120,7 +159,7 @@ MarkPlot-enabled tools can generate chronological timelines:
 - 1891-05-05: The investigation begins (Chapter 3)
 ```
 
-### 6. Indicate Point of View
+### 7. Indicate Point of View
 
 Use modifiers to show whose perspective a scene is from:
 
@@ -153,9 +192,13 @@ MarkPlot-enabled tools track narrative structure:
 
 @@(London) @@(1881-03-04)
 
-I had just returned from @@Afghanistan when I met a @@(Holmes).PROFESSION[consulting detective] through a mutual acquaintance. He was looking for someone to share his lodgings at a @@(221B_Baker_Street).Place[comfortable apartment].
+I had just returned from @@Afghanistan when I met a
+@@(Holmes).PROFESSION[consulting detective] through a mutual acquaintance.
+He was looking for someone to share his lodgings
+at a @@(221B_Baker_Street).Place[comfortable apartment].
 
-"You have been in @@Afghanistan.Place, I perceive," were his first words to me, leaving me quite astonished at his insight.
+"You have been in @@Afghanistan.Place, I perceive," were his first words to me,
+leaving me quite astonished at his insight.
 ```
 
 **Result for readers:**
@@ -176,19 +219,25 @@ MarkPlot-enabled tools would generate:
 
 ## What's Next?
 
-- **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations
-- **Explore Modifiers**: Try `.mood()`, `.Status()`, or create your own
-- **Build Your World**: Create a consistent set of characters, places, and events
-- **Structure Your Narrative**: Use annotations to track plot arcs and themes
-- **Use Tools**: Check out compatible editors and visualization tools
+- **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations.
+- **Explore Modifiers**: Try `.mood()`, `.Status()`, or create your own.
+- **Build Your World**: Create a consistent set of characters, places, and events.
+- **Structure Your Narrative**: Use annotations to track plot arcs and themes.
+- **Stay tuned for tools**: While dedicated MarkPlot tools are still in development, your annotations are future-proof and will be compatible with upcoming editors and visualization utilities.
+- **Join the community**: Share your feedback, ideas, or questions on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions)!
+- **Future-proof**: Any text you annotate with MarkPlot today will remain compatible with future tools and workflows.
 
 ## Tips
 
-- Develop a consistent annotation style for your project
-- Use annotations sparingly at first—you can always add more later
-- Consider creating a simple legend of your most-used annotations
-- Remember that MarkPlot annotations can be completely hidden from your final reader
-- Use visible parameters `[]` when you want the information to appear in your text
-- Use invisible parameters `()` when you want to store metadata only
+- Develop a consistent annotation style for your project.
+- Use annotations sparingly at first—you can always add more later.
+- Consider creating a simple legend of your most-used annotations.
+- Remember that MarkPlot annotations can be completely hidden from your final reader.
+- Use visible parameters `[]` when you want the information to appear in your text.
+- Use invisible parameters `()` when you want to store metadata only.
+- You can combine multiple modifiers of different types on the same entity.
+- The default entity type is character, but you can specify others with `.Type(...)`.
+- The distinction between lowercase, UPPERCASE, and Capitalized modifiers helps you organize context, permanent, and standard information.
 
-Ready to organize your narrative world? Happy writing with MarkPlot!
+Ready to organize your narrative world?  
+Happy writing with MarkPlot!
