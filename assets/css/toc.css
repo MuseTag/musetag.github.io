@@ -492,3 +492,31 @@
 .toc-nav a:hover {
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
 }
+
+.site-header {
+    position: fixed;
+    width: 100%;
+    z-index: 20;
+    background: #fff;
+}
+
+main {
+    margin-top: 3.5rem;
+}
+
+#toc {
+    z-index: 40;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    scroll-margin-top: 2em;
+}
+
+html {
+    scroll-behavior: smooth;
+}

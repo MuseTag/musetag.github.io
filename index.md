@@ -90,9 +90,13 @@ Attach information to an entity for all its appearances using an underscore:
 
 That's it! You can start using MarkPlot right now with just these two concepts.
 
+## Try It Now
+
+**Ready to experiment?** Visit our [interactive demo](30-demo.html) to try MarkPlot in your browser! Edit example text in real-time and see how annotations transform into clean, readable content.
+
 ## What's Next?
 
-**Ready to dive deeper?** Start with the [Quick Start Guide](quickstart.html) - it takes only 5 minutes to learn the essential MarkPlot features.
+**Ready to dive deeper?** Start with the [Quick Start Guide](10-quickstart.html) - it takes only 5 minutes to learn the essential MarkPlot features.
 
 MarkPlot opens up new possibilities for both writers and developers. Here's how you can take your next steps:
 
@@ -105,7 +109,7 @@ MarkPlot opens up new possibilities for both writers and developers. Here's how 
 
 ### For Developers
 
-- **Read the specifications**: Dive into the [technical documentation](specifications.html) to understand MarkPlot’s structure and syntax.
+- **Read the specifications**: Dive into the [technical documentation](99-specifications.html) to understand MarkPlot’s structure and syntax.
 - **Build the first tools**: Be among the pioneers—create parsers, visualizations, or plugins to bring MarkPlot’s potential to life.
 - **Extend the language**: Propose new modifiers or entity types to address specific creative or analytical needs.
 - **Join the community**: Contribute to open-source projects, share your work, and collaborate with others interested in narrative annotation.

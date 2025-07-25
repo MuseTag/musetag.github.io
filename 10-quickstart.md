@@ -7,6 +7,8 @@ layout: page_with_toc
 
 MarkPlot is a semantic annotation language that extends Markdown to help you keep track of characters, places, events, and relationships in your creative writing. Let's dive in!
 
+**Want to try before you learn?** Check out our [interactive demo](30-demo.html) where you can experiment with MarkPlot annotations in real-time!
+
 ## Where to start?
 
 MarkPlot is not a standalone tool. As the project is in early development, there are currently no dedicated tools available yet—but your annotated text will be compatible with future utilities as they are released. You can already use MarkPlot in any plain text or Markdown editor.
@@ -67,8 +69,11 @@ You can indicate the importance of an entity by using more `@` signs in its decl
 - `@@@Lestrade` — secondary entity
 - `@@@@a_kid` — minor entity
 
-The more `@` signs you use, the less important the entity is considered.  
+The more `@` signs you use, the less important the entity is considered.
 This helps tools and editors highlight or de-emphasize entities according to their narrative role.
+
+**Note:**
+Once you declare an entity as secondary (`@@@`) or minor (`@@@@`), it keeps that status everywhere in the text—even if you reference it later with fewer `@`.
 
 ### Types of entities
 
@@ -140,6 +145,9 @@ You can attach a note to an entity for just one occurrence (local note), or for 
 
 - Use `@@Entity(note)` for a local note (applies only at this point in the text).
 - Use `@@Entity_(note)` for a global note (applies everywhere the entity appears, unless a local note is present).
+
+**Note:**
+Global modifiers (like `.GNote`, `.DESCRIPTION`, etc.) are cumulative: each occurrence adds information to the entity, rather than replacing previous values.
 
 ### Add Visible Details with Modifier Parameters
 
@@ -244,7 +252,7 @@ MarkPlot-enabled tools track narrative structure:
 ```
 
 
-## A Complete Example
+## An fairly complete Example
 
 ```markplot
 # A Study in Annotation @@.GENRE(mystery)
@@ -301,4 +309,7 @@ MarkPlot-enabled tools would generate:
 - The distinction between lowercase, UPPERCASE, and Capitalized modifiers helps you organize context, permanent, and standard information.
 
 Ready to organize your narrative world?
+
+**Practice what you've learned** in our [interactive demo](30-demo.html) or start annotating your own work right away!
+
 Happy writing with MarkPlot!

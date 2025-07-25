@@ -35,5 +35,11 @@ minima:
   hide_site_feed_link: true # `false` or `null` by default
   nav_pages:
     - 10-quickstart.md
+    - url: "/30-demo.html"
+      title: "Demo"
+      target: "_blank"
     - 40-cheat-sheet.md
     - 99-specifications.md
+    - url: "https://github.com/MarkPlot/markplot.github.io/discussions"
+      title: "Community"
+      target: "_blank"

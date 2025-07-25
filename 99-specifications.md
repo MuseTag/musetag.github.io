@@ -46,6 +46,9 @@ You can specify the narrative importance of an entity by the number of `@` signs
 The more `@` signs, the less important the entity is considered.  
 This hierarchy is optional and only affects how tools may display or prioritize entities; it does not change the core semantics of the text.
 
+**Hierarchy persistence:**  
+The hierarchy level is global: once an entity is declared as secondary or minor, it keeps that status everywhere in the text, even if referenced with fewer `@`.
+
 **Definition:**  
 An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.
 
@@ -243,7 +246,7 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 - `.Note(content)`: Attaches a local note to an entity (shortcut: `@@Entity(content)`)
 - `.GNote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
 - `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
-  - This modifier is primarily intended for use by editors or tools, not for manual entry.
+ - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.
   - `.Draft`: Sugar for `.Status(draft)`
   - `.Final`: Sugar for `.Status(final)`
@@ -252,6 +255,10 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 
 - `.Version(version)`: Specifies the version of the associated section.
 - `.Pov`: Indicates that the narrative follows the point of view of the entity.
+
+**Global modifier aggregation:**  
+By default, global modifiers are cumulative: each occurrence adds information to the entity, rather than replacing previous values.  
+Only modifiers explicitly defined as unique (such as `.Status` or `.Version`) replace previous values.
 Example usage:
 ```markplot
 @@Jules.Character.Pov[looked at] @@Paris.Place.

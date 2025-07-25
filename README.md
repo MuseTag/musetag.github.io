@@ -39,6 +39,10 @@ Here, "Jules" is a visible entity and "Marie" is a hidden entity with a modifier
 
 > Jules smiled at her while she was reading.
 
+## See It in Action
+
+**Try MarkPlot instantly** with our [interactive demo](https://markplot.github.io/30-demo.html)! Edit example text in real-time and see how MarkPlot annotations work—no installation required.
+
 ## Key Features
 
 - **Write naturally**: Add annotations without leaving your text editor
