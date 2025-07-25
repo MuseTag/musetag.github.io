@@ -1,9 +1,9 @@
-# MarkScribe Annotation Language @@.draft
+# MarkPlot Annotation Language @@.draft
 
-> MarkScribe: Annotation Language for Writers
+> MarkPlot: Annotation Language for Writers
 
-```markscribe
-## Why @@MarkScribe? @@(me).pov
+```markplot
+## Why @@MarkPlot? @@(me).pov
 
 As a @@(me)[writer], I found myself drowning in character sheets, timeline documents,
 and location descriptions scattered across multiple files and tools.
@@ -13,7 +13,7 @@ When and where @@Jules and @@Isabelle met for the first time?
 
 @@(solution)[I needed a way to keep track of all these elements right within my manuscript,
 something that wouldn't force me to leave my text editor or interrupt my creative process].
-That's how @@(MarkScribe)[the idea of a simple, inline annotation system] was born - not as another writing tool,
+That's how @@(MarkPlot)[the idea of a simple, inline annotation system] was born - not as another writing tool,
 but as a _natural_ extension of the writing process itself.]
 
 As a @@(me)[coder], I would now be able to write tools that could understand my narrative elements,
@@ -25,31 +25,39 @@ The possibilities are endless.
 
 ---
 
-**MarkScribe, a semantic annotation language for writers**, helps them to organize and structure their work through simple, intuitive annotations **within their texts**. By providing a lightweight way to track characters, locations, plot elements and their relationships, it supports the natural non-linear nature of creative writing while staying out of the way.
+## TL;DR
+
+MarkPlot is a lightweight semantic annotation language that allows writers to organize their creative work directly within their text. It offers a simple syntax to track characters, locations, plot elements and their relationships, without interrupting the writing flow. Compatible with standard text editors and Markdown, MarkPlot naturally integrates into the creative process while providing a structured view of the work. The annotations remain optional and human-readable, enabling authors to focus on their content while maintaining clear organization when needed.
+
+If you are a writer, you might want to read the [Quick start](QuickStart.md) first.
+
+---
+
+## 1. What is MarkPlot? And why doing it?
+
+**MarkPlot, a semantic annotation language for writers**, helps them to organize and structure their work through simple, intuitive annotations **within their texts**. By providing a lightweight way to track characters, locations, plot elements and their relationships, it supports the natural non-linear nature of creative writing while staying out of the way.
 
 The annotations are designed to be human-readable and optional, allowing writers to focus on their content while maintaining a clear overview of their narrative elements when needed. As annotations are typed directly into the text, writers can add them without interrupting their typing flow or switching between menus and buttons.
 
-Compatible with standard text editors and Markdown, MarkScribe aims to be **a practical tool that requires minimal learning and adapts to each writer's workflow**.
+Compatible with standard text editors and Markdown, MarkPlot aims to be **a practical tool that requires minimal learning and adapts to each writer's workflow**.
 
 ---
 
-While primarily designed for creative writers, MarkScribe's simple yet powerful annotation system can benefit other fields as well. Literary scholars can use it to analyze texts and track themes, motifs, or character arcs. Game designers and screenwriters might find it useful for managing complex narratives and branching storylines. Even technical writers can leverage it to maintain consistency in documentation or track relationships between different system components.
+While primarily designed for creative writers, MarkPlot's simple yet powerful annotation system can benefit other fields as well. Literary scholars can use it to analyze texts and track themes, motifs, or character arcs. Game designers and screenwriters might find it useful for managing complex narratives and branching storylines. Even technical writers can leverage it to maintain consistency in documentation or track relationships between different system components.
 
-However, these secondary use cases will never compromise **MarkScribe's core mission: providing writers with a natural, unobtrusive way to organize their creative work**.
-
----
-
-This document is intended to developpers and tool creators who wish to implement MarkScribe support in their applications. If you are a writer interested in using MarkScribe, you should skip this to the [Quick Start Guide](QuickStart.md).
-
-This document outlines the core syntax, design principles, and potential use cases for MarkScribe, as well as suggestions for processing, workflow, and enriched exports. While the language itself is simple, the possibilities it opens up for writing tools are vast. **By adopting MarkScribe, developers can empower writers to focus on their stories while providing them with the tools they need to bring their narratives to life**.
+However, these secondary use cases will never compromise **MarkPlot's core mission: providing writers with a natural, unobtrusive way to organize their creative work**.
 
 ---
 
-## Historical Context
+This document provides a comprehensive overview of MarkPlot for all interested parties, from writers and literary scholars to developers and tool creators who wish to implement or use MarkPlot in their work.
 
-The need for MarkScribe emerged from limitations in existing approaches to narrative organization and annotation:
+It outlines the core syntax, design principles, and potential use cases for MarkPlot, as well as suggestions for processing, workflow, and enriched exports. While the language itself is simple, the possibilities it opens up for writing tools are vast. **By adopting MarkPlot, developers can empower writers to focus on their stories while providing them with the tools they need to bring their narratives to life**.
 
-- **Dedicated Writing Software** (Scrivener, yWriter, etc.): While powerful, these tools lock writers into specific applications and formats, making it difficult to switch tools or collaborate with others using different software.
+---
+
+The need for MarkPlot emerged from limitations in existing approaches to narrative organization and annotation:
+
+- **Dedicated Writing Software** (Scrivener, yWriter, etc.): While powerful, these tools are designed in a way that interrupt the writing flow by requiring interaction with menus and other windows to keep the documentation up to date.
 
 - **External Documentation** (character sheets, plot outlines): Keeping separate documents forces writers to constantly switch context, breaking their creative flow. These documents also tend to become outdated as the story evolves.
 
@@ -57,19 +65,7 @@ The need for MarkScribe emerged from limitations in existing approaches to narra
 
 ---
 
-### Previous Annotation Systems
-
-- **XML/SGML**: While technically capable, their verbose syntax is intrusive and difficult to write naturally. They're better suited for formal documentation than creative writing.
-
-- **Markdown Extensions**: While numerous, they focus on formatting, academic citations, or technical documentation. None address the specific needs of creative writers for tracking narrative elements and their relationships.
-
-- **Custom Tagging Systems**: Usually tied to specific software or workflows, making them non-portable and limiting their adoption.
-
----
-
-### Why MarkScribe?
-
-MarkScribe addresses these limitations by:
+MarkPlot addresses these limitations by:
 - Staying within the text, where the writing happens
 - Using a minimal, intuitive syntax that doesn't interrupt the writing flow
 - Remaining independent of any specific software
@@ -81,348 +77,165 @@ This approach bridges the gap between the simplicity writers need and the power 
 
 ---
 
-## 1. Design Principles
+## 2. Core Syntax
 
-1. **Human-Readability**: The annotation syntax must remain readable and intuitive for human writers
-2. **Markdown Compatibility**: Full compatibility with standard Markdown
-3. **Extensibility**: The system should allow for easy extension and custom annotation types
-4. **Contextual**: Annotations should capture context directly within the text
-5. **Non-Intrusive**: Annotations should enhance rather than disrupt the writing flow
-6. **Tooling-Friendly**: The syntax should be easily parsable by tools and software
+### 2.1 Entities
+
+At the heart of MarkPlot, there are **entities**. Entities are created, then referenced, using two _at_ signs `@@` followed by the entity name. Those signs will be removed from the final text output (hereinafter called _final text_), _but usefull before to provide semantic analysis during writing_.
+
+So this code:
+```@@Jules looked at @@Mary.```
+
+is rendered as follows the final text:
+
+>Jules looked at Mary.
 
 ---
 
-## 2. Core Syntax
-
-At the heart of MarkScribe, there are **entities**. An entity can be any narrative element that you want to track, analyze, or reference throughout your text - characters, locations, objects, events, or even abstract concepts. By marking these elements as entities, you create a rich semantic layer that tools can use to:
+An entity can be any narrative element that you want to track, analyze, or reference throughout your text - characters, locations, objects, events... By marking these elements as entities, you create a rich semantic layer that tools can use to many purposes, for examples:
 
 - Build character profiles and relationship networks
 - Generate timelines and event sequences
-- Create location maps and movement tracking
-- Analyze narrative patterns and themes
 - Maintain consistency across your story
 
 This semantic layer remains invisible to readers while providing powerful capabilities for writers and tools.
 
 ---
 
-### 2.1 Entity Annotations
+An entity may be referenced without appearing in the final text, by wrapping its name with parenthesis `@@(Entity)`:
+```markplot
+@@(Gandalf)The wizard raised his hands.
+```
+> The wizard raised his hands.
 
-Entities are created using annotations that follow one of two basic syntaxes:
+In this case, it is called a _hidden entity_ (as opposed to a _visible entity_).
 
-1. Visible entity: `@@Jules` - The entity name appears in the final text
-2. Hidden entity: `@@(Jules)` - The entity is tracked but doesn't appear in the text
-
-This dual syntax gives you the flexibility to:
-- Reference characters directly in dialog or narration using visible entities
-- Add semantic meaning to pronouns or implied references using hidden entities
-- Track entities without affecting your prose's natural flow
-- Create rich metadata without cluttering your text
+This is usefull for referencing an entity when it appears in a way other than its name.
 
 ---
-
-For example:
-```markscribe
-@@Jules was walking in the street when he saw @@(Isabelle)_her_.
-```
-
-will output the final text for human readers (called simply _final text_ in the following, even if other documents may be generated using the annotations):
-
-> Jules was walking in the street when he saw _her_.
-
----
-
-Entities may be what ever you want, with the exception of temporal entities which follow specific rules (see §2.4.4.5):
-
-```markscribe
-@@Jules references a character named Jules.
-@@Montmartre[, a district of Paris] references a place.
-@@HMS_Macon references a rigid airship build and operated by the United States Navy.
-```
 
 Entity names:
-- Can contain letters (including accented characters), digits (0-9) and underscores
-- Can use Unicode letters from any language (é, à, ß, ñ, 漢, etc.)
-- MUST NOT start with a digit, as this syntax is reserved for temporal entities (see §2.4.4.5)
-- Have no minimum or maximum length
+- Can contain letters (including Unicode letters from any language), digits (0-9) and underscores
 - Are case-sensitive
+- MUST NOT start with a digit, as this syntax is reserved for temporal entities (see §2.3.4.5)
+- MUST NOT contain spaces, use underscores instead (which are replaced by spaces in the final text)
 
----
-
-#### 2.1.1 Spaces in Entity Names
-
-For visible entities, underscores in entity names are converted to spaces in the final text:
-```markscribe
-@@Jules_Durant walked down the street.
+```markplot
+@@HMS_Macon references a rigid airship build and operated by the United States Navy.
 ```
-will output:
-> Jules Durant walked down the street.
+> HMS Macon references a rigid airship build and operated by the United States Navy.
 
-Multiple consecutive underscores in entity names are treated as a single space, following standard Markdown whitespace rules:
-```markscribe
-@@Jules_Durant      # "Jules Durant"
-@@Jules__Durant     # "Jules Durant"
-@@Jules___Durant    # "Jules Durant"
+---
+
+### 2.2 Entity and Content Capture
+
+Content capture is a core mechanism in MarkPlot that associates that associates the entity and the context where it appears. By default, it captures the whole sentence.
+
+```markplot
+@@Jules was walking down the street. @@Mary was sitting on the terrace of a cafe. @@(Jules)@@(Mary)Then they saw each other.
 ```
+The first sentence is associated with Jules, the second with Mary and the third with both.
 
 ---
 
-### 2.2 Entity Reference and Content Capture
+Sometimes you need precise control over what content is associated with an entity, to capture parts smaller or wider than the sentence, or even multi-lines content. This is where explicit content capture using square brackets `[...]` comes in:
 
-The **content capture mechanism** is a core feature of MarkScribe. It allows fragments of text to be associated with entities, creating a rich semantic layer that tools can leverage to analyze, document, and visualize narrative elements.
-
-When an entity is annotated in the text, the surrounding content is automatically captured and linked to that entity. This captured content can include descriptions, actions, dialogue, or any other relevant narrative element.
-
----
-
-Tools using MarkScribe can then aggregate all the captured content associated with an entity to:
-
-- **Document the entity**: For example, generate a character sheet by compiling descriptions and actions captured throughout the story.
-- **Analyze relationships**: Captures can include references to other entities, enabling tools to study interactions and relationships between them in the narrative context.
-- **Track evolution**: By analyzing captures in chronological or narrative order, it becomes possible to follow the development of characters, locations, or events over the course of the story.
-
----
-
-For example:
-```markscribe
-@@Jules was walking down the street.
-```
-This simple line captures information about Jules's action that tools can analyze later.
-
----
-
-Content can be captured in two ways:
-- Implicitly through default capture rules (for natural writing flow)
-- Explicitly using square brackets (for precise control)
-
----
-
-#### 2.2.1 Default Content Capture
-
-By default, MarkScribe automatically captures content around entities without requiring any special syntax. This allows for natural writing while still tracking narrative elements:
-
-Content is automatically captured following these rules:
-
----
-
-1. **Inside a sentence**: The entire sentence is captured
-```markscribe
-@@Jules was walking down the street.
--> Captures "Jules was walking down the street."
-```
-
----
-
-2. **At heading start**: Only the heading text is captured
-```markscribe
-## @@(Jules)At the market
--> Captures "## At the market"
-```
-
----
-
-Note: When multiple entities appear in the same scope without explicit brackets, each entity captures the same content:
-```markscribe
-@@Jules walked to @@Marie.
-```
-Both entities capture the whole sentence.
-
----
-
-#### 2.2.2 Explicit Content Capture
-
-While default capture is convenient for natural writing, there are times when you need precise control over what content is associated with an entity. This is where explicit content capture using square brackets `[...]` comes in:
-
-```markscribe
+```markplot
 @@Jules[only these words] are captured, not the whole sentence.
-@@Jules[smiled warmly] as @@Marie[entered the room].
+@@Jules[picked up the letter and read:
+  "Dear Mary,
+  I hope this finds you well..."
+].
 ```
-
-Explicit capture with brackets:
-- Overrides the default capture rules
-- Precisely defines what content is associated with each entity
+Note: Brackets MUST immediately follow the entity name (no space allowed).
 
 ---
 
-Examples of explicit vs default capture:
-```markscribe
-# Default capture takes the whole sentence
-@@Jules was happy today.                 -> Captures "Jules was happy today."
-
-# Explicit capture takes only bracketed content
-@@Jules[was happy] today.         -> Captures only "Jules was happy"
-
-# Hidden entity with visible content
-@@(Jules)[His heart raced].       -> Captures emotion without showing "Jules"
-```
-
-Note: Brackets MUST immediately follow the entity name (no space allowed):
-```markscribe
-@@Jules[correct capture]                      # Correct
-@@Jules [incorrect, brackets show in output]  # Wrong
-```
-
----
-
-#### 2.2.3 Capture Priority
-
-When multiple capture rules could apply, priority is:
-1. Explicit brackets (highest priority)
-2. Heading capture
-3. Sentence capture (lowest priority)
-
----
-
-#### 2.2.4 Space Handling with Brackets Content Capture
-
-When an entity is followed by bracketed content, the space between the entity name and the content is handled according to these rules:
+To ensure natural text flow while maintaining proper punctuation rules, when an entity is followed by bracketed content, the space between the entity name and the content is handled according to these rules:
 
 1. If the content begins with a punctuation mark (`,.;:!?`), no space is added:
-```markscribe
+```markplot
 @@Mary[, smiling,] continued her way.
 ```
 > Mary, smiling, continued her way.
 
 2. In all other cases, a space is automatically added:
-```markscribe
+```markplot
 @@Jules[took his car].
 ```
 > Jules took his car.
 
 ---
 
-This behavior ensures natural text flow while maintaining proper punctuation rules. Compare:
-```markscribe
-@@Mary[looked at] @@Jules[, thoughtful].
-```
-> Mary looked at Jules, thoughtful.
+### 2.3 Entity Modifiers
 
----
+Entity modifiers allow you to add attributes and metadata to entities using dot notation. These modifiers can be temporary states, permanent traits, or standard features.
 
-#### 2.2.5 Multi-line Content Capture
-
-Content capture can span multiple lines, which is particularly useful for:
-- Long descriptions
-- Dialog
-- Structured content
-- Complex interactions between entities
-
----
-
-Example of multi-line capture:
-```markscribe
-@@Jules[picked up the letter and read:
-  "Dear Marie,
-  I hope this finds you well..."
-].
-
-# Capturing dialog and internal thoughts
-@@Jules[said, "I've been thinking
-about what you told me yesterday.
-It changes everything."] while @@(Marie)[felt
-her heart skip a beat at his words].
-```
-
----
-### 2.3 Nested Annotations
-
-Annotations can be nested within captured content, allowing you to track complex relationships and layered narrative elements:
-
-```markscribe
-@@(Jules)[He met @@Isabelle[who was reading a book]].
-```
-
----
-
-Nested annotations are useful for:
-- Tracking interactions between entities
-- Creating hierarchical relationships
-- Maintaining context in complex scenes
-- Linking related narrative elements
-
-The content of a nested annotation belongs both to its direct entity and to any enclosing entities, allowing tools to analyze relationships at multiple levels.
-
----
-
-### 2.4 Entity Modifiers
-
-**Entity modifiers** are a powerful way to enrich entities with additional attributes, metadata, or contextual information. By using dot notation, modifiers allow writers to specify characteristics, states, or relationships directly within the text, without interrupting the writing flow.
-
-
-```markscribe
+```markplot
 @@Jules.Pov             # Simple modifier
 ```
 
 ---
 
-Modifiers can serve multiple purposes, for example:
-- **Add attributes**: Define traits or properties of an entity, such as `.happy`, `.injured`, or `.NAME(Durant)`.
-- **Track states**: Indicate temporary or contextual states, such as `.angry` or `.tired`.
-- **Provide metadata**: Attach structured information, such as `.age(42)` or `.OCCUPATION(detective)`.
+#### 2.3.1 Types of Modifiers
 
----
-
-Each modifier is directly linked to the entity it follows, creating a semantic layer that tools can use to:
-- **Analyze entities**: Aggregate all modifiers associated with an entity to build a detailed profile.
-- **Track changes**: Observe how an entity's attributes or states evolve over the course of the narrative.
-
----
-
-#### 2.4.1 Types of Modifiers
-
-MarkScribe supports three distinct categories of modifiers:
+MarkPlot supports three distinct categories of modifiers:
 
 1. **local modifiers** (lowercase `.modifier`)
-   - Represent temporary or contextual attributes
    - Must start with a lowercase letter
+   - Represent temporary or contextual attributes
    - Example: `.happy`, `.injured`, `.angry`
 
 ---
 
 2. **GLOBAL modifiers** (uppercase `.MODIFIER`)
-   - Define permanent characteristics
    - Must contain only uppercase letters
+   - Define permanent characteristics
    - Example: `.NAME`, `.OCCUPATION`, `.BIRTHPLACE`
 
 ---
 
-3. **Standard modifiers** (Title-case or Namespaced, see §2.4.4 and §2.4.5)
+3. **Standard modifiers** (Title-case or Namespaced, see §2.3.4 and §2.3.5)
    - Built-in modifiers (Title-case):
-     - Reserved for core MarkScribe features
      - Must start with a capital letter, followed by lowercase letters
+     - Reserved for core MarkPlot features
      - Examples: `.Character`, `.Place`, `.Type`
    - Application modifiers (Namespaced):
-     - Allow applications to extend the modifier system
      - Use registered namespace prefix followed by any name
+     - Allow applications to extend the modifier system
      - Examples: `Writer:plot`, `Analysis:theme`
 
 ---
 
-#### 2.4.2 Modifier Parameters
+#### 2.3.2 Modifier Parameters
 
 Modifiers use parentheses `()` to accept parameters. Unlike content captured with brackets (which appears in the final text), parameters are used for meta-information and configuration that should not appear in the narrative:
 
-```markscribe
+```markplot
 # Parameters are meta-information
 @@Jules.age(42)             # The number 42 won't appear in the text
+@@.status(draft)            # Configuration that stays hidden
+@@Jules is @@Marie.Rel(friend)['s best friend].  # Relationship info with visible text
 ```
 
 The parameter content is passed as-is to the modifier implementation, which can parse it according to its own needs.
 
 ---
 
-##### 2.4.2.1 Combining Modifiers
+##### 2.3.2.1 Combining Modifiers
 Modifiers can be combined freely (order does not affect semantic meaning):
-```markscribe
+```markplot
 @@Holmes.PROFESSION(detective).mood(worried)
 @@Watson.BACKGROUND(military).injured.tired
 ```
 and in any order:
-```markscribe
+```markplot
 @@Jules.Character.happy.NAME(Durant)  # Semantically equivalent to
 @@Jules.happy.NAME(Durant).Character  # Semantically equivalent to
 @@Jules.NAME(Durant).Character.happy
 ```
+
+---
 
 A parameter can be repeated if you like:
 ```
@@ -433,11 +246,11 @@ A parameter can be repeated if you like:
 
 
 
-##### 2.4.2.2 Multi-line Parameters
+##### 2.3.2.2 Multi-line Parameters
 
 Parameters can span multiple lines for better readability and organization:
 
-```markscribe
+```markplot
 @@Jules.BACKGROUND(
   Born in Paris, 1985
   Education:
@@ -453,23 +266,29 @@ Key points:
 
 ---
 
-#### 2.4.3 Visibility Rules
+#### 2.3.3 Visibility Rules
 
 Modifiers never appear in the final text:
-```markscribe
+```markplot
 @@Jules.drunk[stumbled forward].
--> Jules stumbled forward.
 ```
+> Jules stumbled forward.
 
-#### 2.4.4 Standard Modifiers
+---
 
-Standard modifiers are documented in `namespaces/global.yaml` following the same format as application-specific modifiers (see 2.4.5.4). The specification below provides an overview of core standard modifiers, but the authoritative reference is the YAML file.
+#### 2.3.4 Standard Modifiers
 
-##### 2.4.4.1 Reserved Capitalization
+Standard modifiers are documented in `namespaces/global.yaml` following the same format as application-specific modifiers (see §2.3.5.4). The specification below provides an overview of core standard modifiers, but the authoritative reference is the YAML file.
 
-Modifiers starting with a capital letter (and not entirely uppercase, see section 2.4.1) are reserved for standard MarkScribe features. Custom modifiers MUST start with a lowercase letter or be entirely uppercase.
+---
 
-##### 2.4.4.2 Core Standard Modifiers
+##### 2.3.4.1 Reserved Capitalization
+
+Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.1) are reserved for standard MarkPlot features. Custom modifiers MUST start with a lowercase letter or be entirely uppercase.
+
+---
+
+##### 2.3.4.2 Core Standard Modifiers
 
 - `.Type(type)`: Defines the entity type. Common types include: "character", "place", "time", "event", "object", "organization" or whatever.
   - `.Character`: Sugar for `.Type(character)`
@@ -481,39 +300,56 @@ Modifiers starting with a capital letter (and not entirely uppercase, see sectio
   - `.Draft`: Sugar for `.Status(draft)`
   - `.Final`: Sugar for `.Status(final)`
 
+---
+
 - `.Version(version)`: Specifies the version of the associated section.
 
 - `.Pov`: Indicates that the narrative follows the point of view of the entity.
 
 Example usage:
-```markscribe
+```markplot
 @@Jules.Character.Pov[looked at] @@Paris.Place.
 @@.Draft
 @@.Version(1.2)
 ```
 
+---
+
 Invalid usage (will be ignored and remains in the final text):
-```markscribe
+```markplot
 @@Jules.Custom
 ```
 
-##### 2.4.4.3 Standard Modifier Scope
+---
+
+##### 2.3.4.3 Standard Modifier Scope
 
 The scope of standard modifiers is determined by their semantic nature:
 
 - **Type Modifiers** (`.Type`, `.Character`, `.Place`, etc.): Global by default as they define the fundamental nature of entities
+
+---
+
 - **Status Modifiers** (`.Draft`, `.Final`): Local by default as they describe temporary states
+
+---
+
 - **Point of View Modifiers** (`.Pov`): Local by default as they typically apply to specific scenes or chapters
+
+---
+
 - **Version Modifiers** (`.Version`): Global by default as they apply to whole document sections
 
-##### 2.4.4.4 Overriding Standard Modifier Scope
+---
+
+##### 2.3.4.4 Overriding Standard Modifier Scope
 
 The default scope of any standard modifier can be explicitly overridden using scope indicators:
 - `.Modifier!` forces global scope
 - `.Modifier?` forces local scope
 
 Examples:
-```markscribe
+```markplot
 @@Jules.Character     # Global by default (type modifier)
 @@Jules.Character?    # Forced local scope
 @@Jules.Pov          # Local by default (POV modifier)
@@ -525,9 +361,11 @@ When using scope overrides:
 - The original semantic default remains unchanged for other uses
 - Scope overrides must immediately follow the modifier name
 
-#### 2.4.4.5 Temporal Entities
+#### 2.3.4.5 Temporal Entities
 
 Temporal entities are a special type of entity that makes extensive use of standard modifiers to handle dates, times, and temporal relationships in your narrative. These entities are tightly integrated with the `.Type` modifier and its standard variants (`.Date`, `.Time`, `.DateTime`) to provide both implicit and explicit temporal typing.
+
+---
 
 While temporal entities have their own specific syntax formats (described below), they are recognized and processed through the standard modifier system. This integration allows for:
 - Automatic type detection based on format (e.g., "2025-04-28" is recognized as a Date)
@@ -535,33 +373,43 @@ While temporal entities have their own specific syntax formats (described below)
 - Consistent handling of temporal relationships and scopes
 - Support for both standard and alternative calendar systems
 
+---
+
 A temporal entity can be either absolute (using standard calendar) or abstract (using relative time markers). In both cases, the temporal typing system ensures consistent processing and validation.
 
-##### 2.4.4.5.1 Absolute Time
+##### 2.3.4.5.1 Absolute Time
 
 Absolute temporal entities use ISO 8601 format with space as datetime separator:
 
-```markscribe
+```markplot
 @@(2025-04-28).Type(Date)              # Date only
 @@(14:30:00+01:00).Type(Time)          # Time only
 @@(2025-04-28 14:30:00+01:00).Type(DateTime)  # Full date and time
 ```
 
+---
+
 Shortened forms are allowed:
-```markscribe
+```markplot
 @@(2025-04-28 14:30)     # Minutes precision
 @@(2025-04)              # Month precision
 @@(14:30)                # Time without timezone
 ```
 
+---
+
 The `.Type` modifier (`Date`, `Time`, or `DateTime`) is optional for temporal entities as they are automatically recognized by their format.
 
+---
+
 For dates before Common Era (BCE/BC), use the minus sign prefix following ISO 8601:
-```markscribe
+```markplot
 @@(-0044-03-15)              # Ides of March, 44 BCE
 @@(-0753-04-21)              # Founding of Rome
 @@(-12000-01-01/GST)         # Event in alternative calendar BCE
 ```
+
+---
 
 Note:
 - The year 1 BCE is represented as year 0000
@@ -570,33 +418,41 @@ Note:
 - The minus sign is only used for years, never for other units
 - Time components remain unchanged regardless of era
 
+---
+
 Both space and 'T' separator are accepted for full ISO 8601 compatibility:
-```markscribe
+```markplot
 @@(2025-04-28 14:30:00+01:00)  # Space separator (preferred for readability)
 @@(2025-04-28T14:30:00+01:00)  # ISO 8601 T separator
 ```
 
-##### 2.4.4.5.2 Abstract Time
+---
+
+##### 2.3.4.5.2 Abstract Time
 
 Abstract temporal entities use special format with '@' prefix followed by level indicators (Y for year, M for month, D for day):
 
-```markscribe
+```markplot
 @@(@Y1).Type(Date)              # Year 1
 @@(@Y1-M3).Type(Date)           # Year 1, Month 3
 @@(@Y1-M3-D12).Type(Date)       # Year 1, Month 3, Day 12
 @@(@Y1-M3-D12 14:30).Type(DateTime)  # With time
 ```
 
+---
+
 Shortened forms focusing on specific units are allowed:
-```markscribe
+```markplot
 @@(@D42 08:15)    # Day 42 at 08:15
 @@(@D42)          # Just Day 42
 ```
 
-##### 2.4.4.5.3 Alternative Calendars
+---
+
+##### 2.3.4.5.3 Alternative Calendars
 
 Alternative calendar systems can be specified using a suffix:
-```markscribe
+```markplot
 @@(3027-13-42/GST)           # Galactic Standard Time
 ```
 
@@ -606,8 +462,10 @@ Alternative calendar systems must follow standard numerical formatting:
 - Month and day values can range from 01 to 99 to accommodate alternative calendars
 - Time format remains HH:MM:SS with values from 00 to 99 for each unit
 
+---
+
 Examples:
-```markscribe
+```markplot
 @@(3027-13-42/GST)           # Valid: month=13, day=42
 @@(12345-99-99 99:99:99/GST) # Valid: all units using maximum values (except year, which has no maximum or minimal value)
 @@(99:99/GST)                # Valid
@@ -616,18 +474,24 @@ Examples:
 @@(3027-4-12/GST)            # Invalid: month needs 2 digits
 ```
 
+---
+
 The extended range (up to 99) for all units provides flexibility for alternative calendar systems while maintaining a consistent, parseable format.
 
 Time zones in alternative calendars follow the same format as standard time (±HH:MM) but allow values up to 99:
-```markscribe
+```markplot
 @@(3027-13-42 14:30+23/GST)       # Valid: timezone offset of 23 hours
 @@(3027-13-42 14:30+99:99/GST)    # Valid: maximum timezone offset
 @@(3027-13-42 14:30+100:00/GST)   # Invalid: hours exceed 99
 ```
 
+---
+
 The extended range for timezone offsets (up to ±99:99) accommodates alternative calendar systems that might use different day lengths or time divisions while maintaining a consistent, parseable format.
 
-##### 2.4.4.5.4 Temporal Scope
+---
+
+##### 2.3.4.5.4 Temporal Scope
 
 Temporal entities follow specific scope rules:
 
@@ -635,8 +499,10 @@ Temporal entities follow specific scope rules:
 2. Lower precision entities inherit context from higher precision entities in scope
 3. Explicit scope using brackets overrides these rules
 
+---
+
 Example:
-```markscribe
+```markplot
 @@(2025)[
   @@(04-28)[Morning events...]
   @@(14:30)[Afternoon specific event...]
@@ -647,11 +513,11 @@ Example:
 
 These scope rules allow for natural chronological organization while maintaining precision when needed.
 
-##### 2.4.4.5.5 Integration Examples
+##### 2.3.4.5.5 Integration Examples
 
-Temporal entities can be combined with other MarkScribe features for rich narrative control:
+Temporal entities can be combined with other MarkPlot features for rich narrative control:
 
-```markscribe
+```markplot
 # Combining with characters and events
 @@(1815-06-18).Type(Date)[On that fateful day,] @@Napoleon[faced his destiny at] @@Waterloo.Place.
 
@@ -672,16 +538,16 @@ These examples show how temporal entities work seamlessly with:
 - Local modifiers for narrative mood
 - The null entity for contextual attributes
 
-### 2.4.5 Application Specific Modifiers
+### 2.3.5 Application Specific Modifiers
 
 Applications can define their own modifiers using namespaces.
 
-#### 2.4.5.1 Namespace Definition
+#### 2.3.5.1 Namespace Definition
 
 Application namespaces MUST:
 - Consist of ASCII letters only (a-z, A-Z) and digits (0-9)
 - End with a single colon (:)
-- Be registered through the official registration process (see 2.4.5.4)
+- Be registered through the official registration process (see $2.3.5.4)
 - MUST not be already registered
 - Are case-insensitive (e.g., `Writer:` and `writer:` mean the same namespace)
 
@@ -693,26 +559,26 @@ Invalid namespaces:
 - `Pip-App:` (contains hyphen)
 - `École:` (contains non-ASCII character)
 
-#### 2.4.5.2 Modifier Syntax
+#### 2.3.5.2 Modifier Syntax
 
 Application-specific modifiers are formed by:
 1. The registered namespace (including colon)
 2. The modifier name (can use any capitalization)
 
 Examples:
-```markscribe
+```markplot
 @@Jules.App:plot        # App application's plot modifier
 @@Marie.Writer:character   # Writer's companion character modifier
 ```
 
-#### 2.4.5.3 Scope Rules
+#### 2.3.5.3 Scope Rules
 
 Application-specific modifiers follow the same scope rules as standard modifiers:
 - Their default scope is determined by their documented semantic nature
 - Scope can be overridden using ! (global) and ? (local) modifiers
 
 Example:
-```markscribe
+```markplot
 @@Jules.App:Plot        # Default scope (as documented by App)
 @@Jules.App:Plot!       # Forced global scope
 @@Jules.App:Plot?       # Forced local scope
@@ -720,7 +586,7 @@ Example:
 
 Applications MUST document the default scope of their modifiers in their documentation.
 
-#### 2.4.5.4 Modifier Documentation Format
+#### 2.3.5.4 Modifier Documentation Format
 
 Applications MUST document their modifiers using this standardized format:
 
@@ -758,14 +624,14 @@ modifiers:
 
 This format is used by all modifiers documentation, including standard modifiers (see `namespaces/global.yaml`).
 
-#### 2.4.5.5 Documentation Requirements
+#### 2.3.5.5 Documentation Requirements
 
 - All registered namespaces MUST provide documentation in this format
 - All modifiers in the namespace MUST be documented
 - Version numbers MUST follow semantic versioning
 - Breaking changes MUST increment the major version number
 
-#### 2.4.5.6 Namespace Registration Process
+#### 2.3.5.6 Namespace Registration Process
 
 To avoid conflicts and maintain consistency across the ecosystem, application developers MUST register their namespaces. The registration process is currently being defined and will be detailed in a future version of the specification.
 
@@ -778,11 +644,11 @@ Note that once the official registration process is established:
 - Applications may need to migrate to newly assigned namespaces
 - The registration process will be designed to minimize disruption to existing applications
 
-#### 2.4.5.7 Registration Fees and Contributions
+#### 2.3.5.7 Registration Fees and Contributions
 
-The namespace registration process is and will always remain **free** for everyone. This ensures that the MarkScribe ecosystem stays open and accessible to all developers, from individual open-source contributors to large companies.
+The namespace registration process is and will always remain **free** for everyone. This ensures that the MarkPlot ecosystem stays open and accessible to all developers, from individual open-source contributors to large companies.
 
-However, if you are registering a namespace for a commercial/proprietary application, we kindly encourage (but do not require) a financial contribution to support the MarkScribe project's development and maintenance. These contributions help us:
+However, if you are registering a namespace for a commercial/proprietary application, we kindly encourage (but do not require) a financial contribution to support the MarkPlot project's development and maintenance. These contributions help us:
 
 - Maintain the registration infrastructure
 - Improve the specification
@@ -799,32 +665,32 @@ All contributions are voluntary and have no impact on the registration process o
 
 Contributing companies will be acknowledged (unless they prefer to remain anonymous) in our [SUPPORTERS.md](SUPPORTERS.md) file.
 
-#### 2.4.6 Modifiers in Nested Annotations
+#### 2.3.6 Modifiers in Nested Annotations
 
 When using modifiers with nested annotations, there are specific rules for how they apply:
 
 1. **Local Scope**: Modifiers apply only to their directly associated entity, not to nested annotations:
-```markscribe
+```markplot
 @@Jules.happy[looked at @@Marie[who smiled]]  # Only Jules is happy
 @@Scene.dark[@@Jules[walked] past @@Marie]    # Only the Scene is dark
 ```
 
 2. **Null Entity Exception**: Modifiers on the null entity affect the entire captured content, including nested annotations:
-```markscribe
+```markplot
 @@.style.italic[This text and @@Jules[his words] are all italic]
 @@.pov(Jules)[@@Marie[smiled] as @@(he)[he] entered]  # All from Jules' POV
 ```
 
 3. **Cascading Effects**: While modifiers don't affect nested entities directly, tools can analyze the relationship between modifiers at different levels:
-```markscribe
+```markplot
 @@Scene.night[@@Jules.tired[met] @@Marie.worried[near the bridge]]
 # Tools can understand this is a night scene with tired and worried characters
 ```
 
 
-#### 2.4.7 Modifier vs Punctuation
+#### 2.3.7 Modifier vs Punctuation
 
-To avoid ambiguity between modifiers and regular text, MarkScribe follows specific rules for handling dots in the text:
+To avoid ambiguity between modifiers and regular text, MarkPlot follows specific rules for handling dots in the text:
 
 1. **Modifier Identification**:
    A dot is considered a modifier separator if and only if:
@@ -840,7 +706,7 @@ To avoid ambiguity between modifiers and regular text, MarkScribe follows specif
    - Part of sequences like ellipsis ("...")
 
 Examples:
-```markscribe
+```markplot
 # Valid modifiers
 @@Jules.happy(smiled)        # .happy is a modifier
 @@Jules.tired.sad           # Both .tired and .sad are modifiers
@@ -870,7 +736,7 @@ The null entity is a special construct that:
 - Is purely used for meta-information and processing instructions
 
 For example:
-```markscribe
+```markplot
 @@.special[This text is special] but no entity is created.
 @@.draft(This section needs review)
 @@.style.font[Text with custom font]
@@ -886,7 +752,7 @@ The null entity is particularly useful for:
 - Creating hidden document structure (see §2.7)
 
 Because it doesn't create actual entity relationships, the null entity is perfect for adding meta-information that should influence processing but not narrative analysis:
-```markscribe
+```markplot
 @@.status(draft)                      # Document status
 @@.style.highlight[Important text]    # Visual formatting
 @@.editorial(Needs revision)          # Editorial notes
@@ -897,12 +763,12 @@ Because it doesn't create actual entity relationships, the null entity is perfec
 
 ### 2.6 Annotation Scope
 
-MarkScribe annotations follow specific scope rules depending on their placement and modifiers.
+MarkPlot annotations follow specific scope rules depending on their placement and modifiers.
 
 #### 2.6.1 File-level Annotations
 
 Annotations at the very beginning of a file (before any content) apply to the entire file:
-```markscribe
+```markplot
 @@.Author(John Doe)
 @@.Version(1.0)
 # First chapter
@@ -911,7 +777,7 @@ Annotations at the very beginning of a file (before any content) apply to the en
 #### 2.6.2 Header Annotations
 
 Apply to all content under that header until the next header of same or higher level:
-```markscribe
+```markplot
 @@.(# Chapter 1).Pov(Jules)
 This text is from Jules' point of view.
 ## Scene 1
@@ -923,7 +789,7 @@ New chapter, POV reset.
 #### 2.6.3 Paragraph Annotations
 
 Apply only to the immediately following paragraph:
-```markscribe
+```markplot
 @@.(* Important theme)
 This paragraph discusses the theme.
 
@@ -933,7 +799,7 @@ This paragraph is not affected by the previous annotation.
 #### 2.6.4 Custom Scope
 
 Using brackets to explicitly define annotation scope:
-```markscribe
+```markplot
 @@.flashback(@@2012-28-02)[
 This content is a flashback,
 spanning multiple paragraphs,
@@ -947,9 +813,9 @@ Tools processing these annotations should respect these scope rules when analyzi
 
 ### 2.7 Hidden Markdown Structures
 
-MarkScribe allows embedding Markdown syntax that will be processed for analysis but won't appear in the final text. This is achieved through a special syntax using the null entity:
+MarkPlot allows embedding Markdown syntax that will be processed for analysis but won't appear in the final text. This is achieved through a special syntax using the null entity:
 
-```markscribe
+```markplot
 @@.(# Hidden Title)
 Normal visible text continues here...
 ```
@@ -962,7 +828,7 @@ The syntax follows this pattern:
 - Can be used with any valid Markdown syntax
 
 Examples:
-```markscribe
+```markplot
 @@.(# Act One)
 @@.(## Scene 1)
 The story begins...
@@ -990,7 +856,7 @@ Words that will appear normally.
 - Hidden emphasis for analysis
 
 Example of complex usage:
-```markscribe
+```markplot
 @@.(# Chapter 1).Status(draft)
 @@.(## Opening Scene).Type(scene)[
     @@Jules.Character[walked through] @@Paris.Place.
@@ -1002,47 +868,24 @@ Example of complex usage:
 
 ### 2.8 Interaction with Markdown
 
-MarkScribe annotations are processed before Markdown formatting:
+MarkPlot annotations are processed before Markdown formatting:
 
-```markscribe
+```markplot
 **@@Jules.happy**     # Becomes "**Jules**"
 @@**Jules.happy**     # Remains "@@**Jules.happy**"
 ```
 
 This ensures consistent behavior and allows Markdown formatting to be applied to the final text.
 
-## 3. Use Cases
-
-### 3.1 Creative Writing
-
-- Character tracking and development
-- Timeline management
-- Location mapping
-- Point of view indicators
-- Theme and motif tracking
-
-### 3.2 Literary Analysis
-
-- Character relationship networks
-- Narrative structure visualization
-- Thematic mapping
-- Linguistic pattern identification
-
-### 3.3 Collaborative Writing
-
-- Role assignment and management
-- Version control for narrative elements
-- Commenting and feedback integration
-
 ## 4. Processing and Workflow
 
 ### 4.1 Parser Types and Processing Chain
 
-MarkScribe parsers can be categorized into two main types:
+MarkPlot parsers can be categorized into two main types:
 
-1. **Analysis Parsers**: These parsers read and interpret annotations to extract information, build entity graphs, analyze relationships, or generate derived content (character sheets, timelines, etc.). They represent the core use case of MarkScribe annotations.
+1. **Analysis Parsers**: These parsers read and interpret annotations to extract information, build entity graphs, analyze relationships, or generate derived content (character sheets, timelines, etc.). They represent the core use case of MarkPlot annotations.
 
-2. **Production Parsers**: While not the primary focus of MarkScribe, these parsers can transform the text for specific outputs. Since they allow enriching the writing possibilities without interrupting the writing flow, they are a welcome extension of MarkScribe's capabilities.
+2. **Production Parsers**: While not the primary focus of MarkPlot, these parsers can transform the text for specific outputs. Since they allow enriching the writing possibilities without interrupting the writing flow, they are a welcome extension of MarkPlot's capabilities.
 
 A fundamental rule applies to ALL parsers: they MUST preserve ALL annotations intact in their output, even when transforming the text. This ensures that:
 - Each parser can interpret any annotation according to its own rules
@@ -1053,37 +896,37 @@ The only exception to this rule is the Cleanup Parser, which is specifically des
 
 ### 4.2 Cleanup Parser
 
-The Cleanup Parser is a special parser responsible for removing visible MarkScribe annotations from the text. It has specific characteristics that distinguish it from other parsers:
+The Cleanup Parser is a special parser responsible for removing visible MarkPlot annotations from the text. It has specific characteristics that distinguish it from other parsers:
 
 #### 4.2.1 Position in the Chain
 
 The Cleanup Parser:
-- Must be the last MarkScribe parser in any processing chain
+- Must be the last MarkPlot parser in any processing chain
 - Can only be used once in a chain
 
 #### 4.2.2 Operation Scope
 
 The Cleanup Parser:
 - Resolves visible entity names (e.g., converting @@Jules_Durant to "Jules Durant")
-- Removes all visible MarkScribe annotations
+- Removes all visible MarkPlot annotations
 - When an annotation is removed during the cleanup process, if its removal leaves an empty line in the output, that empty line should also be removed automatically to ensures that no unnecessary blank lines are present in the final document.
 
 ### 4.3 Error Handling
 
-MarkScribe follows a permissive approach to error handling:
+MarkPlot follows a permissive approach to error handling:
 
-1. **Invalid Syntax**: Any text that cannot be interpreted as valid MarkScribe syntax is treated as regular content and left unchanged:
-```markscribe
+1. **Invalid Syntax**: Any text that cannot be interpreted as valid MarkPlot syntax is treated as regular content and left unchanged:
+```markplot
 @@[Invalid syntax] remains "@@[Invalid syntax]"
 @Jules (missing @) remains "@Jules"
 ```
 
 2. **Partial Annotations**: Incomplete annotations (unclosed bracket or parenthesis)  preserved as-is:
-```markscribe
+```markplot
 @@Jules[unclosed bracket becomes "Jules[unclosed bracket"
 ```
 3. **Unknown Modifiers**: While there are no "invalid" modifiers syntactically, modifiers that are neither standard nor from a registered application namespace are simply removed during cleanup:
-```markscribe
+```markplot
 @@Jules.unknownModifier[text] becomes "Jules text"
 ```
 
@@ -1119,7 +962,7 @@ This approach ensures that:
 
 ### 5.2 Tool Creation Guidelines
 
-When creating tools that support MarkScribe, consider these key aspects:
+When creating tools that support MarkPlot, consider these key aspects:
 
 #### 5.2.1 User Interface Design
 
@@ -1143,11 +986,11 @@ When creating tools that support MarkScribe, consider these key aspects:
 
 ## 6. Examples
 
-See the `examples/` directory for demonstrations of MarkScribe in action.
+See the `examples/` directory for demonstrations of MarkPlot in action.
 
 ## 7. Future Considerations
 
-### 7.1 Thinking about _MarkScribe Query Language_
+### 7.1 Thinking about _MarkPlot Query Language_
 
 A dedicated query language could enable powerful search and analysis capabilities. It could look like this:
 
@@ -1193,7 +1036,7 @@ While these could currently be managed through application-specific modifiers, a
 
 ### 7.3 Namespace Registration Process
 
-The namespace registration process (see §2.4.5.6) should be formalized through:
+The namespace registration process (see §2.3.5.6) should be formalized through:
 1. A GitHub-based registration system using Pull Requests
 2. An automated validation process checking:
    - Namespace uniqueness
@@ -1220,7 +1063,7 @@ This would provide:
 - **Modifier**: An attribute or characteristic applied to an entity using dot notation (`.modifier`).
   - **Lowercase modifier**: Temporary or contextual attribute (`.happy`, `.injured`)
   - **UPPERCASE modifier**: Permanent characteristic (`.NAME`, `.OCCUPATION`)
-  - **Standard modifier**: Reserved MarkScribe feature with Title-case (`.Character`, `.Place`)
+  - **Standard modifier**: Reserved MarkPlot feature with Title-case (`.Character`, `.Place`)
 
 - **Null Entity**: Special entity (`@@.`) used to apply modifiers or annotations without creating an actual entity reference.
 
@@ -1230,7 +1073,7 @@ This would provide:
 
 - **Entity Graph**: A representation of all entities and their relationships extracted from the annotations.
 
-- **Parser**: A tool that processes MarkScribe annotations for analysis or output generation.
+- **Parser**: A tool that processes MarkPlot annotations for analysis or output generation.
   - **Analysis Parser**: Extracts information from annotations
   - **Production Parser**: Transforms text while preserving annotations
   - **Cleanup Parser**: Removes visible annotations for final output
@@ -1239,7 +1082,7 @@ This would provide:
 
 ## 9. License
 
-MarkScribe specifications are released under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0). This means you are free to:
+MarkPlot specifications are released under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0). This means you are free to:
 
 - Share — copy and redistribute the material in any medium or format
 - Adapt — remix, transform, and build upon the material for any purpose, even commercially
@@ -1248,7 +1091,7 @@ Under the following terms:
 - Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
 - ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-This license ensures that all versions of MarkScribe specifications remain open while maintaining proper attribution.
+This license ensures that all versions of MarkPlot specifications remain open while maintaining proper attribution.
 
 ## 10. Contributing
 
