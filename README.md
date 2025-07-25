@@ -212,7 +212,7 @@ Modifiers can be cumulated for more specific annotations:
 Modifiers can take parameters for enhanced precision:
 
 ```markscribe
-@@(Scene.music(Rachmaninov).lighting(dim))
+@@(.music(Rachmaninov).lighting(dim))
 ```
 
 This flexible system allows writers to create rich, multi-layered annotations while maintaining readability.
@@ -227,7 +227,49 @@ Modifiers can be applied to visible entities as well, but will not be displayed 
 will output:
 > Jules talks badly to Isabelle.
 
-#### 2.5.4 Common Modifier Categories
+### 2.5.4 Case-Sensitive Modifiers
+
+MarkScribe distinguishes between two types of modifiers based on case:
+
+#### Lowercase Modifiers (.modifier)
+Lowercase modifiers indicate contextual or temporary attributes that apply to the entity in the current narrative context:
+
+```markscribe
+@@Holmes.mood(worried) paced around the room.
+@@Watson.injured couldn't keep up with his friend's quick stride.
+```
+
+These modifiers represent situational attributes that might change throughout the narrative. They are typically used to track:
+- Temporary emotional states
+- Contextual conditions
+- Situational relationships
+- Current actions or behaviors
+
+#### UPPERCASE Modifiers (.MODIFIER)
+Uppercase modifiers denote permanent or defining characteristics that remain consistent throughout the narrative:
+
+```markscribe
+@@Holmes.OCCUPATION(detective) examined the evidence
+@@Watson.BACKGROUND(military) recognized the weapon immediately
+```
+
+These modifiers represent intrinsic attributes that define the entity's core characteristics. They are typically used for:
+- Physical traits
+- Personality traits
+- Biographical information
+- Defining characteristics
+- Classification information
+
+#### Combined Usage
+Lowercase and uppercase modifiers can be combined to provide a rich layering of permanent and temporary attributes:
+
+```markscribe
+@@Irene.PROFESSION(opera_singer).mood(nervous) entered the room
+```
+
+This distinction helps writers and tools differentiate between the essential nature of an entity and its changing states throughout a narrative.
+
+#### 2.5.5 Common Modifier Categories
 
 - **Narrative**: `.pov`, `.narrator`, `.voice`
 - **Atmospheric**: `.mood(...)`, `.tone(...)`, `.music(...)`
