@@ -1,4 +1,4 @@
-# MarkScribe Specifications @@.draft
+# MarkScribe Annotation Language @@.draft
 
 > MarkScribe: Annotation Language for Writers
 
@@ -57,8 +57,7 @@ This approach bridges the gap between the simplicity writers need and the power 
 - [ ] More examples
 - [ ] Quick start guide for writers
 - [ ] Add CONTRIBUTING.md
-- [ ] Advice for tool creators
-- [ ] Glossary
+
 
 ## 1. Design Principles
 
@@ -98,7 +97,7 @@ Entities may be what ever you want :
 
 Tools may recognize certain entity formats (like dates) or entity types based on context or user configuration, but the syntax remains uniform.
 
-#### Spaces in Entity Names
+#### 2.1.1 Spaces in Entity Names
 
 For visible entities, underscores in entity names are converted to spaces in the final text:
 ```markscribe
@@ -108,7 +107,7 @@ will output:
 > Jules Durant walked down the street.
 
 
-#### Escaping Special Characters
+#### 2.1.2 Escaping Special Characters
 
 To use characters that might be interpreted by MarkScribe (@@) or Markdown (*_[]() etc.) in entity names, escape them with a backslash:
 ```markscribe
@@ -124,13 +123,13 @@ The backslash itself can be escaped with another backslash if needed:
 @@Path\\to\\file represents the entity "Path\to\file"
 ```
 
-#### Null Entity
+#### 2.1.3 Null Entity
 
 The null entity `@@.` is a special entity that allows applying modifiers to a context without creating entity relationships. It is never displayed in the final text. This is particularly useful for applying styling, metadata, or processing instructions without creating unnecessary entity references:
 
 ```markscribe
 @@.special[This text is special] but no entity is created.
-@@.draft[This section needs review]
+@@.draft(This section needs review)
 ```
 
 The null entity can take modifiers like any other entity but:
@@ -153,7 +152,7 @@ To reference an entity and associate content with it:
 @@(Jules)[This is content associated with Jules.]
 ```
 
-#### Space Handling with Entity Content
+#### 2.2.1 Space Handling with Entity Content
 
 When an entity is followed by bracketed content, the space between the entity name and the content is handled according to these rules:
 
@@ -183,116 +182,222 @@ Annotations can be nested for complex relationships:
 @@(Jules)[He met @@(Isabelle)[Isabelle who was reading a book]]
 ```
 
-### 2.4 Metadata Annotations
+### 2.4 Entity Modifiers
 
-Document-level or section-level metadata:
-
-```markscribe
-## Chapter 1 @@(Jules.pov)
-```
-
-### 2.5 Entity Modifiers
-
-Entities can be modified with additional attributes using dot notation:
+Entity modifiers allow you to add attributes and metadata to entities using dot notation. These modifiers can be temporary states, permanent traits, or standard features.
 
 ```markscribe
-@@(Jules.pov) Indicates Jules' point of view
+@@Jules.pov             # Simple modifier
+@@Marie.happy.excited   # Multiple modifiers
+@@.music(jazz)     # Parameterized modifier
 ```
 
-#### 2.5.1 Cumulative Modifiers
+#### 2.4.1 Types of Modifiers
 
-Modifiers can be cumulated for more specific annotations:
+MarkScribe supports three distinct categories of modifiers:
+
+1. **Lowercase modifiers** (.modifier)
+   - Represent temporary or contextual attributes
+   - Example: `.happy`, `.injured`, `.angry`
+
+2. **UPPERCASE modifiers** (.MODIFIER)
+   - Define permanent characteristics
+   - Example: `.NAME`, `.OCCUPATION`, `.BIRTHPLACE`
+
+3. **Standard modifiers** (Title-case, see §2.6)
+   - Reserved for MarkScribe features
+   - Example: `.Character`, `.Place`, `.Pov`
+
+---
+
+#### 2.4.2 Modifier Syntax
+
+##### 2.4.2.1 Parameters
+Modifiers can take parameters for additional precision:
+```markscribe
+@@Jules.age(42)
+@@Scene.music(Rachmaninov).lighting(dim)
+```
+
+##### 2.4.2.2 Combining Modifiers
+Modifiers can be combined freely:
+```markscribe
+@@Holmes.PROFESSION(detective).mood(worried)
+@@Watson.BACKGROUND(military).injured.tired
+```
+
+---
+
+#### 2.4.3 Visibility Rules
+
+Modifiers never appear in the final text:
+```markscribe
+@@Jules.drunk[stumbled forward].
+-> Jules stumbled forward.
+```
+
+#### 2.4.4 Standard Modifiers
+
+##### 2.4.4.1 Reserved Capitalization
+
+Modifiers starting with a capital letter (and not entirely uppercase, see section 2.5.1) are reserved for standard MarkScribe features. Tools MUST treat any non-standard Title-case modifier as an error. Custom modifiers MUST start with a lowercase letter or be entirely uppercase.
+
+##### 2.4.4.2 Core Standard Modifiers
+
+- `.Type(type)`: Defines the entity type. Common types include: "character", "place", "time", "event", "object", "organization" or whatever.
+  - `.Character`: Sugar for `.Type(character)`
+  - `.Place`: Sugar for `.Type(place)`
+  - `.Object`: Sugar for `.Type(object)`
+  - `.Event`: Sugar for `.Type(event)`
+
+- `.Status(status)`: Indicates the status of the associated section.
+  - `.Draft`: Sugar for `.Status(draft)`
+  - `.Final`: Sugar for `.Status(final)`
+
+- `.Version(version)`: Specifies the version of the associated section.
+
+- `.Pov`: Indicates that the narrative follows the point of view of the entity.
+
+Example usage:
+```markscribe
+@@Jules.Character.Pov[looked at] @@Paris.Place.
+@@.Draft
+@@.Version(1.2)
+```
+
+Invalid usage (will trigger parser errors):
+```markscribe
+@@Jules.Custom # Error: Custom is capitalized but not standard
+@@Marie.Undefined # Error: Undefined is not a standard modifier
+```
+
+#### 2.4.5 Modifier vs Punctuation
+
+To avoid ambiguity between modifiers and punctuation, a dot is considered a modifier separator if and only if:
+1. It immediately follows an entity name or another modifier
+2. It is immediately followed by an ASCII letter (a-z or A-Z)
+
+In all other cases (followed by a number, accented character, punctuation, space, or end of text), it is treated as punctuation and preserved in the final text.
+
+Examples:
+```markscribe
+@@Jules.happy(smiled)        # .happy is a modifier (followed by ASCII letter)
+@@Jules.42(looked tired)     # .42 is not a modifier (followed by number)
+@@Jules.été[was hot]         # .été is not a modifier (followed by accented letter)
+@@Jules.[was surprised]      # . is punctuation (followed by bracket)
+@@Jules...and then          # ... are punctuation marks
+```
+
+This rule ensures consistent and unambiguous parsing while maintaining natural punctuation in the text.
+
+### 2.5 Annotation Scope
+
+MarkScribe annotations follow specific scope rules depending on their placement and modifiers.
+
+#### 2.5.1 File-level Annotations
+
+Annotations at the very beginning of a file (before any content) apply to the entire file:
+```markscribe
+@@.Author(John Doe)
+@@.Version(1.0)
+# First chapter
+```
+
+#### 2.5.2. Header Annotations
+
+Apply to all content under that header until the next header of same or higher level:
+```markscribe
+@@.(# Chapter 1).Pov(Jules)
+This text is from Jules' point of view.
+## Scene 1
+Still from Jules' point of view.
+# Chapter 2
+New chapter, POV reset.
+```
+
+#### 2.5.3. Paragraph Annotations
+
+Apply only to the immediately following paragraph:
+```markscribe
+@@.(* Important theme)
+This paragraph discusses the theme.
+
+This paragraph is not affected by the previous annotation.
+```
+
+#### 2.5.4. Custom Scope
+
+Using brackets to explicitly define annotation scope:
+```markscribe
+@@.flashback(@@2012-28-02)[
+This content is a flashback,
+spanning multiple paragraphs,
+regardless of the document structure.
+]
+
+Normal narrative continues here.
+```
+
+Tools processing these annotations should respect these scope rules when analyzing or transforming the text.
+
+### 2.6 Hidden Markdown Structures
+
+MarkScribe allows embedding Markdown syntax that will be processed for analysis but won't appear in the final text. This is achieved through a special syntax using the null entity:
 
 ```markscribe
-@@(Jules.pov.unreliable.excited)
+@@.(# Hidden Title)
+Normal visible text continues here...
 ```
 
-#### 2.5.2 Parameterized Modifiers
+#### 2.6.1 Syntax
 
-Modifiers can take parameters for enhanced precision:
+The syntax follows this pattern:
+- Must use the null entity (`@@.`)
+- Markdown syntax is enclosed in parentheses
+- Can be used with any valid Markdown syntax
 
+Examples:
 ```markscribe
-@@(.music(Rachmaninov).lighting(dim))
+@@.(# Act One)
+@@.(## Scene 1)
+The story begins...
+
+@@.(* Important theme starting here)
+She took his @@.(**)[trembling] hand.
+
+@@.(> These words are significant)
+Words that will appear normally.
 ```
 
-This flexible system allows writers to create rich, multi-layered annotations while maintaining readability.
+#### 2.6.2 Processing
 
-#### 2.5.3 Modifiers on visible entities
+- These structures are processed as regular Markdown during analysis
+- They contribute to document structure and metadata
+- They are completely removed from the final text
+- Tools should treat them as equivalent to their visible Markdown counterparts for analysis purposes
 
-Modifiers can be applied to visible entities as well, but will not be displayed in the final text:
+#### 2.6.3 Use Cases
 
+- Invisible document structure
+- Literary analysis markers
+- Working notes and annotations
+- Alternative organization schemes
+- Hidden emphasis for analysis
+
+Example of complex usage:
 ```markscribe
-@@Jules.drunk talks badly to @@Isabelle.in_love.
-```
-will output:
-> Jules talks badly to Isabelle.
+@@.(# Chapter 1).Status(draft)
+@@.(## Opening Scene).Type(scene)[
+    @@Jules.Character[walked through] @@Paris.Place.
 
-### 2.5.4 Case-Sensitive Modifiers
-
-MarkScribe distinguishes between two types of modifiers based on case:
-
-#### Lowercase Modifiers (.modifier)
-Lowercase modifiers indicate contextual or temporary attributes that apply to the entity in the current narrative context:
-
-```markscribe
-@@Holmes.mood(worried) paced around the room.
-@@Watson.injured couldn't keep up with his friend's quick stride.
+    @@.(* Character introduction)
+    His @@.(**)[determined] stride revealed his state of mind.
+]
 ```
 
-These modifiers represent situational attributes that might change throughout the narrative. They are typically used to track:
-- Temporary emotional states
-- Contextual conditions
-- Situational relationships
-- Current actions or behaviors
+## 3. Use Cases
 
-#### UPPERCASE Modifiers (.MODIFIER)
-Uppercase modifiers denote permanent or defining characteristics that remain consistent throughout the narrative:
-
-```markscribe
-@@Holmes.OCCUPATION(detective) examined the evidence
-@@Watson.BACKGROUND(military) recognized the weapon immediately
-```
-
-These modifiers represent intrinsic attributes that define the entity's core characteristics. They are typically used for:
-- Physical traits
-- Personality traits
-- Biographical information
-- Defining characteristics
-- Classification information
-
-#### Combined Usage
-Lowercase and uppercase modifiers can be combined to provide a rich layering of permanent and temporary attributes:
-
-```markscribe
-@@Irene.PROFESSION(opera_singer).mood(nervous) entered the room
-```
-
-This distinction helps writers and tools differentiate between the essential nature of an entity and its changing states throughout a narrative.
-
-#### 2.5.5 Common Modifier Categories
-
-- **Narrative**: `.pov`, `.narrator`, `.voice`
-- **Atmospheric**: `.mood(...)`, `.tone(...)`, `.music(...)`
-- **Structural**: `.draft`, `.revision(...)`, `.status(...)`
-- **Stylistic**: `.style(...)`, `.pace(...)`, `.language(...)`
-- **Relational**: `.perspective`, `.memory`, `.expectation`
-
-Tools may recognize these common modifiers or allow users to define custom ones.
-
-## 3. Entity Graph
-
-While not part of the language specification itself, one of the key strengths of MarkScribe is enabling tools to build a comprehensive entity graph, where:
-
-- Each entity has its own "index card" of information
-- Relationships between entities are tracked
-- All text references to each entity are collected
-- Custom attributes can be attached to entities
-
-This graph representation allows for powerful analysis, navigation, and visualization capabilities in compatible tools.
-
-## 4. Use Cases
-
-### 4.1 Creative Writing
+### 3.1 Creative Writing
 
 - Character tracking and development
 - Timeline management
@@ -300,34 +405,36 @@ This graph representation allows for powerful analysis, navigation, and visualiz
 - Point of view indicators
 - Theme and motif tracking
 
-### 4.2 Literary Analysis
+### 3.2 Literary Analysis
 
 - Character relationship networks
 - Narrative structure visualization
 - Thematic mapping
 - Linguistic pattern identification
 
-### 4.3 Collaborative Writing
+### 3.3 Collaborative Writing
 
 - Role assignment and management
 - Version control for narrative elements
 - Commenting and feedback integration
 
-### 5.2 Enriched Exports
+## 4. Implementation features
+
+### 4.1 Enriched Exports
 
 Tools supporting MarkScribe can generate enriched formats. While HTML examples are provided below for illustration, equivalent transformations can be implemented for any output format including LaTeX, PDF, DOCX, ePub, and others.
 
-#### 5.2.1 HTML with Hidden Annotations
+#### 4.2.1 HTML with Hidden Annotations
 ```html
 <!--\@\@(Jules)[-->Jules took her hand<!--]-->
 ```
 
-#### 5.2.2 HTML with Semantic Classes
+#### 4.2.2 HTML with Semantic Classes
 ```html
 <span class="entity character" data-entity="Jules">Jules</span> took her hand.
 ```
 
-#### 5.2.3 Other Output Formats
+#### 4.2.3 Other Output Formats
 
 Equivalent transformations for other formats might include:
 
@@ -338,7 +445,7 @@ Equivalent transformations for other formats might include:
 
 Each implementation may leverage the format-specific features while preserving the semantic structure defined in MarkScribe.
 
-### 6.3 Visual Distinctions During Editing
+### 4.2 Visual Distinctions During Editing
 
 Editors supporting MarkScribe should consider:
 
@@ -348,9 +455,9 @@ Editors supporting MarkScribe should consider:
 - Providing hover information for annotated entities
 - Supporting folding/unfolding of annotation content
 
-## 7. Processing and Workflow
+## 5. Processing and Workflow
 
-### 7.1 Bidirectional Processing
+### 5.1 Bidirectional Processing
 
 MarkScribe supports a bidirectional workflow where:
 
@@ -358,7 +465,7 @@ MarkScribe supports a bidirectional workflow where:
 - Text with annotations can be processed for reading
 - Modifications to the processed text can be reintegrated with annotations preserved
 
-### 7.2 Selective Export
+### 5.2 Selective Export
 
 Tools may support selective export options:
 
@@ -367,7 +474,7 @@ Tools may support selective export options:
 - Generate specialized exports (character sheets, location maps, timelines)
 - Create query-based exports (e.g., "all scenes with Jules")
 
-### 7.3 Annotation Layers
+### 5.3 Annotation Layers
 
 Advanced implementations may support annotation layers:
 
@@ -376,7 +483,7 @@ Advanced implementations may support annotation layers:
 - Collaborative annotations from different contributors
 - Public vs. private annotations
 
-### 7.4 Parser Types and Processing Chain
+### 5.4 Parser Types and Processing Chain
 
 In ANY case, _parsers_ MUST NOT alter the original documents. They should only generate NEW documents.
 
@@ -418,11 +525,11 @@ This approach ensures that:
 - The complete annotation information remains available in the final output
 - Multiple interpretations of the same annotations are possible throughout the chain
 
-### 7.5 Validator Parser
+### 5.5 Validator Parser
 
 The Validator Parser is a special analysis parser that checks MarkScribe syntax validity. Typically used at the start of a processing chain, it has specific characteristics:
 
-#### 7.5.1 Non-Blocking Operation
+#### 5.5.1 Non-Blocking Operation
 
 By default, the Validator Parser operates in non-blocking mode, which is essential for:
 - Real-time IDE integration
@@ -431,7 +538,7 @@ By default, the Validator Parser operates in non-blocking mode, which is essenti
 
 A blocking mode can be enabled via configuration when strict validation is required (e.g., for final publication workflows).
 
-#### 7.5.2 Error Reporting
+#### 5.5.2 Error Reporting
 
 The Validator Parser:
 - Reports errors through a dedicated error channel
@@ -446,7 +553,7 @@ The Validator Parser:
   WARNING: Possible typo in entity name at line 43: @@Jules vs @@Jules
   ```
 
-#### 7.5.3 Validation Scope
+#### 5.5.3 Validation Scope
 
 The Validator Parser checks for:
 - Syntax validity (proper use of @@, [], (), etc.)
@@ -456,7 +563,7 @@ The Validator Parser checks for:
 - Escaped character correctness
 - Common error patterns
 
-#### 7.5.4 Implementation Guidelines
+#### 5.5.4 Implementation Guidelines
 
 When implementing the Validator Parser:
 - Provide both streaming and complete document validation
@@ -465,18 +572,18 @@ When implementing the Validator Parser:
 - Enable integration with IDE error reporting systems
 - Consider performance implications for real-time validation
 
-### 7.6 Cleanup Parser
+### 5.6 Cleanup Parser
 
 The Cleanup Parser is a special parser responsible for removing visible MarkScribe annotations from the text while preserving hidden ones. It has specific characteristics that distinguish it from other parsers:
 
-#### 7.6.1 Position in the Chain
+#### 5.6.1 Position in the Chain
 
 The Cleanup Parser:
 - Must be the last parser in any processing chain
 - Can only be used once in a chain
 - Cannot be followed by other parsers (as it produces final human-readable text)
 
-#### 7.6.2 Operation Scope
+#### 5.6.2 Operation Scope
 
 The Cleanup Parser:
 - Removes all visible MarkScribe annotations
@@ -484,7 +591,7 @@ The Cleanup Parser:
 - Resolves visible entity names (e.g., converting @@Jules_Durant to "Jules Durant")
 - Preserves all other formatting (Markdown, HTML, etc.)
 
-#### 7.6.3 Examples
+#### 5.6.3 Examples
 
 Given this input:
 ```html
@@ -503,7 +610,7 @@ Note that:
 - The hidden annotation remains intact and escaped
 - The visible entity "@@Marie" is simplified to "Marie"
 
-#### 7.6.4 Implementation Guidelines
+#### 5.6.4 Implementation Guidelines
 
 When implementing the Cleanup Parser:
 - Ensure it cannot be confused by escaped annotations in comments
@@ -511,57 +618,115 @@ When implementing the Cleanup Parser:
 - Preserve all non-MarkScribe formatting
 - Consider providing options for handling specific cases (e.g., preservation of certain visible annotations)
 
-## 8. Implementation Guidelines and Best Practices
+## 6. Implementation Guidelines and Best Practices
 
-### 8.1 Parser Implementation
+### 6.1 Parser Implementation
 
-#### Parser Design
+#### 6.1.1 Parser Design
 
 - Keep parsers single-purpose and composable
 - Ensure parsers are stateless when possible
 - Implement clear error handling and reporting
 - Support streaming processing for large documents
 
-#### Entity Handling
+#### 6.1.2 Entity Handling
 
 - Store entity references in a case-sensitive manner
 - Maintain bi-directional entity relationships
 - Index all entity occurrences with their context, including file name and line number
 
-#### Error Recovery
+#### 6.1.3 Error Recovery
 
 - Continue processing after non-critical errors
 - Maintain document integrity during partial failures
 - Provide clear error context for debugging
 - Support graceful degradation of features
 
-### 8.2 Tool Creation Guidelines
+### 6.2 Tool Creation Guidelines
 
 When creating tools that support MarkScribe, consider these key aspects:
 
-#### User Interface Design
+#### 6.2.1 User Interface Design
 
 - Keep the annotation process as natural as typing
 - Avoid forcing users to use dialog boxes or menus for basic annotations
 - Provide visual feedback without being intrusive
 - Consider offering both keyboard shortcuts and mouse interactions
 
-#### Entity Management
+#### 6.2.2 Entity Management
 
 - Provide easy ways to browse and search existing entities
 - Allow quick entity reuse without breaking the writing flow
 - Consider auto-completion for entity names
 - Enable easy entity renaming with proper refactoring
 
-#### Real-time Features
+#### 6.2.3 Real-time Features
 
 - Implement incremental parsing for large documents
 - Consider background analysis for complex operations
 - Provide immediate visual feedback for annotations
 
-## 9. Examples
+## 7. Examples
 
 See the `examples/` directory for demonstrations of MarkScribe in action.
+
+## 8. Future Considerations
+
+### 8.1 Thinking about _MarkScribe Query Language_
+
+A dedicated query language could enable powerful search and analysis capabilities. It could look like this:
+
+```msql
+// Find all scenes where Jules and Isabelle interact
+SELECT scenes WHERE @Jules AND @Isabelle
+
+// Find all angry characters in Paris
+SELECT entities.Character WHERE mood(angry) AND in(@Paris)
+
+// List all events in chronological order
+SELECT entities.Event ORDER BY time
+
+// Complex narrative analysis
+SELECT scenes
+WHERE @Jules.pov
+AND mood(tense)
+AND EXISTS(entities.Character WHERE mood(angry))
+```
+
+Potential features:
+- Entity type filtering
+- Modifier-based queries
+- Relationship analysis
+- Temporal queries
+- Nested queries
+- Aggregation functions
+
+## 9. Glossary
+
+- **Entity**: Any narrative element (character, place, object, etc.) that can be referenced and tracked through annotations.
+
+- **Entity Reference**: A specific mention of an entity in the text, either visible (`@@Jules`) or hidden (`@@(Jules)`).
+
+- **Modifier**: An attribute or characteristic applied to an entity using dot notation (`.modifier`).
+  - **Lowercase modifier**: Temporary or contextual attribute (`.happy`, `.injured`)
+  - **UPPERCASE modifier**: Permanent characteristic (`.NAME`, `.OCCUPATION`)
+  - **Standard modifier**: Reserved MarkScribe feature with Title-case (`.Character`, `.Place`)
+
+- **Null Entity**: Special entity (`@@.`) used to apply modifiers or annotations without creating an actual entity reference.
+
+- **Content**: Text associated with an entity using square brackets (`@@Jules[text]`).
+
+- **Hidden Markdown**: Markdown syntax enclosed in parentheses after a null entity that won't appear in the final text (`@@.(# Title)`).
+
+- **Entity Graph**: A representation of all entities and their relationships extracted from the annotations.
+
+- **Parser**: A tool that processes MarkScribe annotations for analysis or output generation.
+  - **Analysis Parser**: Extracts information from annotations
+  - **Production Parser**: Transforms text while preserving annotations
+  - **Validator Parser**: Checks syntax validity
+  - **Cleanup Parser**: Removes visible annotations for final output
+
+- **Final Text**: The text as it appears to readers after all visible annotations have been removed.
 
 ## 10. License
 
