@@ -41,7 +41,7 @@ The possibilities are endless.
 MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points. With MarkPlot, you write normally while adding semantic annotations that tools can understand.
 
 ```markplot
-@@Jules smiled at @@(Marie).STATUS[reading].
+@@Jules smiled at @@Marie.age(25) reading.
 ```
 
 ## Key Features
@@ -65,8 +65,14 @@ MarkPlot uses a simple syntax based on `@@` symbols to annotate entities in your
 
 **Visible entities:**
 ```markplot
-@@Character walked into the room.
+@@Holmes walked into the room.
 ```
+
+By default, entities are characters. But it can be whatever you want, using the standard modifier `Type`:
+```markplot
+@@Arthur hold on @@Excalibur.Type(Object).
+```
+
 
 **Invisible entities with visible parameters:**
 ```markplot
