@@ -1,3 +1,4 @@
 .fslckout
 .uitreport
 justfile
+.fossil-settings
