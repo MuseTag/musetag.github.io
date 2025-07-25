@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- DOM Elements ---
-  const editor = document.getElementById("markplot-editor");
+  const editor = document.getElementById("musetag-editor");
   const previewOutput = document.getElementById("preview-output");
   const viewMdBtn = document.getElementById("view-md-btn");
   const viewHtmlBtn = document.getElementById("view-html-btn");
@@ -15,15 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
     cleanText: "",
     entities: new Map(), // Use a Map to store entities, keyed by name
   };
-  const LOCAL_STORAGE_KEY = "markplot-demo-text";
+  const LOCAL_STORAGE_KEY = "musetag-demo-text";
 
   // --- Parser ---
 
   /**
-   * Extracts a clean, readable text from a MarkPlot string,
+   * Extracts a clean, readable text from a MuseTag string,
    * according to the "Cleanup Parser" rules.
    * This is a simplified parser for the preview feature.
-   * @param {string} rawText The text containing MarkPlot annotations.
+   * @param {string} rawText The text containing MuseTag annotations.
    * @returns {string} The cleaned-up text for final display.
    */
   function getCleanText(rawText) {
@@ -88,11 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
-   * Parses the MarkPlot text to extract entities and their metadata.
-   * @param {string} rawText The text containing MarkPlot annotations.
+   * Parses the MuseTag text to extract entities and their metadata.
+   * @param {string} rawText The text containing MuseTag annotations.
    * @returns {{cleanText: string, entities: Map<string, object>}}
    */
-  function parseMarkPlot(rawText) {
+  function parseMuseTag(rawText) {
     const cleanText = getCleanText(rawText);
     const entities = new Map();
     const documentOutline = [];
@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cleanText,
       entities: newEntities,
       documentOutline,
-    } = parseMarkPlot(state.rawText);
+    } = parseMuseTag(state.rawText);
 
     // Preserve the manuallyExpanded state across re-renders
     newEntities.forEach((entity, name) => {
@@ -1301,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupScrollSync() {
-    const editorPane = document.getElementById("markplot-editor");
+    const editorPane = document.getElementById("musetag-editor");
     const previewPane = document.getElementById("preview-output");
     let activeScroller = null;
     let scrollTimeout;
@@ -1394,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getDefaultDemoText() {
     return `# The Gift of the Magi
-*A MarkPlot Demo - based on O. Henry's classic story*
+*A MuseTag Demo - based on O. Henry's classic story*
 
 @@.(## Christmas Eve)
 @@.(### One dollar and eighty-seven cents)
@@ -1566,7 +1566,7 @@ They invented the art of giving Christmas presents.
 Being wise, their gifts were no doubt wise ones, possibly bearing the privilege of exchange in case of duplication.
 And here I have lamely related to you the uneventful chronicle of two foolish children in a flat who most unwisely sacrificed for each other the greatest treasures of their house. But in a last word to the wise of these days let it be said that of all who give gifts these two were the wisest. Of all who give and receive gifts, such as they are wisest. Everywhere they are wisest. They are the magi.
 
-*This demo showcases MarkPlot's entity tracking, character development, timeline features, and annotation capabilities.*`;
+*This demo showcases MuseTag's entity tracking, character development, timeline features, and annotation capabilities.*`;
   }
 
   // --- Initialization ---
@@ -1578,7 +1578,7 @@ And here I have lamely related to you the uneventful chronicle of two foolish ch
     setupHorizontalResizers();
     setupScrollSync();
     processEditorChange(); // Initial processing of the loaded text
-    console.log("MarkPlot Editor initialized.");
+    console.log("MuseTag Editor initialized.");
   }
 
   init();

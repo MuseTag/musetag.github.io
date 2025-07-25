@@ -1,28 +1,28 @@
-# MarkPlot
+# MuseTag
 
 > A lightweight semantic annotation language for writers
 
 ## TL;DR
 
-MarkPlot is a lightweight semantic annotation language that allows writers to organize their creative work directly within their text. It offers a simple syntax to track characters, locations, plot elements and their relationships, without interrupting the writing flow. Compatible with standard text editors and Markdown, MarkPlot naturally integrates into the creative process while providing a structured view of the work. The annotations remain optional and human-readable, enabling authors to focus on their content while maintaining clear organization when needed.
+MuseTag is a lightweight semantic annotation language that allows writers to organize their creative work directly within their text. It offers a simple syntax to track characters, locations, plot elements and their relationships, without interrupting the writing flow. Compatible with standard text editors and Markdown, MuseTag naturally integrates into the creative process while providing a structured view of the work. The annotations remain optional and human-readable, enabling authors to focus on their content while maintaining clear organization when needed.
 
 ## Getting Started
 
-For a comprehensive introduction, documentation and guides, please visit the **[MarkPlot official website](https://markplot.github.io)**.
+For a comprehensive introduction, documentation and guides, please visit the **[MuseTag official website](https://musetag.github.io)**.
 
 ## Quick Example
 
-```markplot
+```musetag
 @@Jules(smiled) at @@Marie(25 years old) while she was reading.
 ```
 
-In this example, "Jules" is annotated with a simple, unqualified note ("smiled") and "Marie" is annotated with an age ("25 years old")—both using the most basic MarkPlot annotation syntax. Readers simply see:
+In this example, "Jules" is annotated with a simple, unqualified note ("smiled") and "Marie" is annotated with an age ("25 years old")—both using the most basic MuseTag annotation syntax. Readers simply see:
 
 > Jules at Marie while she was reading.
 
 You can also attach notes to entities, either locally or globally:
 
-```markplot
+```musetag
 @@Marie(25 years old) smiled.      # Local note
 @@Marie_(red hair)                 # Global note
 @@Marie went to the market.        # "red hair" is shown for Marie here
@@ -31,7 +31,7 @@ You can also attach notes to entities, either locally or globally:
 
 You can also use more advanced forms, for example:
 
-```markplot
+```musetag
 @@Jules smiled at @@(Marie).age(25)her while she was reading.
 ```
 
@@ -41,7 +41,7 @@ Here, "Jules" is a visible entity and "Marie" is a hidden entity with a modifier
 
 ## See It in Action
 
-**Try MarkPlot instantly** with our [interactive demo](https://markplot.github.io/30-demo.html)! Edit example text in real-time and see how MarkPlot annotations work—no installation required.
+**Try MuseTag instantly** with our [interactive demo](https://musetag.github.io/30-demo.html)! Edit example text in real-time and see how MuseTag annotations work—no installation required.
 
 ## Key Features
 
@@ -53,8 +53,8 @@ Here, "Jules" is a visible entity and "Marie" is a hidden entity with a modifier
 
 ## Documentation
 
-- [Quick Start Guide](https://markplot.github.io/quickstart.html) - Start using MarkPlot in 5 minutes
-- [Complete Specifications](https://markplot.github.io/specifications.html) - For developers and advanced users
+- [Quick Start Guide](https://musetag.github.io/quickstart.html) - Start using MuseTag in 5 minutes
+- [Complete Specifications](https://musetag.github.io/specifications.html) - For developers and advanced users
 
 ## License
 

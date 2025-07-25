@@ -3,20 +3,20 @@ title: Quick Start
 layout: page_with_toc
 ---
 
-## Welcome to MarkPlot!
+## Welcome to MuseTag!
 
-MarkPlot is a semantic annotation language that extends Markdown to help you keep track of characters, places, events, and relationships in your creative writing. Let's dive in!
+MuseTag is a semantic annotation language that extends Markdown to help you keep track of characters, places, events, and relationships in your creative writing. Let's dive in!
 
-**Want to try before you learn?** Check out our [interactive demo](30-demo.html) where you can experiment with MarkPlot annotations in real-time!
+**Want to try before you learn?** Check out our [interactive demo](30-demo.html) where you can experiment with MuseTag annotations in real-time!
 
 ## Where to start?
 
-MarkPlot is not a standalone tool. As the project is in early development, there are currently no dedicated tools available yet—but your annotated text will be compatible with future utilities as they are released. You can already use MarkPlot in any plain text or Markdown editor.
+MuseTag is not a standalone tool. As the project is in early development, there are currently no dedicated tools available yet—but your annotated text will be compatible with future utilities as they are released. You can already use MuseTag in any plain text or Markdown editor.
 
 Want to help shape the project, ask questions, or get updates?
-Join our community on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions)!
+Join our community on [GitHub Discussions](https://github.com/MuseTag/musetag.github.io/discussions)!
 
-If you are also a coder, you may want to implement MarkPlot in an existing tool or create a new one. In this case, please have a look at [the complete specifications](specifications.html).
+If you are also a coder, you may want to implement MuseTag in an existing tool or create a new one. In this case, please have a look at [the complete specifications](specifications.html).
 
 ## What is Markdown?
 
@@ -29,19 +29,19 @@ Markdown is a lightweight markup language that you probably already know. It use
 [Link](https://example.com)
 ```
 
-If you're new to Markdown, you can check out the [Markdown Guide](https://www.markdownguide.org/basic-syntax/) for the basics. But this is not a requirement to start using MarkPlot right now.
+If you're new to Markdown, you can check out the [Markdown Guide](https://www.markdownguide.org/basic-syntax/) for the basics. But this is not a requirement to start using MuseTag right now.
 
-## The 5-Minute MarkPlot Basics
+## The 5-Minute MuseTag Basics
 
 ### Mark an Entity—Just Once!
 
-In MarkPlot, you only need to use the `@@` marker the **first time** an entity appears in your text. This is called the **entity declaration**.
+In MuseTag, you only need to use the `@@` marker the **first time** an entity appears in your text. This is called the **entity declaration**.
 
-After that, every time you use the same name (the _canonical name_), MarkPlot will recognize it as a reference to the same entity—no need to repeat the `@@` marker.
+After that, every time you use the same name (the _canonical name_), MuseTag will recognize it as a reference to the same entity—no need to repeat the `@@` marker.
 
 For example:
 
-```markplot
+```musetag
 @@Alice entered the room.
 Alice smiled at Bob.
 Bob greeted Alice.
@@ -51,7 +51,7 @@ All occurrences of “Alice” are now tracked as the same entity, even if you d
 
 If you want to refer to the entity using a different name, synonym, or pronoun, use the hidden entity marker:
 
-```markplot
+```musetag
 @@(Alice)She looked at @@(Bob)him.
 ```
 
@@ -81,25 +81,25 @@ So, by default, entities are characters. How to mark some entitiesother things ?
 
 For example, mark a place:
 
-```
+```musetag
 @@London.Place was foggy yesterday.
 ```
 
 or an object:
 
-```
+```musetag
 @@Arthur hold @@Excalibur.Object.
 ```
 
 or en event:
 
-```
+```musetag
 @@Christmas.Event was the day after.
 ```
 
 or, if you need nothing we did not think about:
 
-```
+```musetag
 The @@Spirit.Type(idea) was @@Hegel.
 ```
 
@@ -110,7 +110,7 @@ Those modifiers are removed for the readers :
 > Christmas was the day after.
 > The Spirit was Hegel.
 
-But those modifiers helps MarkPlot tools to classify your entities and make your documentation clearer. You just to have use those once: when MarkPlot learnt that London is a place, you don't have to tell it twice.
+But those modifiers helps MuseTag tools to classify your entities and make your documentation clearer. You just to have use those once: when MuseTag learnt that London is a place, you don't have to tell it twice.
 
 This is only a special and powerful use of modifiers. You will learn more about them below.
 
@@ -118,13 +118,13 @@ This is only a special and powerful use of modifiers. You will learn more about 
 
 You may annotate an entity at any time easily:
 
-```markplot
+```musetag
 @@Entity(parameter)
 ```
 
 For example:
 
-```markplot
+```musetag
 @@Anne(25 years old) smiled at @@Paul(friend).
 ```
 
@@ -132,13 +132,13 @@ For example:
 > Anne smiled at Paul.
 
 **Behind the scenes:**
-MarkPlot-enabled tools will attach "25 years old" to Anne and "friend" to Paul as information you can see on their entity cards.
+MuseTag-enabled tools will attach "25 years old" to Anne and "friend" to Paul as information you can see on their entity cards.
 
 #### Local and Global Notes
 
 You can attach a note to an entity for just one occurrence (local note), or for all its appearances (global note):
 
-```markplot
+```musetag
 @@Marie(25 years old) smiled.      # Local note
 @@Marie_(red hair)                 # Global note
 ```
@@ -153,7 +153,7 @@ Global modifiers (like `.GNote`, `.DESCRIPTION`, etc.) are cumulative: each occu
 
 Want to show additional information about an entity in the text? Use square brackets:
 
-```markplot
+```musetag
 The @@(Watson).PROFESSION[Doctor] assisted with the investigation.
 ```
 
@@ -163,7 +163,7 @@ The @@(Watson).PROFESSION[Doctor] assisted with the investigation.
 **Behind the scenes:**
 The information is stored in Watson's entity card:
 
-```markplot
+```musetag
 # Watson
 - Type: Character
 - Profession: Doctor
@@ -172,15 +172,15 @@ The information is stored in Watson's entity card:
 
 ### Modifier Case: Context, Permanent, and Standard Modifiers
 
-Modifier case matters in MarkPlot:
+Modifier case matters in MuseTag:
 
 - **Lowercase modifiers** (e.g. `.mood`, `.age`) are for context-specific or temporary information.
 - **UPPERCASE modifiers** (e.g. `.BRAVE`, `.MAGICAL`) are for permanent attributes of an entity, defined by you.
-- **Capitalized modifiers** (e.g. `.Type`, `.Status`, `.Event`, `.Place`, `.Pov`, `.Object`, `.Todo`, `.Version`, `.Draft`, `.Final`, `.Geo`) are standard modifiers defined by MarkPlot or its tools. You can also create your own modifiers, but remember that case is always significant.
+- **Capitalized modifiers** (e.g. `.Type`, `.Status`, `.Event`, `.Place`, `.Pov`, `.Object`, `.Todo`, `.Version`, `.Draft`, `.Final`, `.Geo`) are standard modifiers defined by MuseTag or its tools. You can also create your own modifiers, but remember that case is always significant.
 
 For example:
 
-```markplot
+```musetag
 @@Arthur.BRAVE.tired entered the room with @@Excalibur.Object.MAGICAL.
 ```
 
@@ -192,7 +192,7 @@ There are also advanced modifiers, such as `.Geo(latitude, longitude)`, which ca
 
 Use parentheses to store information that doesn't appear in the text:
 
-```markplot
+```musetag
 The @@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
 ```
 
@@ -200,7 +200,7 @@ The @@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
 > The military doctor served in Afghanistan.
 
 **Behind the scenes:**
-```markplot
+```musetag
 # Watson
 - Type: Character
 - Age: 35
@@ -212,7 +212,7 @@ The @@(Watson).age(35).PROFESSION[military doctor] served in Afghanistan.
 
 Dates are special entities that help you manage your story's timeline:
 
-```markplot
+```musetag
 @@(1891-05-04) It was a foggy London morning when @@Lestrade arrived with news.
 ```
 
@@ -220,9 +220,9 @@ Dates are special entities that help you manage your story's timeline:
 > It was a foggy London morning when Lestrade arrived with news.
 
 **Behind the scenes:**
-MarkPlot-enabled tools can generate chronological timelines:
+MuseTag-enabled tools can generate chronological timelines:
 
-```markplot
+```musetag
 # Timeline
 - 1891-05-04: Lestrade arrives with news (Chapter 2)
 - 1891-05-05: The investigation begins (Chapter 3)
@@ -232,7 +232,7 @@ MarkPlot-enabled tools can generate chronological timelines:
 
 Use modifiers to show whose perspective a scene is from:
 
-```markplot
+```musetag
 ## Chapter 1 @@(Watson).Pov
 
 I had not seen @@Holmes for several days...
@@ -244,9 +244,9 @@ I had not seen @@Holmes for several days...
 > I had not seen Holmes for several days...
 
 **Behind the scenes:**
-MarkPlot-enabled tools track narrative structure:
+MuseTag-enabled tools track narrative structure:
 
-```markplot
+```musetag
 # Narrative Structure
 - Chapter 1: Watson's POV
 ```
@@ -254,7 +254,7 @@ MarkPlot-enabled tools track narrative structure:
 
 ## An fairly complete Example
 
-```markplot
+```musetag
 # A Study in Annotation @@.GENRE(mystery)
 
 ## Chapter 1 @@(Watson).Pov
@@ -280,7 +280,7 @@ leaving me quite astonished at his insight.
 > "You have been in Afghanistan, I perceive," were his first words to me, leaving me quite astonished at his insight.
 
 **Behind the scenes:**
-MarkPlot-enabled tools would generate:
+MuseTag-enabled tools would generate:
 - Entity cards for Watson, Holmes, London, Afghanistan, and 221B Baker Street
 - A timeline entry for March 4, 1881
 - Genre categorization for the document
@@ -288,20 +288,20 @@ MarkPlot-enabled tools would generate:
 
 ## What's Next?
 
-- **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations.
+- **Combine with Markdown**: Use all standard Markdown features alongside MuseTag annotations.
 - **Explore Modifiers**: Try `.mood()`, `.Status(draft)`, or create your own.
 - **Build Your World**: Create a consistent set of characters, places, and events.
 - **Structure Your Narrative**: Use annotations to track plot arcs and themes.
-- **Stay tuned for tools**: While dedicated MarkPlot tools are still in development, your annotations are future-proof and will be compatible with upcoming editors and visualization utilities.
-- **Join the community**: Share your feedback, ideas, or questions on [GitHub Discussions](https://github.com/MarkPlot/markplot.github.io/discussions)!
-- **Future-proof**: Any text you annotate with MarkPlot today will remain compatible with future tools and workflows.
+- **Stay tuned for tools**: While dedicated MuseTag tools are still in development, your annotations are future-proof and will be compatible with upcoming editors and visualization utilities.
+- **Join the community**: Share your feedback, ideas, or questions on [GitHub Discussions](https://github.com/MuseTag/musetag.github.io/discussions)!
+- **Future-proof**: Any text you annotate with MuseTag today will remain compatible with future tools and workflows.
 
 ## Tips
 
 - Develop a consistent annotation style for your project.
 - Use annotations sparingly at first—you can always add more later.
 - Consider creating a simple legend of your most-used annotations.
-- Remember that MarkPlot annotations can be completely hidden from your final reader.
+- Remember that MuseTag annotations can be completely hidden from your final reader.
 - Use visible parameters `[]` when you want the information to appear in your text.
 - Use invisible parameters `()` when you want to store metadata only.
 - You can combine multiple modifiers of different types on the same entity.
@@ -312,4 +312,4 @@ Ready to organize your narrative world?
 
 **Practice what you've learned** in our [interactive demo](30-demo.html) or start annotating your own work right away!
 
-Happy writing with MarkPlot!
+Happy writing with MuseTag!
