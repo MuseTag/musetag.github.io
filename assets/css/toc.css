@@ -497,7 +497,8 @@
     position: fixed;
     width: 100%;
     z-index: 20;
-    background: #fff;
+    background: var(--minima-background-color);
+    border: none;
 }
 
 main {

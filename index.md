@@ -1,8 +1,7 @@
 ---
 title: MuseTag
-layout: page_with_toc
+layout: home_with_blog
 ---
-> A lightweight annotation language for writers
 
 ## TL;DR
 
