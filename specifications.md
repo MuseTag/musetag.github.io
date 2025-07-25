@@ -913,3 +913,73 @@ When creating tools that support MarkPlot, consider these key aspects:
 - Implement incremental parsing for large documents
 - Consider background analysis for complex operations
 - Provide immediate visual feedback for annotations
+
+## 4. Examples
+
+This section provides practical examples of MarkPlot in action, demonstrating how the annotation language can be used in real-world writing scenarios.
+
+### 4.1 Basic Character Annotations
+
+```markplot
+@@Jules entered the café and spotted @@Marie[who was reading] by the window.
+@@Jules.happy[smiled] as he approached her table.
+```
+
+> Jules entered the café and spotted Marie who was reading by the window. Jules smiled as he approached her table.
+
+In this example:
+- Two character entities (Jules and Marie) are defined
+- A temporary state modifier (.happy) is applied to Jules
+- Content is captured for Marie using square brackets
+
+### 4.2 Rich Narrative Structure
+
+```markplot
+# The Meeting @@.Draft @@.Version(0.2)
+
+## Scene 1 @@(Paris).Place @@(1923-04-15)
+
+@@(Jules).Pov[I waited nervously] at @@Café_Lumière.Place[, my fingers
+drumming on the @@manuscript.Object in front of me].
+
+@@Editor.Character[took a long look at my work], @@(Editor).mood(critical)
+@@(Editor)[his expression giving nothing away].
+```
+
+This more complex example demonstrates:
+- Document-level modifiers (.Draft, .Version)
+- Header-scoped annotations (Place and Date)
+- Point of view indicators (Jules.Pov)
+- Character and object typing
+- Nested annotations
+- Hidden entity references
+
+### 4.3 Timeline and Events
+
+```markplot
+@@(1942-06-04) The @@Allied_Forces prepared for @@D_Day.Event.
+
+@@(1942-06-05) @@(Eisenhower)[The Supreme Commander] postponed the operation by 24 hours due to @@bad_weather.
+
+@@(1942-06-06 06:30) @@(Allied_Forces)[The first wave] landed on @@Normandy.Place.
+```
+
+This historical example shows how MarkPlot can track complex timelines with:
+- Absolute dates with different precision
+- Events with temporal context
+- Hidden entity references for clearer narrative flow
+
+### 4.4 Relationships and Dialog
+
+```markplot
+@@Jules.Character[asked], "@@(Jules)[What do you think of my story]?"
+
+@@Marie.Character.mood(thoughtful)[considered her response]. "@@(Marie)[I think the protagonist needs more development]," @@(Marie)[she said finally].
+
+@@Jules.mood(disappointed)[nodded slowly]. @@(Jules)[He knew she was right].
+```
+
+This dialog example demonstrates:
+- Character attribution for dialogue
+- Mood tracking across conversation
+- Mixed visible and hidden entity references

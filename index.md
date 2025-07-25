@@ -11,7 +11,7 @@ title: Home
 
 MarkPlot is a lightweight semantic annotation language that allows writers to organize their creative work directly within their text. It offers a simple syntax to track characters, locations, plot elements and their relationships, without interrupting the writing flow. Compatible with standard text editors and Markdown, MarkPlot naturally integrates into the creative process while providing a structured view of the work. The annotations remain optional and human-readable, enabling authors to focus on their content while maintaining clear organization when needed.
 
-If you are a writer, you might want to read the [Quick start](QuickStart.html) first.
+If you are a writer, you might want to read the [Quick start](quickstart.html) first.
 
 ## Why MarkPlot ?
 
@@ -46,7 +46,7 @@ The possibilities are endless.
 
 ## What is MarkPlot?
 
-MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points.
+MarkPlot is a simple yet powerful annotation language that helps writers organize their story elements directly within their text. No more switching between multiple documents or breaking your writing flow to check character details or plot points. With MarkPlot, you write normally while adding semantic annotations that tools can understand.
 
 ```markplot
 @@Jules smiled at @@Marie[who was reading a book].
@@ -59,11 +59,45 @@ MarkPlot is a simple yet powerful annotation language that helps writers organiz
 - **Stay focused**: All your notes right where you need them
 - **Keep control**: Your text remains plain text, readable anywhere
 - **Build tools**: Structured annotations enable powerful analysis tools
+- **Markdown compatible**: Works alongside standard Markdown format
+- **Highly customizable**: Create your own modifiers and entity types
 
 ## Getting Started
 
-- [Quick Start Guide](QuickStart.html) - Start using MarkPlot in 5 minutes
+- [Quick Start Guide](quickstart.html) - Start using MarkPlot in 5 minutes
+- [Examples in Specifications](specifications.html#examples) - See MarkPlot in real-world scenarios
+
+## How Does It Work?
+
+MarkPlot uses a simple syntax based on `@@` symbols to annotate entities in your text:
+
+```markplot
+@@Character.modifier[visible text]
+```
+
+These annotations are processed to:
+1. Track all mentions of characters, places, and other entities
+2. Capture relationships between entities
+3. Build timelines and event sequences
+4. Maintain consistency across your narrative
+5. Generate reports, character sheets, and visualizations
+
+Yet readers of your final text will only see the content without annotations.
+
+## For Writers
+
+- Integrate seamlessly with your existing writing workflow
+- Use any text editor that supports plain text
+- Add as many or as few annotations as you want
+- Generate character sheets and timelines automatically
+- Maintain consistency across long narratives
 
 ## For Developers
 
-Building tools for MarkPlot? Check out [Specifications](specifications.html)!
+Building tools for MarkPlot? Check out the [Specifications](specifications.html)!
+
+- Implement parsers for various programming languages
+- Build visualization tools for narrative analysis
+- Create writing aids using the semantic information
+- Extend the system with custom modifiers
+- Contribute to the open-source ecosystem

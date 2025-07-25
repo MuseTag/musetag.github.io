@@ -35,7 +35,7 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 MarkPlot-enabled tools can automatically generate entity cards:
 
 ```markplot
-# @@(Sherlock).entity
+# @@(Sherlock).Entity
 - Appearances: Chapter 1, Chapter 3
 - Related to: Watson, Lestrade
 ```
@@ -56,7 +56,7 @@ assisted with the investigation.
 The description is stored in Watson's entity card:
 
 ```markplot
-# @@(Watson).entity
+# @@(Watson).Entity
 - Description: John H. Watson, M.D., a military doctor who served in Afghanistan
 - Appearances: Chapter 1
 ```
@@ -87,7 +87,7 @@ MarkPlot-enabled tools can generate chronological timelines:
 Use modifiers to show whose perspective a scene is from:
 
 ```markplot
-## Chapter 1 @@(Watson).pov
+## Chapter 1 @@(Watson).Pov
 
 I had not seen @@Holmes for several days...
 ```
@@ -128,9 +128,9 @@ This builds a relationship graph:
 ## A Complete Example
 
 ```markplot
-# A Study in Annotation @@.genre(mystery)
+# A Study in Annotation @@.Genre(mystery)
 
-## Chapter 1 @@(Watson.pov)
+## Chapter 1 @@(Watson).Pov
 
 @@(London)
 @@(1881-03-04)
@@ -164,7 +164,7 @@ MarkPlot-enabled tools would generate:
 ## What's Next?
 
 - **Combine with Markdown**: Use all standard Markdown features alongside MarkPlot annotations
-- **Explore Modifiers**: Try `.mood()`, `.status()`, or create your own
+- **Explore Modifiers**: Try `.mood()`, `.Status()`, or create your own
 - **Build Your World**: Create a consistent set of characters, places, and events
 - **Structure Your Narrative**: Use annotations to track plot arcs and themes
 - **Use Tools**: Check out compatible editors and visualization tools
