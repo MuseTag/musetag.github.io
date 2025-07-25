@@ -7,6 +7,10 @@ nav_order: 0
 
 MarkPlot is a semantic annotation language that extends Markdown to help you keep track of characters, places, events, and relationships in your creative writing. Let's dive in!
 
+## Where to start?
+
+As MarkPlot is _only_ a annotation langage, it does not do much by itself. Your first step as a writer should be to choose a tool that supports it and fits your needs. As MarkPlot is still very new, curently, there is none. Sorry. Please come back later. [Drop me a email](mailto:mail@stephanemourey.fr?subject=Sign%20up%20for%2%MarkPlot%20updates) if you want to get an update. I promise I won't use it for anything else. Or, if you are also a coder, you may want to implement MarkPlot in existing tool or a new one. In this case, please have look to [the complete specifications](specifications.html).
+
 ## What is Markdown?
 
 Markdown is a lightweight markup language that you probably already know. It uses simple symbols to format text:
@@ -25,7 +29,7 @@ If you're new to Markdown, you can check out the [Markdown Guide](https://www.ma
 ### 1. Annotate Entities (Characters, Places, Moments or whatever)
 
 ```markplot
-@@(Sherlock) examined the crime scene at @@Baker_Street.
+@@Sherlock examined the crime scene at @@Baker_Street.
 ```
 
 **Result for readers:**
