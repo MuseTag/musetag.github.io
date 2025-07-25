@@ -290,15 +290,16 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 
 ##### 2.3.4.2 Core Standard Modifiers
 
-- `.Type(type)`: Defines the entity type. Common types include: "character", "place", "time", "event", "object", "organization" or whatever.
+- `.Type(type)`: Defines the entity type. Common types include: "character", "place", "event", "object", or may be whatever you want.
   - `.Character`: Sugar for `.Type(character)`
   - `.Place`: Sugar for `.Type(place)`
   - `.Object`: Sugar for `.Type(object)`
   - `.Event`: Sugar for `.Type(event)`
-
 - `.Status(status)`: Indicates the status of the associated section.
   - `.Draft`: Sugar for `.Status(draft)`
   - `.Final`: Sugar for `.Status(final)`
+- `.Todo(What is to do)`: indicates something to do.
+
 
 ---
 

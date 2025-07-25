@@ -82,3 +82,12 @@ modifiers:
     examples:
       - code: "@@.Final"
         description: "Equivlent to @@.Status(final)"
+
+  - name: Todo
+    description: Indicates something to be done
+    scope: local
+    examples:
+      - code: "@@.Todo(Something to do)"
+        description: "Indicates something to be done"
+    notes: |
+      Commonly used with null entity (@@.) for section marking
