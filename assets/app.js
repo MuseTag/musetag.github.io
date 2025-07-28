@@ -1396,6 +1396,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return `# The Gift of the Magi
 *A MuseTag Demo - based on O. Henry's classic story*
 
+> **Welcome to the MuseTag Demo!**
+>
+> - **Left panel:** Character entities detected in your text.
+> - **Bottom:** Timeline of events and dates.
+> - **Right (top):** Table of contents (TOC) for quick navigation.
+> - **Right (bottom):** Other entities, grouped by type.
+> - **Center:** Edit your text here. As you type, MuseTag annotations are detected and highlighted.
+> - **Below the editor:** Preview your text as Markdown or as clean HTML (reader view).
+>
+> **Tips:**
+> - Click on an TOC entry, on date in the timeline or on an entity appereance entry in its card to jump to its position in the text.
+> - Move your cursor in the editor: the panels update to show relevant info for the current context.
+> - Try editing or adding MuseTag annotations to see how the interface reacts in real time.
+>
+> _This demo helps you visualize how MuseTag structures and enriches your narrative as you write!_
+
 @@.(## Christmas Eve)
 @@.(### One dollar and eighty-seven cents)
 
