@@ -213,8 +213,17 @@ body {
     overflow-y: auto;
     flex-grow: 1;
     font-size: 0.95rem;
-    white-space: pre-wrap; /* Preserve line breaks for MD view */
     word-wrap: break-word; /* Prevent long strings from overflowing */
+}
+
+/* Only apply pre-wrap in Markdown view */
+#preview-output.markdown-view {
+    white-space: pre-wrap;
+}
+
+/* Use normal white-space in HTML view */
+#preview-output.html-view {
+    white-space: normal;
 }
 
 /* Styles for HTML preview */

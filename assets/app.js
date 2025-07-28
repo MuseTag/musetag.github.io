@@ -1192,6 +1192,18 @@ document.addEventListener("DOMContentLoaded", () => {
     viewMdBtn.classList.toggle("active", mode === "md");
     viewHtmlBtn.classList.toggle("active", mode === "html");
     updatePreview();
+
+    // Toggle white-space class for preview-output
+    const previewOutput = document.getElementById("preview-output");
+    if (previewOutput) {
+      if (mode === "md") {
+        previewOutput.classList.add("markdown-view");
+        previewOutput.classList.remove("html-view");
+      } else if (mode === "html") {
+        previewOutput.classList.add("html-view");
+        previewOutput.classList.remove("markdown-view");
+      }
+    }
   }
 
   function setupResizer() {
