@@ -163,3 +163,63 @@ modifiers:
         description: "Marks section as version 1.2"
     notes: |
       Used for version control and document management
+
+  - name: Hidden
+    description: Marks an entity as invisible in the final text (all references, even canonical, are hidden)
+    scope: global
+    examples:
+      - code: "@@JDS.Hidden.name(John Doe Smith)"
+        description: "Marks JDS as an invisible entity; all references to JDS are hidden in output"
+    notes: |
+      Useful for annotating meta-entities (authors, reviewers, etc.) that should never appear in the output.
+      This modifier does not accept parameters.
+
+  - name: Fix
+    description: Proposes a simple correction (spelling, grammar, typo)
+    scope: local
+    parameters:
+      - name: original
+        type: string
+        description: Original text (visible parameter, optional)
+      - name: correction
+        type: string
+        description: Correction (hidden parameter, optional)
+    examples:
+      - code: "The child@@JDS.Fix[x](s) walk@@JDS.Fix[](ed) to school."
+        description: "Proposes to replace 'x' by 's' and add 'ed'; output: 'The childs walked to school.'"
+    notes: |
+      All parameters are optional. Use only the hidden parameter to suggest an addition, only the visible parameter to suggest a deletion, or both for a replacement.
+
+  - name: Suggest
+    description: Suggests a reformulation or alternative phrasing
+    scope: local
+    parameters:
+      - name: original
+        type: string
+        description: Original text (visible parameter, optional)
+      - name: suggestion
+        type: string
+        description: Suggested text (hidden parameter, optional)
+    examples:
+      - code: "Sherlock JDS.Suggest[put his foot in it](was clumsy)."
+        description: "Suggests to replace 'put his foot in it' with 'was clumsy'; output: 'Sherlock was clumsy.'"
+    notes: |
+      All parameters are optional. Use only the hidden parameter to suggest an addition, only the visible parameter to suggest a deletion, or both for a replacement.
+
+  - name: Comment
+    description: Adds an editorial comment (hidden in output)
+    scope: local
+    parameters:
+      - name: fragment
+        type: string
+        description: Fragment being commented (visible parameter, optional)
+      - name: comment
+        type: string
+        description: Comment text (hidden parameter, required)
+    examples:
+      - code: "Sherlock JDS.Comment[put his foot in it](awkward phrasing)."
+        description: "Adds an editorial comment on the fragment; output: 'Sherlock put his foot in it.'"
+      - code: "Sherlock JDS.Comment[](awkward phrasing)."
+        description: "Adds an editorial comment at this position; output: 'Sherlock.'"
+    notes: |
+      The visible parameter is optional; the comment (hidden parameter) is required. The comment never appears in the output.

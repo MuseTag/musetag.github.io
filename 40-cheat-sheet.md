@@ -21,8 +21,9 @@ layout: cheatsheet
     <tr><th>Description</th><th>Syntax</th></tr>
     <tr><td>Local</td><td><code>@@Entity.modifier</code></td></tr>
     <tr><td>Global</td><td><code>@@Entity.MODIFIER</code></td></tr>
-    <tr><td>With parameter</td><td><code>@@Entity.modifier[parameter]</code></td></tr>
+    <tr><td>With visible parameter</td><td><code>@@Entity.modifier[parameter]</code></td></tr>
     <tr><td>With hidden parameter</td><td><code>@@Entity.modifier(parameter)</code></td></tr>
+    <tr><td>With both parameters</td><td><code>@@Entity.modifier[visible](hidden)</code></td></tr>
 </table>
 
 <table>
@@ -34,6 +35,10 @@ layout: cheatsheet
     <tr><td>Version of document or section</td><td><code>@@.Version(Number)</code></td></tr>
     <tr><td>Status of document or section</td><td><code>@@.Status(StatusName)</code></td></tr>
     <tr><td>Geographic coordinates</td><td><code>@@Entity.Geo(latitude, longitude)</code></td></tr>
+    <tr><td>Invisible entity</td><td><code>@@Entity.Hidden</code></td></tr>
+    <tr><td>Correction (fix)</td><td><code>@@Entity.Fix[original](correction)</code></td></tr>
+    <tr><td>Suggestion</td><td><code>@@Entity.Suggest[original](suggestion)</code></td></tr>
+    <tr><td>Comment</td><td><code>@@Entity.Comment[fragment](comment)</code></td></tr>
     <tr><td colspan="2"><em>Global modifiers are cumulative: each occurrence adds information to the entity, unless explicitly defined as unique (e.g. <code>.Status</code>).</em></td></tr>
 </table>
 

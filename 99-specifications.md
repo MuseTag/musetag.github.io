@@ -15,7 +15,7 @@ To declare an entity, use the `@@` marker before its canonical name the first ti
 @@Alice
 ```
 
-After this declaration, every occurrence of “Alice” (the canonical name) in the text—before or after the declaration—is considered a reference to the same entity.  
+After this declaration, every occurrence of “Alice” (the canonical name) in the text—before or after the declaration—is considered a reference to the same entity.
 You do **not** need to repeat the `@@` marker for subsequent uses.
 
 **Canonical names and underscores**
@@ -26,7 +26,7 @@ The canonical name of an entity may contain underscores (`_`) to represent space
 @@Sherlock_Holmes
 ```
 
-declares the entity “Sherlock Holmes”.  
+declares the entity “Sherlock Holmes”.
 After this declaration, every occurrence of “Sherlock Holmes” (with a space) or `Sherlock_Holmes` (with an underscore) in the text is recognized as a reference to the same entity.
 
 If you refer to the entity using a different name, synonym, or pronoun, use the hidden entity marker:
@@ -34,6 +34,22 @@ If you refer to the entity using a different name, synonym, or pronoun, use the 
 ```musetag
 @@(Alice)She smiled.
 ```
+
+#### Invisible Entities
+
+MuseTag supports "invisible entities"—entities that are never shown in the final text, regardless of how they are referenced (even by their canonical name without `@@`).
+Invisible entities are declared by applying the standard `.Hidden` modifier to the entity. Once an entity is marked as `.Hidden`, all its occurrences (including canonical name references) are omitted from the final output.
+This is useful for annotating contributors, beta-readers, or other meta-narrative actors who should not appear in the story itself.
+
+Example:
+```musetag
+@@JDS.Hidden.name(John Doe Smith)
+The child@@JDS.Fix[x](s) walk@@JDS.Fix[](ed) to school.
+```
+Here, `JDS` is an invisible entity (e.g., a beta-reader or author), and all references to `JDS` are hidden in the final text.
+
+**Persistence:**
+Once `.Hidden` is applied to an entity, it is invisible everywhere in the text, regardless of subsequent usage or modifier application.
 
 #### Entity hierarchy
 
@@ -43,13 +59,13 @@ You can specify the narrative importance of an entity by the number of `@` signs
 - `@@@Entity` — secondary entity
 - `@@@@Entity` — minor entity
 
-The more `@` signs, the less important the entity is considered.  
+The more `@` signs, the less important the entity is considered.
 This hierarchy is optional and only affects how tools may display or prioritize entities; it does not change the core semantics of the text.
 
-**Hierarchy persistence:**  
+**Hierarchy persistence:**
 The hierarchy level is global: once an entity is declared as secondary or minor, it keeps that status everywhere in the text, even if referenced with fewer `@`.
 
-**Definition:**  
+**Definition:**
 An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.
 
 MuseTag supports two types of entity annotations:
@@ -140,7 +156,7 @@ MuseTag supports three distinct categories of modifiers:
 #### Modifier Parameters
 Modifiers can accept parameters using two different syntaxes:
 
-**hidden parameters** use parentheses `()` for meta-information that should not appear in the final text:
+**Hidden parameters** use parentheses `()` for meta-information that should not appear in the final text:
 ```musetag
 @@Jules.age(42) walked down the street.           # age metadata stored but hidden
 @@.status(draft)                                  # document status hidden
@@ -152,6 +168,21 @@ Modifiers can accept parameters using two different syntaxes:
 @@(Jules).PROFESSION[detective] investigated the case.
 ```
 > detective investigated the case.
+
+**Combined parameters:**
+A modifier can accept both a visible parameter (`[]`) and a hidden parameter (`()`) at the same time.
+This enables advanced editorial and collaborative features, such as proposing corrections, suggestions, or comments, where the visible parameter is the text to be shown and the hidden parameter is the meta-information (e.g., correction, suggestion, or comment).
+
+Example:
+```musetag
+The child@@JDS.Fix[x](s) walk@@JDS.Fix[](ed) to school.
+Sherlock JDS.Suggest[put his foot in it](was clumsy).
+Sherlock JDS.Comment[put his foot in it](awkward phrasing).
+```
+- `.Fix[x](s)`: Proposes to replace `x` by `s` (correction).
+- `.Fix[](ed)`: Proposes to add `ed`.
+- `.Suggest[...](...)`: Suggests a reformulation.
+- `.Comment[...](...)`: Adds an editorial comment.
 
 The parameter content is passed as-is to the modifier implementation, which can parse it according to its own needs.
 
@@ -218,8 +249,10 @@ Key points:
 #### Visibility Rules
 Modifiers themselves never appear in the final text, but their parameters may:
 - **Modifiers**: Always hidden (`.drunk`, `.PROFESSION`, etc.)
-- **hidden parameters** `()`: Never appear in final text
+- **Hidden parameters** `()`: Never appear in final text
 - **Visible parameters** `[]`: Always appear in final text
+- **Invisible entities** (`.Hidden`): All occurrences of the entity are hidden, including canonical name references, regardless of context or modifier usage.
+- **Combined parameters**: When both a visible and a hidden parameter are present, the visible parameter is shown in the final text, and the hidden parameter is omitted.
 
 ```musetag
 @@Jules.drunk.age(35) stumbled forward.
@@ -230,6 +263,11 @@ Modifiers themselves never appear in the final text, but their parameters may:
 @@(Jules).PROFESSION[detective] investigated carefully.
 ```
 > detective investigated carefully.
+
+```musetag
+The child@@JDS.Fix[x](s) walk@@JDS.Fix[](ed) to school.
+```
+> The childx walk to school.
 
 #### Standard Modifiers
 Standard modifiers are documented in `namespaces/global.yaml` following the same format as application-specific modifiers (see §2.3.5.4). The specification below provides an overview of core standard modifiers, but the authoritative reference is the YAML file.
@@ -244,20 +282,23 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
   - `.Event`: Sugar for `.Type(event)`
   - `.Object`: Sugar for `.Type(object)`
 - `.Note(content)`: Attaches a local note to an entity (shortcut: `@@Entity(content)`)
-- `.GNote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
+- `.Gnote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
 - `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
  - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.
   - `.Draft`: Sugar for `.Status(draft)`
   - `.Final`: Sugar for `.Status(final)`
 - `.Todo(What is to do)`: indicates something to do.
-- `.Version(version)`: Indicates version information for document or section.
-
 - `.Version(version)`: Specifies the version of the associated section.
 - `.Pov`: Indicates that the narrative follows the point of view of the entity.
+- `.Hidden`: Marks an entity as invisible. All occurrences of the entity (including canonical name references) are omitted from the final text. Used for meta-entities such as authors, beta-readers, or editorial actors.
+  - Example: `@@JDS.Hidden.name(John Doe Smith)`
+- `.Fix`: Proposes a simple correction (spelling, grammar, typo). The original text is in brackets `[]`, the correction in parentheses `()`.
+- `.Suggest`: Suggests a reformulation or alternative phrasing. The suggested replacement is in parentheses, the original in brackets.
+- `.Comment`: Adds an editorial comment. The commented text is in brackets, the comment itself in parentheses (always hidden).
 
-**Global modifier aggregation:**  
-By default, global modifiers are cumulative: each occurrence adds information to the entity, rather than replacing previous values.  
+**Global modifier aggregation:**
+By default, global modifiers are cumulative: each occurrence adds information to the entity, rather than replacing previous values.
 Only modifiers explicitly defined as unique (such as `.Status` or `.Version`) replace previous values.
 Example usage:
 ```musetag
