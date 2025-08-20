@@ -25,8 +25,6 @@ You can also attach notes to entities, either locally or globally:
 ```musetag
 @@Marie(25 years old) smiled.      # Local note
 @@Marie_(red hair)                 # Global note
-@@Marie went to the market.        # "red hair" is shown for Marie here
-@@Marie(30 years old) danced.      # "30 years old" overrides the global note here
 ```
 
 You can also use more advanced forms, for example:
