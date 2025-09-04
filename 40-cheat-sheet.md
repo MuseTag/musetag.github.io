@@ -31,6 +31,7 @@ layout: cheatsheet
     <tr><th>Description</th><th>Syntax</th></tr>
     <tr><td>Type of entity</td><td><code>@@Entity.Type(character)</code></td></tr>
     <tr><td>Point of view</td><td><code>@@Entity.Pov</code></td></tr>
+    <tr><td>Alias (alternative name)</td><td><code>@@(Entity).Alias[AliasName]</code></td></tr>
     <tr><td>Remember something to do</td><td><code>@@.Todo(What to do)</code></td></tr>
     <tr><td>Version of document or section</td><td><code>@@.Version(Number)</code></td></tr>
     <tr><td>Status of document or section</td><td><code>@@.Status(StatusName)</code></td></tr>

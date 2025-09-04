@@ -58,6 +58,21 @@ If you want to refer to the entity using a different name, synonym, or pronoun, 
 **Result for reader:**
 > She looked at him.
 
+#### Use Aliases for Alternative Names
+
+You can also define alternative names (aliases) for an entity using the `.Alias` standard modifier. When you define an alias, any occurrence of that alias in your text—even without the `@@` marker—will be recognized as a reference to the canonical entity.
+
+For example:
+
+```musetag
+@@(Sherlock_Holmes).Alias[Holmes] looked at @@(John_Watson).Alias[Watson].
+Holmes and Watson were famous detectives.
+```
+
+Here, both "Holmes" and "Watson" will be recognized as references to their respective entities everywhere in the text, even in the second sentence where the `@@` marker is not used.
+
+You can define multiple aliases for the same entity; all are cumulative.
+
 **What is an entity?**
 An entity is a meaningful element in your story—like a character, place, or object—that is described, referred to repeatedly, and helps structure the narrative.
 

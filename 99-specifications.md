@@ -283,6 +283,9 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
   - `.Object`: Sugar for `.Type(object)`
 - `.Note(content)`: Attaches a local note to an entity (shortcut: `@@Entity(content)`)
 - `.Gnote(content)`: Attaches a global note to an entity (shortcut: `@@Entity_(content)`)
+- `.Alias(alias)`: Defines an alternative name (alias) for an entity. When the alias appears in the text, even without the `@@` marker, it is recognized as a reference to the canonical entity. Multiple aliases can be defined for the same entity; all are cumulative.
+  - Example: `@@(Sherlock_Holmes).Alias[Holmes] looked at @@(John_Watson).Alias[Watson]. Holmes and Watson were famous detectives.`
+  - Here, both "Holmes" and "Watson" will be recognized as references to their respective entities everywhere in the text, even without the `@@` marker.
 - `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
  - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.
