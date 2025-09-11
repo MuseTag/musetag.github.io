@@ -32,6 +32,18 @@ layout: cheatsheet
     <tr><td>Type of entity</td><td><code>@@Entity.Type(character)</code></td></tr>
     <tr><td>Point of view</td><td><code>@@Entity.Pov</code></td></tr>
     <tr><td>Alias (alternative name)</td><td><code>@@(Entity).Alias[AliasName]</code></td></tr>
+    <tr><td>Hierarchical relation (child/member/part of)</td><td><code>@@Entity.ChildOf(@@Other)</code></td></tr>
+    <tr><td>Hierarchical relation (parent/container/group of)</td><td><code>@@Entity.ParentOf(@@Other)</code></td></tr>
+    <tr><td>Alias: part of</td><td><code>@@Entity.PartOf(@@Other)</code></td></tr>
+    <tr><td>Alias: has part</td><td><code>@@Entity.HasPart(@@Other)</code></td></tr>
+    <tr><td>Alias: belongs to</td><td><code>@@Entity.BelongsTo(@@Other)</code></td></tr>
+    <tr><td>Alias: includes</td><td><code>@@Entity.Includes(@@Other)</code></td></tr>
+    <tr><td>Alias: member of</td><td><code>@@Entity.MemberOf(@@Other)</code></td></tr>
+    <tr><td>Alias: group of</td><td><code>@@Entity.GroupOf(@@Other)</code></td></tr>
+    <tr><td>Alias: contained in</td><td><code>@@Entity.ContainedIn(@@Other)</code></td></tr>
+    <tr><td>Alias: container of</td><td><code>@@Entity.ContainerOf(@@Other)</code></td></tr>
+    <tr><td>Alias: descendant of</td><td><code>@@Entity.DescendantOf(@@Other)</code></td></tr>
+    <tr><td>Alias: ancestor of</td><td><code>@@Entity.AncestorOf(@@Other)</code></td></tr>
     <tr><td>Remember something to do</td><td><code>@@.Todo(What to do)</code></td></tr>
     <tr><td>Version of document or section</td><td><code>@@.Version(Number)</code></td></tr>
     <tr><td>Status of document or section</td><td><code>@@.Status(StatusName)</code></td></tr>

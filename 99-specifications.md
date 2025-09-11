@@ -286,6 +286,21 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 - `.Alias(alias)`: Defines an alternative name (alias) for an entity. When the alias appears in the text, even without the `@@` marker, it is recognized as a reference to the canonical entity. Multiple aliases can be defined for the same entity; all are cumulative.
   - Example: `@@(Sherlock_Holmes).Alias[Holmes] looked at @@(John_Watson).Alias[Watson]. Holmes and Watson were famous detectives.`
   - Here, both "Holmes" and "Watson" will be recognized as references to their respective entities everywhere in the text, even without the `@@` marker.
+- `.ChildOf(entity)`: Declares that the current entity is the direct child (descendant, member, part) of the specified entity. This establishes a hierarchical (tree-like) relationship, usable for family, spatial, temporal, organizational, or other structures.
+  - Example: `@@Alice.ChildOf(@@Marie)` (Alice is the child of Marie; Marie is the parent of Alice)
+  - Example: `@@Paris.ChildOf(@@France)` (Paris is part of France)
+- `.ParentOf(entity)`: Declares that the current entity is the direct parent (ascendant, container, group) of the specified entity. This is logically equivalent to the inverse `.ChildOf` relation.
+  - Example: `@@Marie.ParentOf(@@Alice)` (Marie is the parent of Alice)
+  - Example: `@@France.ParentOf(@@Paris)` (France contains Paris)
+- **Standard sugars for `.ChildOf` and `.ParentOf`** (all strictly equivalent, use whichever is most natural in context):
+  - `.PartOf(entity)` / `.HasPart(entity)`
+  - `.BelongsTo(entity)` / `.Includes(entity)`
+  - `.MemberOf(entity)` / `.GroupOf(entity)`
+  - `.ContainedIn(entity)` / `.ContainerOf(entity)`
+  - `.DescendantOf(entity)` / `.AncestorOf(entity)`
+  - `.OwnedBy(entity)` / `.OwnerOf(entity)`
+  - All these sugars are interchangeable and establish the same hierarchical link.
+  - Example: `@@Alice.ChildOf(@@Marie)` ≡ `@@Alice.PartOf(@@Marie)` ≡ `@@Marie.ParentOf(@@Alice)` ≡ `@@Marie.HasPart(@@Alice)`
 - `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
  - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.

@@ -236,3 +236,87 @@ modifiers:
         description: "Adds an editorial comment at this position; output: 'Sherlock.'"
     notes: |
       The visible parameter is optional; the comment (hidden parameter) is required. The comment never appears in the output.
+
+  - name: ChildOf
+    description: Declares that the current entity is the child, member, or part of the specified entity (hierarchical/arborescent relation)
+    scope: global
+    examples:
+      - code: "@@Paris.ChildOf(@@France)"
+        description: "Paris is a child (part/member) of France"
+
+  - name: ParentOf
+    description: Declares that the current entity is the parent, group, or container of the specified entity (inverse hierarchical relation)
+    scope: global
+    examples:
+      - code: "@@France.ParentOf(@@Paris)"
+        description: "France is the parent (container/group) of Paris"
+
+  - name: PartOf
+    description: Sugar syntax for ChildOf
+    scope: global
+    examples:
+      - code: "@@Paris.PartOf(@@France)"
+        description: "Equivalent to @@Paris.ChildOf(@@France)"
+
+  - name: HasPart
+    description: Sugar syntax for ParentOf
+    scope: global
+    examples:
+      - code: "@@France.HasPart(@@Paris)"
+        description: "Equivalent to @@France.ParentOf(@@Paris)"
+
+  - name: BelongsTo
+    description: Sugar syntax for ChildOf
+    scope: global
+    examples:
+      - code: "@@Paris.BelongsTo(@@France)"
+        description: "Equivalent to @@Paris.ChildOf(@@France)"
+
+  - name: Includes
+    description: Sugar syntax for ParentOf
+    scope: global
+    examples:
+      - code: "@@France.Includes(@@Paris)"
+        description: "Equivalent to @@France.ParentOf(@@Paris)"
+
+  - name: MemberOf
+    description: Sugar syntax for ChildOf
+    scope: global
+    examples:
+      - code: "@@Alice.MemberOf(@@Famille_Dupont)"
+        description: "Equivalent to @@Alice.ChildOf(@@Famille_Dupont)"
+
+  - name: GroupOf
+    description: Sugar syntax for ParentOf
+    scope: global
+    examples:
+      - code: "@@Famille_Dupont.GroupOf(@@Alice)"
+        description: "Equivalent to @@Famille_Dupont.ParentOf(@@Alice)"
+
+  - name: ContainedIn
+    description: Sugar syntax for ChildOf
+    scope: global
+    examples:
+      - code: "@@Chambre.ContainedIn(@@Maison)"
+        description: "Equivalent to @@Chambre.ChildOf(@@Maison)"
+
+  - name: ContainerOf
+    description: Sugar syntax for ParentOf
+    scope: global
+    examples:
+      - code: "@@Maison.ContainerOf(@@Chambre)"
+        description: "Equivalent to @@Maison.ParentOf(@@Chambre)"
+
+  - name: DescendantOf
+    description: Sugar syntax for ChildOf
+    scope: global
+    examples:
+      - code: "@@Alice.DescendantOf(@@Marie)"
+        description: "Equivalent to @@Alice.ChildOf(@@Marie)"
+
+  - name: AncestorOf
+    description: Sugar syntax for ParentOf
+    scope: global
+    examples:
+      - code: "@@Marie.AncestorOf(@@Alice)"
+        description: "Equivalent to @@Marie.ParentOf(@@Alice)"
