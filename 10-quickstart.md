@@ -133,6 +133,25 @@ This is only a special and powerful use of modifiers. You will learn more about 
 
 You may annotate an entity at any time easily:
 
+### Annotate Multiple Entities at Once (Grouping Syntax)
+
+You can apply the same modifier(s) to several entities at once by listing them, separated by commas, inside the parentheses of a hidden entity declaration. This is a **syntactic convenience**: the modifier(s) are applied to each entity individually.
+
+For example:
+
+```musetag
+@@(Claire,Antoine).age(26)
+```
+
+This is strictly equivalent to writing:
+
+```musetag
+@@Claire.age(26)
+@@Antoine.age(26)
+```
+
+Grouping does not create a persistent group or relationship between the entities; it simply allows you to factorize your annotations for clarity and brevity.
+
 ```musetag
 @@Entity(parameter)
 ```

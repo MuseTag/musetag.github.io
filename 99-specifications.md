@@ -125,6 +125,25 @@ In this example:
 
 This simple, consistent rule ensures predictable behavior while maintaining the semantic connections between entities and their narrative context.
 
+### Entity Grouping Syntax
+
+MuseTag allows you to annotate multiple entities at once using a grouping syntax: list several entity names, separated by commas, inside the parentheses of a hidden entity declaration.
+
+```musetag
+@@(Claire,Antoine).age(26)
+```
+
+This is a **syntactic convenience**: it is strictly equivalent to writing the same annotation for each entity individually. The modifier(s) following the group are applied to each entity in the group as if they were annotated separately.
+
+For example, the above is equivalent to:
+
+```musetag
+@@Claire.age(26)
+@@Antoine.age(26)
+```
+
+Grouping does not create a persistent group or relationship between the entities; it simply allows you to factorize your annotations for clarity and brevity. There is no support for nested groups, and mixing visible and hidden entities in a group is allowed by syntax but not generally useful.
+
 ### Entity Modifiers
 Entity modifiers allow you to add attributes and metadata to entities using dot notation. These modifiers can be temporary states, permanent traits, or standard features.
 ```musetag

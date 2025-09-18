@@ -8,6 +8,7 @@ layout: cheatsheet
     <tr><th>Description</th><th>Syntax</th></tr>
     <tr><td>Visible</td><td><code>@@Entity</code></td></tr>
     <tr><td>Hidden</td><td><code>@@(Entity)</code></td></tr>
+    <tr><td>Group (apply modifier to several entities)</td><td><code>@@(Entity1,Entity2,...)</code></td></tr>
     <tr><td>The <em>Null</em> one</td><td><code>@@.</code></td></tr>
     <tr><td>Declare once, use freely</td><td><code>@@Entity</code> (declare once; all further uses of the name are tracked automatically)</td></tr>
     <tr><td>Entity hierarchy</td><td><code>@@Entity</code> (main), <code>@@@Entity</code> (secondary), <code>@@@@Entity</code> (minor)</td></tr>
