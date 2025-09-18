@@ -33,6 +33,7 @@ layout: cheatsheet
     <tr><td>Type of entity</td><td><code>@@Entity.Type(character)</code></td></tr>
     <tr><td>Point of view</td><td><code>@@Entity.Pov</code></td></tr>
     <tr><td>Alias (alternative name)</td><td><code>@@(Entity).Alias[AliasName]</code></td></tr>
+    <tr><td>Dialogue</td><td><code>@@(Entity1,Entity2).Dialog[dialogue]</code></td></tr>
     <tr><td>Hierarchical relation (child/member/part of)</td><td><code>@@Entity.ChildOf(@@Other)</code></td></tr>
     <tr><td>Hierarchical relation (parent/container/group of)</td><td><code>@@Entity.ParentOf(@@Other)</code></td></tr>
     <tr><td>Alias: part of</td><td><code>@@Entity.PartOf(@@Other)</code></td></tr>

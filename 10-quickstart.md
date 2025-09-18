@@ -187,6 +187,19 @@ Global modifiers (like `.GNote`, `.DESCRIPTION`, etc.) are cumulative: each occu
 
 Want to show additional information about an entity in the text? Use square brackets:
 
+### Mark Dialogues with the `.Dialog` Modifier
+
+You can explicitly mark a passage as a dialogue using the standard `.Dialog` modifier. The parameter is the dialogue text itself, usually provided as a visible parameter in square brackets (`[]`). When used with entity grouping, all listed entities are considered participants in the dialogue.
+
+```musetag
+@@(Sherlock,Watson).Dialog[
+--- What do you think about it, dear friend?
+--- I do not know what to think.
+]
+```
+
+This marks both Sherlock and Watson as participants in the dialogue.
+
 ```musetag
 The @@(Watson).PROFESSION[Doctor] assisted with the investigation.
 ```

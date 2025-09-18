@@ -320,3 +320,14 @@ modifiers:
     examples:
       - code: "@@Marie.AncestorOf(@@Alice)"
         description: "Equivalent to @@Marie.ParentOf(@@Alice)"
+
+  - name: Dialog
+    description: Marks a passage as a dialogue involving the annotated entity or entities. The parameter is the dialogue text itself, usually provided as a visible parameter in square brackets ([]). When used with entity grouping, all listed entities are considered participants in the dialogue.
+    scope: global
+    parameters:
+      - name: dialogue
+        type: string
+        description: The text of the dialogue (usually visible, in square brackets)
+    examples:
+      - code: "@@(Sherlock,Watson).Dialog[--- What do you think about it, dear friend?\n--- I do not know what to think.]"
+        description: "Marks a dialogue involving both Sherlock and Watson as participants"

@@ -320,6 +320,12 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
   - `.OwnedBy(entity)` / `.OwnerOf(entity)`
   - All these sugars are interchangeable and establish the same hierarchical link.
   - Example: `@@Alice.ChildOf(@@Marie)` ≡ `@@Alice.PartOf(@@Marie)` ≡ `@@Marie.ParentOf(@@Alice)` ≡ `@@Marie.HasPart(@@Alice)`
+- `.Dialog(dialogue)`: Marks a passage as a dialogue involving the annotated entity or entities. The parameter is the dialogue text itself, usually provided as a visible parameter in square brackets (`[]`). When used with entity grouping, all listed entities are considered participants in the dialogue.
+  - Example: `@@Sherlock.Dialog[What do you think, my friend?]`
+  - Example (grouped): `@@(Sherlock,Watson).Dialog[
+--- What do you think about it, dear friend?
+--- I do not know what to think.
+]`
 - `.Geo(latitude, longitude)`: Associates geographic coordinates with an entity (usually a place). Example: `@@Paris.Geo(48.8566, 2.3522)`
  - This modifier is primarily intended for use by editors or tools, not for manual entry.
 - `.Status(status)`: Indicates the status of the associated section.
