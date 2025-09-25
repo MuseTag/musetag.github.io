@@ -33,6 +33,7 @@ layout: cheatsheet
     <tr><td>Type of entity</td><td><code>@@Entity.Type(character)</code></td></tr>
     <tr><td>Point of view</td><td><code>@@Entity.Pov</code></td></tr>
     <tr><td>Alias (alternative name)</td><td><code>@@(Entity).Alias[AliasName]</code></td></tr>
+    <tr><td>Voice (spoken/thought, with optional expression)</td><td><code>@@Entity.Voice(expression)[text]</code></td></tr>
     <tr><td>Dialogue</td><td><code>@@(Entity1,Entity2).Dialog[dialogue]</code></td></tr>
     <tr><td>Hierarchical relation (child/member/part of)</td><td><code>@@Entity.ChildOf(@@Other)</code></td></tr>
     <tr><td>Hierarchical relation (parent/container/group of)</td><td><code>@@Entity.ParentOf(@@Other)</code></td></tr>
@@ -56,6 +57,10 @@ layout: cheatsheet
     <tr><td>Comment</td><td><code>@@Entity.Comment[fragment](comment)</code></td></tr>
     <tr><td colspan="2"><em>Global modifiers are cumulative: each occurrence adds information to the entity, unless explicitly defined as unique (e.g. <code>.Status</code>).</em></td></tr>
 </table>
+
+<p><strong>Note:</strong> You can also use <code>.Voice</code> with the null entity (<code>@@.</code>) to indicate a vocal effect or expression for narration or any passage not attributed to a specific entity.<br>
+<strong>Example:</strong> <code>@@.Voice(whispering)[The night was silent.]</code> — This marks the narration as intended to be read in a whisper, useful for TTS or dramatic reading.
+</p>
 
 <table>
     <caption>Shorthands for standard modifiers</caption>

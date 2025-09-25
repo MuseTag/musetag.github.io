@@ -331,3 +331,17 @@ modifiers:
     examples:
       - code: "@@(Sherlock,Watson).Dialog[--- What do you think about it, dear friend?\n--- I do not know what to think.]"
         description: "Marks a dialogue involving both Sherlock and Watson as participants"
+
+  - name: Voice
+    description: Marks a passage as spoken or thought by the annotated entity, with optional expression/context. The visible parameter (in square brackets) is the spoken or thought text; the hidden parameter (in parentheses) can indicate expression, intonation, or context (e.g. 'intrigued', 'thought', 'whispering'). Useful for identifying speech, thoughts, or interior monologue, and for TTS or analysis.
+    scope: global
+    parameters:
+      - name: expression
+        type: string
+        description: Optional hidden parameter indicating expression, intonation, or context (e.g. 'intrigued', 'thought', 'whispering')
+      - name: text
+        type: string
+        description: The spoken or thought text (visible parameter, in square brackets)
+    examples:
+      - code: "@@(Holmes).Voice(intrigued)[What is happening here?]"
+        description: "Holmes says 'What is happening here?' with an intrigued expression"

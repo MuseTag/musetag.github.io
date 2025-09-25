@@ -187,6 +187,40 @@ Global modifiers (like `.GNote`, `.DESCRIPTION`, etc.) are cumulative: each occu
 
 Want to show additional information about an entity in the text? Use square brackets:
 
+### Mark Speech and Thought with the `.Voice` Modifier
+
+You can explicitly mark a passage as spoken or thought by an entity using the standard `.Voice` modifier. The visible parameter (in square brackets) is the spoken or thought text; the hidden parameter (in parentheses) can indicate expression, intonation, or context (e.g. "intrigued", "thought", "whispering").
+
+For example:
+
+```musetag
+@@(Holmes).Voice(intrigued)[What is happening here?]
+```
+
+This allows you to identify speech, thoughts, or interior monologue for each entity, and can be used for analysis or to drive text-to-speech (TTS) engines with different voices or expressions.
+
+#### Semantic Imbrication of Modifiers
+
+MuseTag lets you combine and nest modifiers in a way that matches the structure of your story. For example, you can use `.Dialog` to mark a whole dialogue block, and `.Voice` inside it to attribute each line to a character:
+
+```musetag
+@@.Dialog[
+  @@(Holmes).Voice[--- What is happening here?]
+  @@(Watson).Voice[--- I wonder...]
+]
+```
+
+This reflects the narrative structure: a dialogue containing several interventions, each attributed to a speaker. You can freely combine and nest modifiers to express complex situations—MuseTag is designed to follow your narrative logic, not to restrict it.
+
+**Tip:**  
+You can also use `.Voice` with the null entity (`@@.`) to indicate a vocal effect or expression for narration or any passage not attributed to a specific entity.  
+For example:
+
+```musetag
+@@.Voice(whispering)[The night was silent.]
+```
+This marks the narration as intended to be read in a whisper, useful for TTS or dramatic reading.
+
 ### Mark Dialogues with the `.Dialog` Modifier
 
 You can explicitly mark a passage as a dialogue using the standard `.Dialog` modifier. The parameter is the dialogue text itself, usually provided as a visible parameter in square brackets (`[]`). When used with entity grouping, all listed entities are considered participants in the dialogue.

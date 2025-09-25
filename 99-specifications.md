@@ -339,10 +339,49 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 - `.Fix`: Proposes a simple correction (spelling, grammar, typo). The original text is in brackets `[]`, the correction in parentheses `()`.
 - `.Suggest`: Suggests a reformulation or alternative phrasing. The suggested replacement is in parentheses, the original in brackets.
 - `.Comment`: Adds an editorial comment. The commented text is in brackets, the comment itself in parentheses (always hidden).
+- `.Voice(expression)[text]`: Marks a passage as spoken or thought by the annotated entity, with optional expression/context. The visible parameter (in square brackets) is the spoken or thought text; the hidden parameter (in parentheses) can indicate expression, intonation, or context (e.g. "intrigued", "thought", "whispering"). Useful for identifying speech, thoughts, or interior monologue, and for TTS (text-to-speech) or to guide actors recording audiobooks or dramatic readings, as well as for analysis.
+  - Example: `@@(Holmes).Voice(intrigued)[What is happening here?]`
+
+**Note:**  
+You can also use `.Voice` with the null entity (`@@.`) to indicate a vocal effect or expression for narration or any passage not attributed to a specific entity.  
+Example:
+```musetag
+@@.Voice(whispering)[The night was silent.]
+```
+
+---
+
+### Parameter imbrication and successive analysis
+
+Modifier parameters in MuseTag are themselves MuseTag text: they can contain other entities, modifiers, or annotations, with no limit on imbrication imposed by the language.  
+MuseTag analysis does not require deep recursive processing: each process (tool, extension, etc.) only handles the modifier it is responsible for, extracts what it needs from the parameter (often the first entity), and then the global analysis continues on the rest of the text, including inside parameters.
+
+**Hierarchical example:**
+```musetag
+@@Mummy.ParentOf(@@Mom.ParentOf(@@Jane.age(25)))
+```
+- The `ParentOf` process on `@@Mummy` extracts `@@Mom` from its parameter, then the global analysis continues on `@@Mom.ParentOf(@@Jane.age(25))`.
+- The `ParentOf` process on `@@Mom` extracts `@@Jane`, then the global analysis continues on `@@Jane.age(25)`.
+- The `age` process on `@@Jane` extracts `25`.
+
+**Dialog/voice example:**
+```musetag
+@@.Dialog[
+  @@(Holmes).Voice(intrigued)[--- What is happening here?]
+  @@(Watson).Voice(thought)[--- I wonder...]
+  @@(Lestrade).Voice[--- Gentlemen, any progress? @@(Holmes).Comment[interrupting](Lestrade cuts in abruptly)]
+]
+```
+- The global analysis detects the `.Dialog` modifier and treats its parameter (the dialogue block) as MuseTag text, continuing analysis on each line.
+- Each `.Voice` is then processed, and any nested modifiers (such as `.Comment` inside a line) are also detected as the global analysis passes through.
+
+**Recommendation:**  
+The author is free to nest as much as desired, especially in multiline structures. Readability is the author's responsibility: MuseTag imposes no restriction on the depth or complexity of imbrication, as long as the syntax is valid.
 
 **Global modifier aggregation:**
 By default, global modifiers are cumulative: each occurrence adds information to the entity, rather than replacing previous values.
 Only modifiers explicitly defined as unique (such as `.Status` or `.Version`) replace previous values.
+
 Example usage:
 ```musetag
 @@Jules.Character.Pov[looked at] @@Paris.Place.
