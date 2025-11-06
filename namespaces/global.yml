@@ -345,3 +345,18 @@ modifiers:
     examples:
       - code: "@@(Holmes).Voice(intrigued)[What is happening here?]"
         description: "Holmes says 'What is happening here?' with an intrigued expression"
+
+  - name: Color
+    description: Assigns a display color to the entity for graphical tools (timelines, graphs, highlights). The parameter is the color value and is normally provided as an invisible parameter (parentheses). Accepted formats follow standard CSS color definitions (hex, rgb(), hsl(), CSS color names, etc.).
+    scope: global
+    parameters:
+      - name: color
+        type: string
+        description: Color value (CSS formats allowed: #RRGGBB, #RGB, rgb(), hsl(), CSS color names, etc.). This parameter is normally invisible (use parentheses).
+    examples:
+      - code: "@@Holmes.Color(#ffcc00)"
+        description: "Assigns Holmes the color #ffcc00 for visualizations"
+      - code: "@@(Holmes,Watson).Color(steelblue)"
+        description: "Assigns both Holmes and Watson the CSS color 'steelblue' for graphical tools"
+    notes: |
+      `.Color` is intended for visualization by tools (timeline bars, graph nodes, highlights). The parameter is normally invisible and should not appear in rendered text. Implementations should normalise or validate color values; invalid values may be ignored or raise a warning. By convention `.Color` is used as a single, global attribute per entity.

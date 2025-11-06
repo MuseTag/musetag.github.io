@@ -342,6 +342,17 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
 - `.Voice(expression)[text]`: Marks a passage as spoken or thought by the annotated entity, with optional expression/context. The visible parameter (in square brackets) is the spoken or thought text; the hidden parameter (in parentheses) can indicate expression, intonation, or context (e.g. "intrigued", "thought", "whispering"). Useful for identifying speech, thoughts, or interior monologue, and for TTS (text-to-speech) or to guide actors recording audiobooks or dramatic readings, as well as for analysis.
   - Example: `@@(Holmes).Voice(intrigued)[What is happening here?]`
 
+- `.Color(color)`: Assigns a display color to the entity for graphical tools and visualizations (timelines, interaction graphs, highlights). The parameter is the color value and is normally provided as an invisible parameter (parentheses). Accepted formats follow standard CSS color definitions (hex `#RRGGBB` / `#RGB`, `rgb()`, `rgba()`, `hsl()`, CSS color names, etc.). This modifier is global in scope and is intended to be used by tooling rather than rendered in text.
+  - Parameters:
+    - `color` (string): Color value in a CSS-acceptable format. By convention this parameter is invisible (use parentheses) because it is not meant to appear in the final reader output.
+  - Examples:
+    - `@@Holmes.Color(#ffcc00)` — assigns Holmes the color `#ffcc00` for visualizations.
+    - `@@(Holmes,Watson).Color(steelblue)` — assigns the CSS color `steelblue` to both Holmes and Watson.
+  - Notes:
+    - `.Color` is primarily a visualization hint for tools (timeline bars, node colors, highlights). Implementations should normalise and validate color values and may convert palette tokens to concrete colors according to project/theme settings.
+    - Invalid or unrecognised color specifications may be ignored or reported as a warning by tools.
+    - By convention `.Color` behaves as a single, global display attribute for an entity; it is expected to be set at most once per entity in typical use (subsequent declarations may override depending on tool policy).
+
 **Note:**  
 You can also use `.Voice` with the null entity (`@@.`) to indicate a vocal effect or expression for narration or any passage not attributed to a specific entity.  
 Example:
