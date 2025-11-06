@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Bring Your Characters to Color: Introducing the .Color Modifier"
-date: 2025-09-18 16:00:00 +0200
+date: 2025-11-06 13:40:00 +0200
 categories: features
 tags: [modifier, color, visualization, annotation]
 author: MuseTag Team
@@ -13,8 +13,8 @@ This is not an attempt to make your prose paint-by-numbers. It's a pragmatic hoo
 
 ## What `.Color` does
 
-- `.Color` assigns a display color to an entity for graphical tools.  
-- The modifier is global in scope: it is intended as a persistent visual attribute of the entity across the document.  
+- `.Color` assigns a display color to an entity for graphical tools.
+- The modifier is global in scope: it is intended as a persistent visual attribute of the entity across the document.
 - The parameter is normally invisible (use parentheses). We accept colors in the standard CSS formats (hex `#RRGGBB` or `#RGB`, `rgb()`, `hsl()`, and standard CSS color names).
 
 Simple examples:
