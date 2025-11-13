@@ -360,3 +360,20 @@ modifiers:
         description: "Assigns both Holmes and Watson the CSS color 'steelblue' for graphical tools"
     notes: |
       `.Color` is intended for visualization by tools (timeline bars, graph nodes, highlights). The parameter is normally invisible and should not appear in rendered text. Implementations should normalise or validate color values; invalid values may be ignored or raise a warning. By convention `.Color` is used as a single, global attribute per entity.
+
+  - name: Icon
+    description: Associates an icon with the entity for GUI visualizations (timeline markers, node icons, editor badges). The parameter is normally invisible and must be either a URL (relative or absolute) to an image file (preferably SVG or PNG) or one to three UTF characters (emoji or glyphs). Icon tokens are not supported and no visible label/alt text is defined by MuseTag.
+    scope: global
+    parameters:
+      - name: icon
+        type: string
+        description: Icon source — image URL (relative or absolute) or up to three UTF characters. Provide image file paths or emoji. This parameter is normally invisible (use parentheses).
+    examples:
+      - code: "@@Holmes.Icon(icons/magnifier.svg)"
+        description: "Assigns an image icon to Holmes"
+      - code: "@@Watson.Icon(🦸)"
+        description: "Assigns the UTF glyph as icon for Watson"
+      - code: "@@(Holmes,Watson).Icon(icons/duo.png)"
+        description: "Assigns the same icon to both Holmes and Watson"
+    notes: |
+      Implementations should treat `.Icon` as a visualization hint for GUIs. If an icon image cannot be loaded or no icon is provided, tools should fall back to the entity's initials. Background color used behind the icon should use the entity's `.Color` when present; otherwise the tool may choose a deterministic or random color. MuseTag does not define accessibility labels or alt text for icons; tools may implement their own policies. Icon tokens are not supported by this specification.

@@ -353,6 +353,22 @@ Modifiers starting with a capital letter (and not entirely uppercase, see §2.3.
     - Invalid or unrecognised color specifications may be ignored or reported as a warning by tools.
     - By convention `.Color` behaves as a single, global display attribute for an entity; it is expected to be set at most once per entity in typical use (subsequent declarations may override depending on tool policy).
 
+- `.Icon(icon)`: Associates an icon with the entity for GUI visualizations (timeline markers, node icons, editor badges). The parameter is normally invisible and must be one of the following:
+  - a URL (relative or absolute) pointing to an image file (implementations should prefer SVG or PNG), or
+  - one to three UTF characters (emoji or glyphs) to be used directly as the icon.
+  Icon tokens (namespace:name) are not supported by this specification. MuseTag does not define visible labels or alt text for icons.
+  - Parameters:
+    - `icon` (string): Icon source — either an image URL/path or up to three UTF characters (emoji/glyphs). This parameter is normally invisible (use parentheses).
+  - Examples:
+    - `@@Holmes.Icon(icons/magnifier.svg)` — assigns an image icon to Holmes.
+    - `@@Watson.Icon(🦸)` — assigns the UTF glyph as icon for Watson.
+    - `@@(Holmes,Watson).Icon(icons/duo.png)` — assigns the same icon to both Holmes and Watson.
+  - Notes:
+    - `.Icon` is a visualization hint for GUI tools. If an icon image cannot be loaded or no icon is provided, implementations should fall back to rendering the entity's initials.
+    - The background color shown behind an icon should use the entity's `.Color` when present; if `.Color` is not set, the tool may choose a deterministic or random color.
+    - MuseTag does not mandate accessibility labels or alt text; tools implementing icon rendering are responsible for their own accessibility policies.
+    - Data URLs are neither prohibited nor documented specifically; implementers may accept them but should be mindful of size and security implications.
+
 **Note:**  
 You can also use `.Voice` with the null entity (`@@.`) to indicate a vocal effect or expression for narration or any passage not attributed to a specific entity.  
 Example:
