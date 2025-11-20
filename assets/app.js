@@ -190,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
           manuallyExpanded: false,
           contextuallyExpanded: false,
           parsedAbsoluteDate: parsedAbsoluteDate,
+          aliases: [],
         });
       } else {
         // Update hierarchy level - hierarchy markers are persistent
@@ -251,6 +252,13 @@ document.addEventListener("DOMContentLoaded", () => {
               ],
             });
           }
+        } else if (modName === "Alias" && modValue) {
+          // Handle .Alias modifier
+          if (!entityData.aliases.includes(modValue)) {
+            entityData.aliases.push(modValue);
+          }
+          // Also add to declared entities so we can find it in the text
+          declaredEntities.set(modValue, modValue);
         } else {
           currentOccurrence.localInfo.push({ name: modName, value: modValue });
         }
@@ -462,12 +470,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Collect entities from all three paragraphs
     const contextText = [previous, current, next].join(" ");
+
+    // 1. Find explicit annotations
     const entityRegex = /@@(?:([\p{L}\p{N}_]+)|\(([\p{L}\p{N}_]+)\))/gu;
     let match;
     while ((match = entityRegex.exec(contextText)) !== null) {
       const entityName = (match[1] || match[2]).replace(/_/g, " ");
       entitiesInContext.add(entityName);
     }
+
+    // 2. Find implicit references (names and aliases)
+    state.entities.forEach((entity, name) => {
+      const candidates = [name, ...(entity.aliases || [])];
+      candidates.forEach((candidate) => {
+        // Escape special regex chars
+        const escaped = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(`\\b${escaped}\\b`, "u");
+        if (regex.test(contextText)) {
+          entitiesInContext.add(name);
+        }
+      });
+    });
 
     // Update the visual state of each card and pill
     state.entities.forEach((entity, name) => {
@@ -647,6 +670,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Card Body
       const body = document.createElement("div");
       body.className = "entity-card-body";
+
+      // Aliases Section
+      if (entity.aliases && entity.aliases.length > 0) {
+        const aliasesDiv = document.createElement("div");
+        aliasesDiv.className = "entity-aliases";
+        aliasesDiv.innerHTML = `<strong>Aliases:</strong> ${entity.aliases.join(", ")}`;
+        aliasesDiv.style.marginBottom = "0.5rem";
+        aliasesDiv.style.fontSize = "0.9em";
+        aliasesDiv.style.color = "var(--color-secondary)";
+        body.appendChild(aliasesDiv);
+      }
 
       const typeModifiers = ["Character", "Place", "Event", "Object"];
 

@@ -155,6 +155,7 @@ function parseMuseTag(rawText) {
                 manuallyExpanded: false,
                 contextuallyExpanded: false,
                 parsedAbsoluteDate: parsedAbsoluteDate,
+                aliases: [],
             });
         } else {
             // Update hierarchy level - hierarchy markers are persistent
@@ -216,6 +217,13 @@ function parseMuseTag(rawText) {
                         ],
                     });
                 }
+            } else if (modName === "Alias" && modValue) {
+                // Handle .Alias modifier
+                if (!entityData.aliases.includes(modValue)) {
+                    entityData.aliases.push(modValue);
+                }
+                // Also add to declared entities so we can find it in the text
+                declaredEntities.set(modValue, modValue);
             } else {
                 currentOccurrence.localInfo.push({ name: modName, value: modValue });
             }
@@ -293,7 +301,7 @@ function parseMuseTag(rawText) {
 }
 
 // Test Case
-const testText = "@@Sherlock.Dialog[Elementary, my dear Watson.]";
+const testText = "@@Sherlock.Dialog[Elementary, my dear Watson.] @@Sherlock.Alias(Holmes). Holmes looked at @@Watson.";
 const result = parseMuseTag(testText);
 
 console.log("Clean Text:", result.cleanText);
@@ -301,9 +309,11 @@ console.log("Entities:");
 result.entities.forEach((entity, name) => {
     console.log(`Entity: ${name}`);
     console.log(`Type: ${entity.type}`);
+    console.log(`Aliases: ${entity.aliases ? entity.aliases.join(", ") : "None"}`);
     console.log("Occurrences:");
     entity.occurrences.forEach(occ => {
         console.log(`  Position: ${occ.position}`);
+        console.log(`  Is Implicit: ${occ.isImplicit}`);
         console.log("  Local Info:", JSON.stringify(occ.localInfo));
     });
 });
