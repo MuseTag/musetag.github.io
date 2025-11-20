@@ -40,9 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
     text = text.replace(/@@\.(?:[\w:!?]+(?:\([^)]*\))?)?(?!\[)/g, "");
 
     // 3. Third pass: Remove other hidden annotations without visible parameters
-    //    - @@(...) without any visible parameters, like @@(Jules) or @@(1957-06-14)
-    const hiddenAnnotationRegex = /@@\([^)]+\)(?!\[[^\]]*\])/gu;
-    text = text.replace(hiddenAnnotationRegex, "");
+    //    - REMOVED as it was interfering with @@(Hidden).Modifier[Visible]
+    //    - Pass 4 should handle removal of hidden entities without visible params
+    // const hiddenAnnotationRegex = /@@\([^)]+\)(?!\[[^\]]*\])/gu;
+    // text = text.replace(hiddenAnnotationRegex, "");
 
     // 4. Fourth pass: Process annotations that are meant to be visible.
     //    This includes:
@@ -67,9 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // If it's a visible entity, output its name + visible params.
         if (visibleName) {
           let separator = "";
-          // Check if modifiers contain .Dialog or .Voice
-          if (/\.(?:Dialog|Voice)\b/.test(modifiersStr)) {
-            separator = ": ";
+          // Add space if visibleParamsOutput doesn't start with punctuation
+          // Punctuation chars that shouldn't have preceding space: . , : ; ? ! )
+          if (visibleParamsOutput.length > 0 && !/^[.,:;?!)]/.test(visibleParamsOutput)) {
+            separator = " ";
           }
           return visibleName.replace(/_/g, " ") + separator + visibleParamsOutput;
         }
