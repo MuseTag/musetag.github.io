@@ -66,7 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // If it's a visible entity, output its name + visible params.
         if (visibleName) {
-          return visibleName.replace(/_/g, " ") + visibleParamsOutput;
+          let separator = "";
+          // Check if modifiers contain .Dialog or .Voice
+          if (/\.(?:Dialog|Voice)\b/.test(modifiersStr)) {
+            separator = ": ";
+          }
+          return visibleName.replace(/_/g, " ") + separator + visibleParamsOutput;
         }
 
         // If it's a hidden entity or null entity with visible parameters, output only the visible parameters.
@@ -748,6 +753,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const localInfoHTML = Array.from(uniqueModifiers.entries())
             .map(([key, value]) => {
+              if (key === "Dialog") {
+                return `<span title="Dialog">💬 "${value}"</span>`;
+              }
               const formattedKey = formatModifierName(key);
               return value === null
                 ? `<strong>${formattedKey}</strong>`
