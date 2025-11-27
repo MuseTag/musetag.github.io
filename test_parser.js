@@ -224,6 +224,9 @@ function parseMuseTag(rawText) {
                 }
                 // Also add to declared entities so we can find it in the text
                 declaredEntities.set(modValue, modValue);
+            } else if (modName === "Color" && modValue) {
+                // Handle .Color modifier
+                entityData.color = modValue;
             } else {
                 currentOccurrence.localInfo.push({ name: modName, value: modValue });
             }
@@ -301,7 +304,7 @@ function parseMuseTag(rawText) {
 }
 
 // Test Case
-const testText = "@@Sherlock.Dialog[Elementary, my dear Watson.] @@Sherlock.Alias(Holmes). Holmes looked at @@Watson.";
+const testText = "@@Sherlock.Dialog[Elementary, my dear Watson.] @@Sherlock.Alias(Holmes). Holmes looked at @@Watson.Color(#ff0000).";
 const result = parseMuseTag(testText);
 
 console.log("Clean Text:", result.cleanText);
@@ -309,6 +312,7 @@ console.log("Entities:");
 result.entities.forEach((entity, name) => {
     console.log(`Entity: ${name}`);
     console.log(`Type: ${entity.type}`);
+    console.log(`Color: ${entity.color || "None"}`);
     console.log(`Aliases: ${entity.aliases ? entity.aliases.join(", ") : "None"}`);
     console.log("Occurrences:");
     entity.occurrences.forEach(occ => {

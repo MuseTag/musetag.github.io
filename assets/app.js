@@ -192,7 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
           manuallyExpanded: false,
           contextuallyExpanded: false,
           parsedAbsoluteDate: parsedAbsoluteDate,
+          parsedAbsoluteDate: parsedAbsoluteDate,
           aliases: [],
+          color: null,
         });
       } else {
         // Update hierarchy level - hierarchy markers are persistent
@@ -261,6 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           // Also add to declared entities so we can find it in the text
           declaredEntities.set(modValue, modValue);
+        } else if (modName === "Color" && modValue) {
+          // Handle .Color modifier
+          entityData.color = modValue;
         } else {
           currentOccurrence.localInfo.push({ name: modName, value: modValue });
         }
@@ -497,7 +502,42 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update the visual state of each card and pill
     state.entities.forEach((entity, name) => {
       const inContext = entitiesInContext.has(name);
-      const shouldBeExpanded = entity.manuallyExpanded || inContext;
+
+      // Update card
+      const card = document.querySelector(`.entity-card[data-entity-name="${name}"]`);
+      if (card) {
+        if (inContext) {
+          card.classList.add("active");
+          if (entity.color) {
+            card.style.borderColor = entity.color;
+            card.style.boxShadow = `0 0 8px ${entity.color}40`;
+          }
+        } else {
+          card.classList.remove("active");
+          card.style.borderColor = "";
+          card.style.boxShadow = "";
+        }
+      }
+
+      // Update pills in preview
+      // Note: This is a bit tricky because pills are generated in updatePreview
+      // We might need to inject styles there or update them here if we can select them
+      const pills = document.querySelectorAll(`.entity-pill[data-entity-name="${name}"]`);
+      pills.forEach(pill => {
+        if (entity.color) {
+          pill.style.backgroundColor = `${entity.color}20`; // Light background
+          pill.style.borderColor = entity.color;
+          pill.style.color = "var(--color-text)"; // Keep text readable
+        }
+        if (inContext) {
+          pill.classList.add("active");
+          if (entity.color) {
+            pill.style.backgroundColor = `${entity.color}40`; // Slightly darker when active
+          }
+        } else {
+          pill.classList.remove("active");
+        }
+      });
 
       // Handle contextual expansion state
       if (
@@ -517,27 +557,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Look for entity card first
-      const card = document.querySelector(
+      const cardElement = document.querySelector(
         `.entity-card[data-entity-name="${name}"]`,
       );
 
-      if (card) {
+      const shouldBeExpanded = entity.manuallyExpanded || inContext;
+
+      if (cardElement) {
         if (shouldBeExpanded) {
-          card.classList.remove("collapsed");
+          cardElement.classList.remove("collapsed");
         } else {
-          card.classList.add("collapsed");
+          cardElement.classList.add("collapsed");
         }
       } else if (entity.hierarchyLevel === 3) {
         // Handle minor entities (pills)
-        const pill = document.querySelector(
+        const pillElement = document.querySelector(
           `.entity-pill[data-entity-name="${name}"]`,
         );
 
-        if (pill && shouldBeExpanded) {
+        if (pillElement && shouldBeExpanded) {
           // Need to show as expanded card - force re-render
           renderEntities();
           return; // Exit early since we're re-rendering
-        } else if (!pill && !shouldBeExpanded && entity.contextuallyExpanded) {
+        } else if (!pillElement && !shouldBeExpanded && entity.contextuallyExpanded) {
           // Was expanded contextually but should collapse back to pill
           entity.contextuallyExpanded = false;
           renderEntities();
@@ -656,6 +698,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const header = document.createElement("div");
       header.className = "entity-card-header";
       header.innerHTML = `<span>${entity.name}</span>`;
+      if (entity.color) {
+        header.style.borderLeft = `4px solid ${entity.color}`;
+      }
       header.addEventListener("click", () => {
         entity.manuallyExpanded = !entity.manuallyExpanded;
         // Clear contextual expansion when user manually controls
@@ -794,7 +839,7 @@ document.addEventListener("DOMContentLoaded", () => {
               }
               const formattedKey = formatModifierName(key);
               return value === null
-                ? `<strong>${formattedKey}</strong>`
+                ? `<strong>${formattedKey}:</strong>`
                 : `<strong>${formattedKey}:</strong> ${value}`;
             })
             .join(", ");
@@ -832,6 +877,11 @@ document.addEventListener("DOMContentLoaded", () => {
       pill.className = "entity-pill";
       pill.textContent = entity.name;
       pill.dataset.entityName = entity.name;
+
+      if (entity.color) {
+        pill.style.backgroundColor = `${entity.color}20`;
+        pill.style.borderColor = entity.color;
+      }
 
       if (entity.manuallyExpanded) {
         pill.classList.add("expanded");
