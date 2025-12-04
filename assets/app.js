@@ -70,10 +70,15 @@ document.addEventListener("DOMContentLoaded", () => {
           let separator = "";
           // Add space if visibleParamsOutput doesn't start with punctuation
           // Punctuation chars that shouldn't have preceding space: . , : ; ? ! )
-          if (visibleParamsOutput.length > 0 && !/^[.,:;?!)]/.test(visibleParamsOutput)) {
+          if (
+            visibleParamsOutput.length > 0 &&
+            !/^[.,:;?!)]/.test(visibleParamsOutput)
+          ) {
             separator = " ";
           }
-          return visibleName.replace(/_/g, " ") + separator + visibleParamsOutput;
+          return (
+            visibleName.replace(/_/g, " ") + separator + visibleParamsOutput
+          );
         }
 
         // If it's a hidden entity or null entity with visible parameters, output only the visible parameters.
@@ -162,115 +167,131 @@ document.addEventListener("DOMContentLoaded", () => {
       const hierarchyLevel = hierarchyMarkers.length - 1; // 1=main, 2=secondary, 3=minor
       const rawName = match[2] || match[3];
       const isHidden = !!match[3];
-      const entityName = rawName.replace(/_/g, " ");
       const modifiersString = match[4] || "";
 
-      let parsedAbsoluteDate = null;
-      let isTemporal = isHidden && /^[0-9@-]/.test(rawName);
+      // Support grouping syntax: if a hidden name contains commas, treat it as multiple entity declarations
+      const rawNamesList =
+        isHidden && typeof rawName === "string" && rawName.includes(",")
+          ? rawName
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [rawName];
 
-      if (isTemporal) {
-        const dateToParse = rawName.replace(" ", "T");
-        const tempDate = new Date(dateToParse);
-        if (!isNaN(tempDate.getTime())) {
-          parsedAbsoluteDate = tempDate;
-        }
-      }
+      for (const singleRawName of rawNamesList) {
+        const entityName = (singleRawName || "").replace(/_/g, " ");
 
-      // Track this as a declared entity (both canonical name and underscore version)
-      declaredEntities.set(entityName, rawName);
-      if (rawName.includes("_")) {
-        declaredEntities.set(rawName, rawName); // Also track underscore version
-      }
+        let parsedAbsoluteDate = null;
+        let isTemporal = isHidden && /^[0-9@-]/.test(singleRawName);
 
-      if (!entities.has(entityName)) {
-        entities.set(entityName, {
-          name: entityName,
-          type: isTemporal ? "temporal" : "character",
-          hierarchyLevel: hierarchyLevel, // 1=main, 2=secondary, 3=minor
-          globalInfo: new Map(),
-          occurrences: [],
-          manuallyExpanded: false,
-          contextuallyExpanded: false,
-          parsedAbsoluteDate: parsedAbsoluteDate,
-          parsedAbsoluteDate: parsedAbsoluteDate,
-          aliases: [],
-          color: null,
-        });
-      } else {
-        // Update hierarchy level - hierarchy markers are persistent
-        // Once an entity is marked as secondary (2) or minor (3), it stays that way
-        const existingEntity = entities.get(entityName);
-        if (hierarchyLevel > existingEntity.hierarchyLevel) {
-          existingEntity.hierarchyLevel = hierarchyLevel;
-        }
-      }
-
-      const entityData = entities.get(entityName);
-      const currentOccurrence = {
-        position: match.index,
-        localInfo: [],
-      };
-
-      // Parse modifiers
-      const modifierRegex = /\.([\w:!?]+)(?:(?:\(([^)]*)\)|\[([^\]]*)\]))?/g;
-      const typeModifiers = ["Character", "Place", "Event", "Object"];
-      let modMatch;
-      while ((modMatch = modifierRegex.exec(modifiersString)) !== null) {
-        const modName = modMatch[1];
-        const modValue =
-          modMatch[2] !== undefined
-            ? modMatch[2]
-            : modMatch[3] !== undefined
-              ? modMatch[3]
-              : null;
-
-        // Handle standard type modifiers
-        if (typeModifiers.includes(modName) && !isTemporal) {
-          entityData.type = modName.toLowerCase();
-        }
-
-        // Handle custom .Type(value) modifier
-        if (modName === "Type" && modValue && !isTemporal) {
-          entityData.type = modValue.toLowerCase();
-        }
-
-        if (
-          (modName.toUpperCase() === modName &&
-            modName.toLowerCase() !== modName) ||
-          (typeModifiers.includes(modName) && !isTemporal)
-        ) {
-          // Global modifiers are now cumulative - store all occurrences
-          if (entityData.globalInfo.has(modName)) {
-            const existing = entityData.globalInfo.get(modName);
-            existing.occurrences.push({
-              value: modValue,
-              position: match.index,
-            });
-          } else {
-            entityData.globalInfo.set(modName, {
-              occurrences: [
-                {
-                  value: modValue,
-                  position: match.index,
-                },
-              ],
-            });
+        if (isTemporal) {
+          const dateToParse = singleRawName.replace(" ", "T");
+          const tempDate = new Date(dateToParse);
+          if (!isNaN(tempDate.getTime())) {
+            parsedAbsoluteDate = tempDate;
           }
-        } else if (modName === "Alias" && modValue) {
-          // Handle .Alias modifier
-          if (!entityData.aliases.includes(modValue)) {
-            entityData.aliases.push(modValue);
-          }
-          // Also add to declared entities so we can find it in the text
-          declaredEntities.set(modValue, modValue);
-        } else if (modName === "Color" && modValue) {
-          // Handle .Color modifier
-          entityData.color = modValue;
+        }
+
+        // Track this as a declared entity (both canonical name and underscore version)
+        declaredEntities.set(entityName, singleRawName);
+        if (singleRawName && singleRawName.includes("_")) {
+          declaredEntities.set(singleRawName, singleRawName); // Also track underscore version
+        }
+
+        if (!entities.has(entityName)) {
+          entities.set(entityName, {
+            name: entityName,
+            type: isTemporal ? "temporal" : "character",
+            hierarchyLevel: hierarchyLevel, // 1=main, 2=secondary, 3=minor
+            globalInfo: new Map(),
+            occurrences: [],
+            manuallyExpanded: false,
+            contextuallyExpanded: false,
+            parsedAbsoluteDate: parsedAbsoluteDate,
+            parsedAbsoluteDate: parsedAbsoluteDate,
+            aliases: [],
+            color: null,
+          });
         } else {
-          currentOccurrence.localInfo.push({ name: modName, value: modValue });
+          // Update hierarchy level - hierarchy markers are persistent
+          const existingEntity = entities.get(entityName);
+          if (hierarchyLevel > existingEntity.hierarchyLevel) {
+            existingEntity.hierarchyLevel = hierarchyLevel;
+          }
         }
+
+        const entityData = entities.get(entityName);
+        const currentOccurrence = {
+          position: match.index,
+          localInfo: [],
+        };
+
+        // Parse modifiers (apply the same modifiers to each grouped entity)
+        const modifierRegex = /\.([\w:!?]+)(?:(?:\(([^)]*)\)|\[([^\]]*)\]))?/g;
+        const typeModifiers = ["Character", "Place", "Event", "Object"];
+        let modMatch;
+        modifierRegex.lastIndex = 0;
+        while ((modMatch = modifierRegex.exec(modifiersString)) !== null) {
+          const modName = modMatch[1];
+          const modValue =
+            modMatch[2] !== undefined
+              ? modMatch[2]
+              : modMatch[3] !== undefined
+                ? modMatch[3]
+                : null;
+
+          // Handle standard type modifiers
+          if (typeModifiers.includes(modName) && !isTemporal) {
+            entityData.type = modName.toLowerCase();
+          }
+
+          // Handle custom .Type(value) modifier
+          if (modName === "Type" && modValue && !isTemporal) {
+            entityData.type = modValue.toLowerCase();
+          }
+
+          if (
+            (modName.toUpperCase() === modName &&
+              modName.toLowerCase() !== modName) ||
+            (typeModifiers.includes(modName) && !isTemporal)
+          ) {
+            // Global modifiers are cumulative - store all occurrences
+            if (entityData.globalInfo.has(modName)) {
+              const existing = entityData.globalInfo.get(modName);
+              existing.occurrences.push({
+                value: modValue,
+                position: match.index,
+              });
+            } else {
+              entityData.globalInfo.set(modName, {
+                occurrences: [
+                  {
+                    value: modValue,
+                    position: match.index,
+                  },
+                ],
+              });
+            }
+          } else if (modName === "Alias" && modValue) {
+            // Handle .Alias modifier
+            if (!entityData.aliases.includes(modValue)) {
+              entityData.aliases.push(modValue);
+            }
+            // Also add to declared entities so we can find it in the text
+            declaredEntities.set(modValue, modValue);
+          } else if (modName === "Color" && modValue) {
+            // Handle .Color modifier
+            entityData.color = modValue;
+          } else {
+            currentOccurrence.localInfo.push({
+              name: modName,
+              value: modValue,
+            });
+          }
+        }
+
+        entityData.occurrences.push(currentOccurrence);
       }
-      entityData.occurrences.push(currentOccurrence);
     }
 
     // STEP 2: Find all canonical name occurrences in the text
@@ -504,7 +525,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const inContext = entitiesInContext.has(name);
 
       // Update card
-      const card = document.querySelector(`.entity-card[data-entity-name="${name}"]`);
+      const card = document.querySelector(
+        `.entity-card[data-entity-name="${name}"]`,
+      );
       if (card) {
         if (inContext) {
           card.classList.add("active");
@@ -522,8 +545,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update pills in preview
       // Note: This is a bit tricky because pills are generated in updatePreview
       // We might need to inject styles there or update them here if we can select them
-      const pills = document.querySelectorAll(`.entity-pill[data-entity-name="${name}"]`);
-      pills.forEach(pill => {
+      const pills = document.querySelectorAll(
+        `.entity-pill[data-entity-name="${name}"]`,
+      );
+      pills.forEach((pill) => {
         if (entity.color) {
           pill.style.backgroundColor = `${entity.color}20`; // Light background
           pill.style.borderColor = entity.color;
@@ -579,7 +604,11 @@ document.addEventListener("DOMContentLoaded", () => {
           // Need to show as expanded card - force re-render
           renderEntities();
           return; // Exit early since we're re-rendering
-        } else if (!pillElement && !shouldBeExpanded && entity.contextuallyExpanded) {
+        } else if (
+          !pillElement &&
+          !shouldBeExpanded &&
+          entity.contextuallyExpanded
+        ) {
           // Was expanded contextually but should collapse back to pill
           entity.contextuallyExpanded = false;
           renderEntities();
