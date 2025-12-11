@@ -498,13 +498,98 @@ body {
     margin-bottom: 0;
 }
 
-/* --- Document Outline --- */
-#document-outline-area {
+/* --- Document Outline & Hierarchy --- */
+#document-outline-area,
+#hierarchy-area {
     background-color: var(--color-surface);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 0.8rem 1rem;
     flex-shrink: 0; /* Prevent the outline from shrinking */
+}
+
+/* Hierarchy-specific inner styling */
+#hierarchy-area {
+    /* keep container uncluttered; contents are created dynamically */
+    padding-top: 0.4rem;
+}
+
+/* Use the same panel title styling as the outline */
+#hierarchy-area .panel-title {
+    margin-top: 0;
+}
+
+/* Styling the tree nodes */
+#hierarchy-area details {
+    margin-bottom: 0.4rem;
+    padding: 0.25rem 0.25rem;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+#hierarchy-area summary {
+    cursor: pointer;
+    /* Allow the browser's native disclosure marker (don't suppress it) so it rotates naturally.
+       Keep other visual treatments for parity with the outline panel. */
+    list-style: initial;
+    outline: none;
+    padding: 0.15rem 0.2rem;
+    display: inline-block;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Ensure the marker can rotate / be visually consistent when a details element is open.
+   Different engines expose the marker via ::marker or vendor pseudo-element. We apply a
+   transform to the pseudo-element where supported; browsers that natively rotate the
+   marker will keep their default behavior. */
+#hierarchy-area summary::marker,
+#hierarchy-area summary::-webkit-details-marker {
+    /* Keep marker aligned and allow rotation. The visual rotation is handled by the browser
+       for many implementations; this rule provides a graceful enhancement where transform is applied. */
+    display: inline-block;
+    transform-origin: center;
+}
+
+#hierarchy-area details[open] > summary::marker,
+#hierarchy-area details[open] > summary::-webkit-details-marker {
+    transform: rotate(90deg);
+}
+
+#hierarchy-area summary:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Remove default list markers and tighten nesting */
+#hierarchy-area ul {
+    list-style: none;
+    padding-left: 0.6rem;
+    margin: 0.2rem 0 0 0;
+}
+
+#hierarchy-area ul li {
+    margin: 0.15rem 0;
+}
+
+/* Details summaries deeper in the tree get a slightly smaller font */
+#hierarchy-area details details > summary {
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+/* Ensure color dots / colored summaries remain readable */
+#hierarchy-area summary[style] {
+    padding-left: 0.25rem;
+}
+
+/* Keep visual parity with the document outline panel */
+#hierarchy-area .panel-title {
+    font-weight: bold;
+    color: var(--color-secondary);
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .panel-title {
@@ -531,6 +616,32 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--color-primary);
+}
+
+/* Custom chevron styling for hierarchy panel (SVG chevrons with rotation animation) */
+#hierarchy-area .hierarchy-chevron svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+#hierarchy-area .hierarchy-chevron {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.35rem;
+    color: var(--color-secondary);
+    transition: transform 0.18s ease;
+    transform-origin: center;
+}
+
+/* Rotate chevron when its parent details element is open */
+#hierarchy-area details[open] .hierarchy-chevron {
+    transform: rotate(90deg);
+}
+
+/* Ensure the entity name aligns nicely with the chevron */
+#hierarchy-area .hierarchy-summary .hierarchy-name {
+    vertical-align: middle;
 }
 
 .document-outline-list li:hover {

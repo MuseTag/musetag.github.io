@@ -1,3 +1,17 @@
+/*
+  musetag.github.io/assets/app.js
+
+  MuseTag demo application script.
+
+  - Parses MuseTag annotations in the editor pane.
+  - Builds an internal representation of entities and occurrences.
+  - Renders preview, entity cards, timeline and document outline.
+  - Now supports hierarchical modifiers: ChildOf / ParentOf and their sugar forms.
+
+  NOTE: This file is an edited/extended version of the demo script to add
+  hierarchical relations support and to show relations in entity cards.
+*/
+
 document.addEventListener("DOMContentLoaded", () => {
   // --- DOM Elements ---
   const editor = document.getElementById("musetag-editor");
@@ -13,9 +27,135 @@ document.addEventListener("DOMContentLoaded", () => {
     viewMode: "html", // 'md' or 'html'
     rawText: "",
     cleanText: "",
-    entities: new Map(), // Use a Map to store entities, keyed by name
+    entities: new Map(), // Use a Map to store entities, keyed by canonical name
+    documentOutline: [],
   };
   const LOCAL_STORAGE_KEY = "musetag-demo-text";
+
+  // --- Helpers for relation handling ---
+
+  // Mapping of sugar names to canonical relation direction
+  // We'll normalize into 'parent'/'child' directional operations.
+  const hierarchicalSugar = {
+    ChildOf: "childOf", // entity.ChildOf(target) -> entity is child, target is parent
+    ParentOf: "parentOf",
+    PartOf: "childOf",
+    HasPart: "parentOf",
+    BelongsTo: "childOf",
+    Includes: "parentOf",
+    MemberOf: "childOf",
+    GroupOf: "parentOf",
+    ContainedIn: "childOf",
+    ContainerOf: "parentOf",
+    DescendantOf: "childOf",
+    AncestorOf: "parentOf",
+  };
+
+  // Utility: find canonical name for a token using declaredEntities map
+  function resolveCanonicalName(token, declaredEntities) {
+    if (!token) return null;
+    // If token appears like an annotation (maybe with underscores), normalize it
+    const t = token.trim();
+
+    // Try direct canonical match (spaces preserved)
+    if (declaredEntities.has(t)) {
+      return t;
+    }
+
+    // Try underscore <-> space variants
+    const withSpaces = t.replace(/_/g, " ");
+    if (declaredEntities.has(withSpaces)) return withSpaces;
+
+    const withUnderscores = t.replace(/ /g, "_");
+    // declaredEntities stores underscore variants as keys sometimes
+    if (declaredEntities.has(withUnderscores)) {
+      // declaredEntities keys are canonical names (with spaces) in our parser,
+      // but some entries also map raw underscore forms as keys to raw names.
+      // Try to find canonical by scanning values
+      const raw = declaredEntities.get(withUnderscores);
+      if (raw) return raw.replace(/_/g, " ");
+    }
+
+    // Try case-insensitive search among canonical names
+    const lower = t.toLowerCase();
+    for (const key of declaredEntities.keys()) {
+      if (key.toLowerCase() === lower) return key;
+    }
+
+    // Finally, try to match a declared rawName value (values in declaredEntities)
+    for (const [canonical, rawName] of declaredEntities.entries()) {
+      if (
+        rawName === t ||
+        rawName === withUnderscores ||
+        rawName === withSpaces
+      ) {
+        return canonical;
+      }
+      if ((rawName || "").toLowerCase() === lower) return canonical;
+    }
+
+    return null;
+  }
+
+  // Add relation between two entities (canonical names). position is optional
+  function addRelation(
+    entitiesMap,
+    fromCanonical,
+    relationDirection,
+    toCanonical,
+    position = null,
+  ) {
+    if (!fromCanonical || !toCanonical) return;
+
+    // Ensure both entities exist
+    if (!entitiesMap.has(fromCanonical)) {
+      entitiesMap.set(fromCanonical, createPlaceholderEntity(fromCanonical));
+    }
+    if (!entitiesMap.has(toCanonical)) {
+      entitiesMap.set(toCanonical, createPlaceholderEntity(toCanonical));
+    }
+
+    const fromEntity = entitiesMap.get(fromCanonical);
+    const toEntity = entitiesMap.get(toCanonical);
+
+    // relationDirection is 'childOf' or 'parentOf'
+    if (relationDirection === "childOf") {
+      // fromEntity is child, toEntity is parent
+      // Add to fromEntity.parents and toEntity.children
+      if (!fromEntity.parents.some((p) => p.name === toCanonical)) {
+        fromEntity.parents.push({ name: toCanonical, position });
+      }
+      if (!toEntity.children.some((c) => c.name === fromCanonical)) {
+        toEntity.children.push({ name: fromCanonical, position });
+      }
+    } else if (relationDirection === "parentOf") {
+      // fromEntity is parent, toEntity is child
+      if (!fromEntity.children.some((c) => c.name === toCanonical)) {
+        fromEntity.children.push({ name: toCanonical, position });
+      }
+      if (!toEntity.parents.some((p) => p.name === fromCanonical)) {
+        toEntity.parents.push({ name: fromCanonical, position });
+      }
+    }
+  }
+
+  // Create a placeholder entity (minimal structure) if referenced before declared
+  function createPlaceholderEntity(canonicalName) {
+    return {
+      name: canonicalName,
+      type: "character",
+      hierarchyLevel: 1,
+      globalInfo: new Map(),
+      occurrences: [],
+      manuallyExpanded: false,
+      contextuallyExpanded: false,
+      parsedAbsoluteDate: null,
+      aliases: [],
+      color: null,
+      parents: [],
+      children: [],
+    };
+  }
 
   // --- Parser ---
 
@@ -38,12 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //    - @@. (bare null entity)
     //    - @@.modifier(hidden) patterns
     text = text.replace(/@@\.(?:[\w:!?]+(?:\([^)]*\))?)?(?!\[)/g, "");
-
-    // 3. Third pass: Remove other hidden annotations without visible parameters
-    //    - REMOVED as it was interfering with @@(Hidden).Modifier[Visible]
-    //    - Pass 4 should handle removal of hidden entities without visible params
-    // const hiddenAnnotationRegex = /@@\([^)]+\)(?!\[[^\]]*\])/gu;
-    // text = text.replace(hiddenAnnotationRegex, "");
 
     // 4. Fourth pass: Process annotations that are meant to be visible.
     //    This includes:
@@ -102,13 +236,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /**
    * Parses the MuseTag text to extract entities and their metadata.
    * @param {string} rawText The text containing MuseTag annotations.
-   * @returns {{cleanText: string, entities: Map<string, object>}}
+   * @returns {{cleanText: string, entities: Map<string, object>, documentOutline: Array}}
    */
   function parseMuseTag(rawText) {
     const cleanText = getCleanText(rawText);
     const entities = new Map();
     const documentOutline = [];
-    const declaredEntities = new Map(); // Track canonical names of declared entities
+    const declaredEntities = new Map(); // Track canonical names -> rawName
 
     // Find hidden markdown headers like @@.(# Title) - they should appear in TOC but not in preview
     const hiddenHeaderRegex = /@@\.\((#+)\s*([^)]*)\)/g;
@@ -208,9 +342,10 @@ document.addEventListener("DOMContentLoaded", () => {
             manuallyExpanded: false,
             contextuallyExpanded: false,
             parsedAbsoluteDate: parsedAbsoluteDate,
-            parsedAbsoluteDate: parsedAbsoluteDate,
             aliases: [],
             color: null,
+            parents: [],
+            children: [],
           });
         } else {
           // Update hierarchy level - hierarchy markers are persistent
@@ -239,6 +374,52 @@ document.addEventListener("DOMContentLoaded", () => {
               : modMatch[3] !== undefined
                 ? modMatch[3]
                 : null;
+
+          // Handle hierarchical modifiers first (ChildOf / ParentOf and sugars)
+          if (hierarchicalSugar.hasOwnProperty(modName)) {
+            const relationDirection = hierarchicalSugar[modName]; // 'childOf' or 'parentOf'
+
+            // Attempt to resolve the target entity name(s).
+            // Typical usage: .ChildOf(@@Other) or .ChildOf(Other) where Other appears somewhere else as @@Other.
+            let resolvedTargets = [];
+
+            if (modValue) {
+              // Look for explicit annotation tokens inside modValue first
+              const innerAnnotationRegex =
+                /(@{2,4})(?:([\p{L}\p{N}_]+)|\(([^)]+)\))/gu;
+              let innerMatch;
+              while (
+                (innerMatch = innerAnnotationRegex.exec(modValue)) !== null
+              ) {
+                const targetRaw = innerMatch[2] || innerMatch[3];
+                const targetCanonical = (targetRaw || "").replace(/_/g, " ");
+                resolvedTargets.push(targetCanonical);
+              }
+
+              // If none found, try to resolve bare name via declaredEntities
+              if (resolvedTargets.length === 0) {
+                const maybe = resolveCanonicalName(modValue, declaredEntities);
+                if (maybe) resolvedTargets.push(maybe);
+              }
+            }
+
+            // If still empty, nothing to do (no valid target)
+            if (resolvedTargets.length > 0) {
+              resolvedTargets.forEach((targetCanonical) => {
+                // Add relation entries (use match.index as the position where declared)
+                addRelation(
+                  entities,
+                  entityData.name,
+                  relationDirection,
+                  targetCanonical,
+                  match.index,
+                );
+              });
+            }
+
+            // Continue - don't add this to localInfo globalInfo; hierarchy is stored on parents/children
+            continue;
+          }
 
           // Handle standard type modifiers
           if (typeModifiers.includes(modName) && !isTemporal) {
@@ -319,7 +500,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Create regex to find this canonical name
       // We need to escape special regex characters and handle both space and underscore versions
       const escapedName = canonicalName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const escapedRawName = rawName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedRawName = rawName
+        ? rawName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        : escapedName;
 
       // Look for word boundaries around the name to avoid partial matches
       const nameRegex = new RegExp(
@@ -408,6 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePreview();
     renderEntities();
     renderDocumentOutline();
+    renderHierarchy();
     renderTimeline();
     handleEditorSelectionChange(); // Ensure cards are correctly expanded/collapsed
     saveToLocalStorage();
@@ -543,8 +727,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Update pills in preview
-      // Note: This is a bit tricky because pills are generated in updatePreview
-      // We might need to inject styles there or update them here if we can select them
       const pills = document.querySelectorAll(
         `.entity-pill[data-entity-name="${name}"]`,
       );
@@ -581,7 +763,6 @@ document.addEventListener("DOMContentLoaded", () => {
         entity.contextuallyExpanded = false;
       }
 
-      // Look for entity card first
       const cardElement = document.querySelector(
         `.entity-card[data-entity-name="${name}"]`,
       );
@@ -810,6 +991,72 @@ document.addEventListener("DOMContentLoaded", () => {
             ul.appendChild(subUl);
           }
         });
+        body.appendChild(ul);
+      }
+
+      // Relations Section (parents / children)
+      if (
+        (entity.parents && entity.parents.length > 0) ||
+        (entity.children && entity.children.length > 0)
+      ) {
+        const title = document.createElement("h5");
+        title.textContent = "Relations";
+        body.appendChild(title);
+        const ul = document.createElement("ul");
+
+        if (entity.parents && entity.parents.length > 0) {
+          const parentsLi = document.createElement("li");
+          parentsLi.innerHTML = `<strong>Parents:</strong>`;
+          const pUl = document.createElement("ul");
+          pUl.style.marginLeft = "1rem";
+          entity.parents.forEach((p) => {
+            const pItem = document.createElement("li");
+            pItem.textContent = p.name;
+            pItem.style.cursor = "pointer";
+            pItem.title = `Go to declaration of ${p.name}`;
+            pItem.addEventListener("click", () => {
+              // Prefer the position stored with the relation; otherwise, use the first occurrence of the parent
+              const targetEntity = state.entities.get(p.name);
+              const pos =
+                p.position ||
+                (targetEntity &&
+                  targetEntity.occurrences[0] &&
+                  targetEntity.occurrences[0].position) ||
+                0;
+              scrollToPosition(pos);
+            });
+            pUl.appendChild(pItem);
+          });
+          parentsLi.appendChild(pUl);
+          ul.appendChild(parentsLi);
+        }
+
+        if (entity.children && entity.children.length > 0) {
+          const childrenLi = document.createElement("li");
+          childrenLi.innerHTML = `<strong>Children:</strong>`;
+          const cUl = document.createElement("ul");
+          cUl.style.marginLeft = "1rem";
+          entity.children.forEach((c) => {
+            const cItem = document.createElement("li");
+            cItem.textContent = c.name;
+            cItem.style.cursor = "pointer";
+            cItem.title = `Go to declaration of ${c.name}`;
+            cItem.addEventListener("click", () => {
+              const targetEntity = state.entities.get(c.name);
+              const pos =
+                c.position ||
+                (targetEntity &&
+                  targetEntity.occurrences[0] &&
+                  targetEntity.occurrences[0].position) ||
+                0;
+              scrollToPosition(pos);
+            });
+            cUl.appendChild(cItem);
+          });
+          childrenLi.appendChild(cUl);
+          ul.appendChild(childrenLi);
+        }
+
         body.appendChild(ul);
       }
 
@@ -1137,6 +1384,221 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     container.appendChild(list);
+  }
+
+  function renderHierarchy() {
+    const container = document.getElementById("hierarchy-area");
+    if (!container) return;
+    container.innerHTML = "";
+
+    // Nothing to render when no entities
+    if (!state.entities || state.entities.size === 0) {
+      return;
+    }
+
+    // Build set of entities involved in hierarchical relations (have parents or children)
+    const involved = new Set();
+    state.entities.forEach((entity, name) => {
+      const hasParent = entity.parents && entity.parents.length > 0;
+      const hasChildren = entity.children && entity.children.length > 0;
+      if (hasParent || hasChildren) {
+        involved.add(name);
+        if (hasParent) {
+          entity.parents.forEach((p) => {
+            if (p && p.name) involved.add(p.name);
+          });
+        }
+        if (hasChildren) {
+          entity.children.forEach((c) => {
+            if (c && c.name) involved.add(c.name);
+          });
+        }
+      }
+    });
+
+    // If no entity participates in a hierarchy, leave the block empty
+    if (involved.size === 0) {
+      return;
+    }
+
+    // Find root entities among the involved set: those that do not have a parent inside the involved set
+    const roots = [];
+    involved.forEach((name) => {
+      const ent = state.entities.get(name);
+      const parents = ent && ent.parents ? ent.parents.map((p) => p.name) : [];
+      const hasParentInvolved = parents.some((pn) => involved.has(pn));
+      if (!hasParentInvolved) roots.push(name);
+    });
+
+    // If there are no roots (e.g. cycles), leave the block empty per instructions
+    if (roots.length === 0) {
+      return;
+    }
+
+    // Title (styled like Document Outline)
+    const title = document.createElement("h5");
+    title.className = "panel-title";
+    title.textContent = "Hierarchy";
+    container.appendChild(title);
+
+    // Helper to create a details/summary subtree for an entity, limited to 'involved' members
+    function createNode(name, visited = new Set(), parentName = null) {
+      const ent = state.entities.get(name);
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+
+      // Build a custom summary with an inline SVG chevron (so visuals are consistent across browsers)
+      summary.className = "hierarchy-summary";
+      summary.style.cursor = "pointer";
+
+      // Chevron span (SVG)
+      const chevron = document.createElement("span");
+      chevron.className = "hierarchy-chevron";
+      chevron.setAttribute("aria-hidden", "true");
+      chevron.style.display = "inline-block";
+      chevron.style.width = "1em";
+      chevron.style.height = "1em";
+      chevron.style.verticalAlign = "middle";
+      chevron.style.transition = "transform 0.18s ease";
+      chevron.style.marginRight = "0.35rem";
+      chevron.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+          <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/>
+        </svg>
+      `;
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "hierarchy-name";
+      nameSpan.textContent = name;
+      if (ent && ent.color) {
+        nameSpan.style.color = ent.color;
+      }
+
+      // Append chevron and name into summary
+      summary.appendChild(chevron);
+      summary.appendChild(nameSpan);
+      details.appendChild(summary);
+
+      // Prevent cycles
+      if (visited.has(name)) {
+        const note = document.createElement("div");
+        note.textContent = "(cycle)";
+        note.style.fontSize = "0.9em";
+        note.style.color = "var(--color-secondary)";
+        details.appendChild(note);
+
+        // Dim the chevron for cycle nodes
+        chevron.style.opacity = "0.4";
+        return details;
+      }
+
+      // Mark visited for this branch
+      const nextVisited = new Set(visited);
+      nextVisited.add(name);
+
+      // Determine children that are part of the involved set
+      const children =
+        ent && ent.children
+          ? ent.children.map((c) => c.name).filter((n) => involved.has(n))
+          : [];
+
+      // If entity has involved children, render them as nested details inside a list
+      if (children.length > 0) {
+        const ul = document.createElement("ul");
+        ul.style.listStyle = "none";
+        ul.style.paddingLeft = "0.8rem";
+        children.forEach((cname) => {
+          const li = document.createElement("li");
+          // Pass current entity name as the parentName so child nodes can resolve relation positions
+          const childNode = createNode(cname, nextVisited, name);
+          li.appendChild(childNode);
+          ul.appendChild(li);
+        });
+        details.appendChild(ul);
+      }
+
+      // Keep chevron rotation in sync with details open state
+      details.addEventListener("toggle", () => {
+        if (details.open) {
+          chevron.style.transform = "rotate(90deg)";
+        } else {
+          chevron.style.transform = "rotate(0deg)";
+        }
+      });
+
+      // Initialize chevron state in case details is programmatically opened
+      if (details.open) {
+        chevron.style.transform = "rotate(90deg)";
+      }
+
+      // Clicking the summary should scroll to the position where the relation to the parent was declared,
+      // or to the earliest relation declaration involving this entity when no explicit parent is available,
+      // falling back to the entity's first occurrence if no relation positions are known.
+      summary.addEventListener("click", (ev) => {
+        // Allow the native toggle behavior to proceed (do not preventDefault),
+        // but still compute and jump to the relation position.
+        let pos = null;
+
+        // If rendered as a child of another node, prefer the relation position between this entity and that parent
+        if (parentName && ent) {
+          // Prefer explicit parent link to parentName (where this entity appears as child)
+          if (ent.parents && ent.parents.length > 0) {
+            const rel = ent.parents.find(
+              (p) => p.name === parentName && p.position,
+            );
+            if (rel) pos = rel.position;
+          }
+          // If not found, check whether this entity is recorded as parent for parentName (edge cases)
+          if (pos === null && ent.children && ent.children.length > 0) {
+            const rel2 = ent.children.find(
+              (c) => c.name === parentName && c.position,
+            );
+            if (rel2) pos = rel2.position;
+          }
+        } else if (ent) {
+          // No parentName: compute the earliest relation declaration position involving this entity.
+          const relPositions = [];
+          if (ent.parents && ent.parents.length > 0) {
+            ent.parents.forEach((p) => {
+              if (p && p.position !== undefined && p.position !== null)
+                relPositions.push(p.position);
+            });
+          }
+          if (ent.children && ent.children.length > 0) {
+            ent.children.forEach((c) => {
+              if (c && c.position !== undefined && c.position !== null)
+                relPositions.push(c.position);
+            });
+          }
+          if (relPositions.length > 0) {
+            pos = Math.min(...relPositions);
+          }
+        }
+
+        // Fallback -> first declaration/occurrence of the entity
+        if (pos === null || pos === 0) {
+          if (ent && ent.occurrences && ent.occurrences[0]) {
+            pos = ent.occurrences[0].position;
+          } else {
+            pos = 0;
+          }
+        }
+
+        // Slight delay to let native toggle take effect visually before jumping
+        setTimeout(() => {
+          scrollToPosition(pos);
+        }, 10);
+      });
+
+      return details;
+    }
+
+    // Sort roots alphabetically and append their trees
+    roots.sort((a, b) => a.localeCompare(b));
+    roots.forEach((r) => {
+      const node = createNode(r);
+      container.appendChild(node);
+    });
   }
 
   function renderTimeline() {
@@ -1729,6 +2191,11 @@ And here I have lamely related to you the uneventful chronicle of two foolish ch
     setupHorizontalResizers();
     setupScrollSync();
     processEditorChange(); // Initial processing of the loaded text
+    // Ensure hierarchy is rendered on startup (processEditorChange already calls it,
+    // but call again to be explicit and robust)
+    if (typeof renderHierarchy === "function") {
+      renderHierarchy();
+    }
     console.log("MuseTag Editor initialized.");
   }
 
