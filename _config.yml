@@ -50,6 +50,6 @@ minima:
       target: "_blank"
     - 40-cheat-sheet.md
     - 99-specifications.md
-    - url: "https://github.com/MuseTag/musetag.github.io/discussions"
+    - url: "https://github.com/MuseCrossing/musetag.github.io/discussions"
       title: "Community"
       target: "_blank"
